@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 
-import { getSignInError, getSignInPending } from "../../store/reducers/auth";
+import { getAuthError, getAuthPending } from "../../store/reducers/auth";
 import { signIn, signInFacebook, signInGoogle } from '../../store/actions/auth';
 
 import "./signIn.css";
@@ -110,8 +110,8 @@ function Login(props) {
 }
 
 const mapStateToProps = state => ({
-    error: getSignInError(state),
-    pending: getSignInPending(state),
+    error: getAuthError(state),
+    pending: getAuthPending(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -1,12 +1,6 @@
 @media all and (min-width: 480px) {
     .Signup {
-      padding: 60px 20px;
-      /* The image used */
-      background-image: url("/bg.webp");
-  
-      /* Full height */
-      height: 100%;
-  
+      padding: 30px 20px;
       /* Center and scale the image nicely */
       background-position: center;
       background-repeat: no-repeat;
@@ -15,7 +9,7 @@
   
     .Signup form {
       margin: 0 auto;
-      padding: 50px 50px;
+      padding: 30px 40px;
       background-color: rgb(255, 255, 255);
       max-width: 320px !important;
       border: 2px solid #3d3d3d;

@@ -3,9 +3,9 @@ import { FormGroup, FormControl, FormLabel, Button, Alert } from "react-bootstra
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import "./Register.css";
-import { registerAction } from '../asynchronous.action';
-import { getRegisterError, getRegisterPending } from "../../reducers/auth.reducer";
+import "./signUp.css";
+import { signUp } from '../../store/actions/auth';
+import { getAuthError, getAuthPending } from "../../store/reducers/auth";
 
 function SignUp(props) {
     const [email, setEmail] = useState("");
@@ -24,8 +24,7 @@ function SignUp(props) {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        // console.log({ email, password, name });
-        props.postRegister({ email, password, name, method: 'local' });
+        props.signUp(email, password, name);
     }
 
     return (
@@ -67,19 +66,30 @@ function SignUp(props) {
                         value={confirmPassword}
                     />
                 </FormGroup>
-                <Button block bsSize="large" disabled={!validateForm()} type="submit">REGISTER</Button>
+                <Button block bsSize="large"
+                    disabled={!validateForm()}
+                    type="submit"
+                    variant="primary">
+                    REGISTER AS TUTOR
+                </Button>
+                <Button block bsSize="large"
+                    disabled={!validateForm()}
+                    type="submit"
+                    variant="warning">
+                    REGISTER AS STUDENT
+                </Button>
             </form>
         </div>
     );
 }
 
 const mapStateToProps = state => ({
-    error: getRegisterError(state),
-    pending: getRegisterPending(state)
+    error: getAuthError(state),
+    pending: getAuthPending(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    // postRegister: registerAction
+    signUp
 }, dispatch)
 
 export default connect(

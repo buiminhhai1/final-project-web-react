@@ -73,12 +73,12 @@ export function signIn(email, password) {
     }
 }
 
-export function signInGoogle(data) {
+export function signInGoogle(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
         let signInGoogleUrl = apiUrl + "/login/googleOauth";
 
-        axios.post(signInGoogleUrl, data)
+        axios.post(signInGoogleUrl, accessToken)
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
 
@@ -99,12 +99,12 @@ export function signInGoogle(data) {
     }
 }
 
-export function signInFacebook(data) {
+export function signInFacebook(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
         let signInFacebookUrl = apiUrl + "/login/facebookOauth";
 
-        axios.post(signInFacebookUrl, data)
+        axios.post(signInFacebookUrl, accessToken)
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
 
@@ -121,6 +121,49 @@ export function signInFacebook(data) {
             .catch(err => {
                 console.log(err);
                 dispatch(signInFail(err));
+            })
+    }
+}
+
+export const signUpPending = () => {
+    return {
+        type: actionTypes.SIGNUP_PENDING
+    };
+};
+
+export const signUpSuccess = (token, user) => {
+    return {
+        type: actionTypes.SIGNUP_SUCCESS,
+        idToken: token,
+        user,
+    };
+};
+
+export const signUpFail = (error) => {
+    return {
+        type: actionTypes.SIGNUP_ERROR,
+        error
+    };
+};
+
+export function signUp(email, password, name) {
+    return (dispatch) => {
+        dispatch(signUpPending());
+
+        const data = {
+            email, password, name
+        }
+        let signUpUrl = apiUrl + "/register";
+
+        axios.post(signUpUrl, data)
+            .then(res => {
+                // console.log(res.data);
+                dispatch(signUpSuccess());
+                return res.data.emailAddress;
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(signUpFail(err));
             })
     }
 }

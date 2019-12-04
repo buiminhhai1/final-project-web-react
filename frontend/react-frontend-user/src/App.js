@@ -11,12 +11,20 @@ const asyncSignIn = AsyncComponent(() => {
   return import('./containers/signInPage/signIn');
 })
 
+const asyncSignUp = AsyncComponent(() => {
+  return import('./containers/signUpPage/signUp');
+})
+
+const asyncTutorRegister = AsyncComponent(() => {
+  return import('./containers/tutorInfoRegister/tutorInfoRegister');
+})
+
 function App() {
   const routes = (
     <Switch>
-      {/* <Route exact path="/" component={Home}></Route> */}
+      <Route exact path="/" component={asyncTutorRegister}></Route>
       <Route path="/signIn" component={asyncSignIn}></Route>
-      <Route path="/signUp" component={asyncSignIn}></Route>
+      <Route path="/signUp" component={asyncSignUp}></Route>
       {/* <Route path="/profile" component={Profile}></Route> */}
     </Switch>
   )
