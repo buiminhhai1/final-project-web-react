@@ -26,7 +26,7 @@ mongoose.connect(uri, {useNewUrlParser: true,useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('database connected, the application listening on port 3000');
+  console.log('database connected');
 });
 
 // view engine setup
@@ -44,7 +44,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.get('/me',passport.authenticate('jwt'),(req,res,next)=>{
+  res.send({ 'info':req.user.user});
+})
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

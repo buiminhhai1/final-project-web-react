@@ -91,14 +91,15 @@ exports.register = async (req, res) => {
 
 
 
-exports.OAuthregister = async (req, res) => {
+exports.OAuthRegister = async (req, res) => {
   const {
     email,
     token,
-    name
+    name,
+    role
   } = req.body;
 
-  if (email.length === 0 || token.length === 0) {
+  if (email.length === 0 || token.length === 0 || role.length === 0 || name.length === 0) {
     return res.json({
       message: 'Something wrong'
     });
@@ -131,4 +132,33 @@ exports.OAuthregister = async (req, res) => {
       message: 'something went wrong!'
     });
   }
+};
+
+
+
+exports.OAuthLogin = async(req, res,next) => {
+  const {email,token,name,role} = req.body;
+  
+      const user = await UserModel.findOne({
+        email
+      });
+      if(!!user){
+        const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
+          expiresIn: '15m'
+        });
+        const newUser = {
+          name: user.name,
+          email: user.email,
+          role: user.role
+        };
+        return res.json({
+          user: newUser,
+          token,
+          expiresIn: 15 * 60
+        });
+      }else{
+        return res.json({
+          message: 'something went wrong!'
+        });
+      }      
 };
