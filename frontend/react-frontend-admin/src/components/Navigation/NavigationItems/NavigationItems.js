@@ -17,7 +17,7 @@ const NavigationItems = (props) => {
               {username}
               {' '}
             </strong>
-Đăng xuất
+            Đăng xuất
           </NavigationItem>
         )
         : (<NavigationItem link="/user/login">Đăng nhập</NavigationItem>)}

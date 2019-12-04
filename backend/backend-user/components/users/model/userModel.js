@@ -1,29 +1,49 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  email: {
+  method: {
     type: String,
-    require: false,
-  },
-  name: {
-    type: String,
-    require: true,
-  },
-  password: {
-    type: String,
-    require: true,
-  },
-  gender: {
-    type: String,
-    require: false,
-  },
-  picture: {
-    type: String,
-    require: false,
+    enum: ['local', 'google', 'facebook'],
+    required: true
   },
   role: {
     type: String,
-    require: false,
+    enum: ['tutor', 'student'],
+    required: true
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  local: {
+    name: String,
+    emailAddress: {
+      type: String,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+    }
+  },
+  google: {
+    id: {
+      type: String
+    },
+    name: String,
+    email: {
+      type: String,
+      lowercase: true,
+    }
+  },
+  facebook: {
+    id: {
+      type: String
+    },
+    name: String,
+    email: {
+      type: String,
+      lowercase: true,
+    }
   },
 });
 
