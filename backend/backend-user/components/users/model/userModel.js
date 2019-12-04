@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
   },
   imageUrl: {
     type: String,
-    required: true,
+    require: false,
   },
   local: {
     name: String,

@@ -17,61 +17,16 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-// const facebook = new FacebookStrategy({
-//   clientID: constant.FACEBOOK_ID,
-//   clientSecret: constant.FACEBOOK_SECRET,
-//   callbackURL: "/user/facebook/callback",
-//   profileFields: ['id', 'displayName', 'photos', 'email', 'gender']
-// },
-// async (accessToken, refreshToken, profile, done) => {
-//   const { emails, displayName, photos, gender } = profile;
-//   console.log(profile);
-//   try {
-//     const user = await UserModel.findOne({ email: emails[0].value });
-//     if (user) {
-//       let result = {
-//         email: user.email,
-//         name: user.name,
-//         picture: user.picture,
-//         gender: user.gender,
-//       };
-//       result = {...result, token: jwtExtension.encode(result, constant.JWT_SECRET)};
-//       return done(null, result);
-//     }
-//     else {
-//       const newUser = new UserModel({
-//         _id: new mongoose.Types.ObjectId(),
-//         email: emails[0].value,
-//         gender: gender,
-//         name: displayName,
-//         picture: photos[0].value
-//       });
-//       const tempUser = await newUser.save();
-//       const result = {
-//         email: tempUser.email,
-//         name: tempUser.name,
-//         gender: tempUser.gender,
-//         picture: tempUser.picture,
-//       };
-//       result = {...result, token: jwtExtension.encode(result, constant.JWT_SECRET)};
-//       return done(null, result)
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     return done(err);
-//   }
-// });
-
 const jwt = new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: constant.JWT_SECRET
 },
 (jwtPayload, cb) => {
-  return UserModel.findById(jwtPayload.email)
+  return UserModel.findOne({'email':jwtPayload.email})
     .then(user => {
       return cb(null, {
-        message: 'get imformation about current user',
-        email: user.email});
+        message: 'success',
+        user: user});
     })
     .catch(err => {
       return cb(err);
@@ -100,4 +55,3 @@ const local = new LocalStrategy({
 );
 passport.use(jwt);
 passport.use(local);
-// passport.use(facebook);
