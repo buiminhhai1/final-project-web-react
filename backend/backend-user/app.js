@@ -6,9 +6,28 @@ const logger = require('morgan');
 const cors = require('cors');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./components/users/router/userRouter');
 
 const app = express();
+var mongoose = require('mongoose');
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+const passport = require('passport');
+const dbInfo = require('./components/utils/const/constant');
+app.use(passport.initialize());
+require('./components/utils/authentication/passport');
+
+var uri = dbInfo.CONNECTION_STRING;
+mongoose.connect(uri, {useNewUrlParser: true,useUnifiedTopology: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('database connected');
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

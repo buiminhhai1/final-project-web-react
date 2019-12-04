@@ -50,7 +50,9 @@ export function signIn(email, password) {
             email,
             password
         };
-        let signInUrl = apiUrl + "/login";
+        console.log(data);
+        
+        let signInUrl = apiUrl + "/users/login";
 
         axios.post(signInUrl, data)
             .then(res => {
@@ -153,7 +155,7 @@ export function signUp(email, password, name) {
         const data = {
             email, password, name
         }
-        let signUpUrl = apiUrl + "/register";
+        let signUpUrl = apiUrl + "/users/register";
 
         axios.post(signUpUrl, data)
             .then(res => {
