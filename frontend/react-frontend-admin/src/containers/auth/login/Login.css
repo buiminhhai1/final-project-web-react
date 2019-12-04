@@ -1,5 +1,5 @@
 .login-form {
-  padding-top: 100px;
+  padding-top: 10px;
   align-items: center;
   margin: auto !important;
   max-width: 300px;
@@ -11,4 +11,9 @@
 
 .login-form-button {
   width: 100%;
+}
+
+.login {
+  text-align: center;
+  padding-top: 10px;
 }

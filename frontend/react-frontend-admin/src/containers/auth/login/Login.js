@@ -2,7 +2,6 @@ import 'antd/dist/antd.css';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-// import { connect } from 'react-redux';
 
 import './Login.css';
 import Facebook from '../Facebook/Facebook';
@@ -85,17 +84,15 @@ class Login extends Component {
           >
             Log in
           </Button>
-          Or <NavLink to="/register"> register now! </NavLink>{' '}
+          Or <NavLink to="/admin/register"> register now! </NavLink>{' '}
         </Form.Item>{' '}
       </Form>
     );
     return (
-      <div>
-        {' '}
+      <div className="login">
+        <h2>Login with Admin rule</h2>
         {form}
-        Connect with
-        <Facebook /> Or
-        <Google />
+        Connect with <Facebook /> Or <Google />
       </div>
     );
   }

@@ -49,5 +49,4 @@
     "pretty-quick": "^1.11.1"
   },
   "precommit": "NODE_ENV=production lint-staged"
-
 }

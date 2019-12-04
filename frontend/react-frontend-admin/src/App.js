@@ -1,10 +1,12 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import 'antd/dist/antd.css';
+import { Layout } from 'antd';
 import AsyncComponent from './hoc/AsyncComponent/AsyncComponent';
 import './App.css';
-
+import HeaderLayout from './components/HeaderLayout/HeaderLayout';
 const asyncLogin = AsyncComponent(() => {
-  return import('./containers/auth/login/Login');
+  return import('./containers/auth/Login/Login');
 });
 
 const asyncRegister = AsyncComponent(() => {
@@ -14,16 +16,20 @@ const asyncRegister = AsyncComponent(() => {
 const asyncHomePage = AsyncComponent(() => {
   return import('./containers/HomePage/HomePage');
 });
+
 function App() {
   const routes = (
     <Switch>
-      <Route path="/admin/login" component={asyncLogin} />
-      <Route path="/admin/register" component={asyncRegister} />
-      <Route path="/" component={asyncHomePage} />
-      <Redirect to="/" />
+      <Route path="/admin/login" component={asyncLogin} />{' '}
+      <Route path="/admin/register" component={asyncRegister} />{' '}
+      <Route path="/" component={asyncHomePage} /> <Redirect to="/" />
     </Switch>
   );
-  return <div className="App">{routes}</div>;
+  return (
+    <Layout>
+      <HeaderLayout /> {routes}{' '}
+    </Layout>
+  );
 }
 
 export default App;

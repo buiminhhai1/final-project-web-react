@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+
+import 'antd/dist/antd.css';
 import { Form, Input, Button, Tooltip, Icon } from 'antd';
 import { Redirect } from 'react-router-dom';
-import 'antd/dist/antd.css';
 import Facebook from '../Facebook/Facebook';
 import Google from '../Google/Google';
 import './Register.css';
@@ -19,7 +20,10 @@ class Register extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        const isSignup = { value: true, username: values.username };
+        const isSignup = {
+          value: true,
+          username: values.username
+        };
         this.props.onAuth(values.email, values.password, isSignup);
       }
     });
@@ -27,7 +31,9 @@ class Register extends Component {
 
   handleConfirmBlur = e => {
     const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    this.setState({
+      confirmDirty: this.state.confirmDirty || !!value
+    });
   };
 
   compareToFirstPassword = (rule, value, callback) => {
@@ -42,7 +48,9 @@ class Register extends Component {
   validateToNextPassword = (rule, value, callback) => {
     const { form } = this.props;
     if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
+      form.validateFields(['confirm'], {
+        force: true
+      });
     }
     callback();
   };
@@ -51,12 +59,20 @@ class Register extends Component {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
-        xs: { span: 8 },
-        sm: { span: 8 }
+        xs: {
+          span: 8
+        },
+        sm: {
+          span: 8
+        }
       },
       wrapperCol: {
-        xs: { span: 8 },
-        sm: { span: 8 }
+        xs: {
+          span: 8
+        },
+        sm: {
+          span: 8
+        }
       }
     };
     const tailFormItemLayout = {
@@ -79,6 +95,7 @@ class Register extends Component {
         className="Register"
       >
         <Form.Item label="E-mail">
+          {' '}
           {getFieldDecorator('email', {
             rules: [
               {
@@ -90,15 +107,15 @@ class Register extends Component {
                 message: 'Please input your E-mail!'
               }
             ]
-          })(<Input />)}
-        </Form.Item>
+          })(<Input />)}{' '}
+        </Form.Item>{' '}
         <Form.Item
           label={
             <span>
-              Username&nbsp;
+              Username & nbsp;{' '}
               <Tooltip title="What do you want others to call you?">
                 <Icon type="question-circle-o" />
-              </Tooltip>
+              </Tooltip>{' '}
             </span>
           }
         >
@@ -110,10 +127,10 @@ class Register extends Component {
                 whitespace: true
               }
             ]
-          })(<Input />)}
+          })(<Input />)}{' '}
         </Form.Item>
-
         <Form.Item label="Password" hasFeedback>
+          {' '}
           {getFieldDecorator('password', {
             rules: [
               {
@@ -124,9 +141,10 @@ class Register extends Component {
                 validator: this.validateToNextPassword
               }
             ]
-          })(<Input.Password />)}
-        </Form.Item>
+          })(<Input.Password />)}{' '}
+        </Form.Item>{' '}
         <Form.Item label="Confirm Password" hasFeedback>
+          {' '}
           {getFieldDecorator('confirm', {
             rules: [
               {
@@ -137,8 +155,8 @@ class Register extends Component {
                 validator: this.compareToFirstPassword
               }
             ]
-          })(<Input.Password onBlur={this.handleConfirmBlur} />)}
-        </Form.Item>
+          })(<Input.Password onBlur={this.handleConfirmBlur} />)}{' '}
+        </Form.Item>{' '}
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit">
             Register
@@ -151,9 +169,16 @@ class Register extends Component {
     if (this.props.error) {
       errorMessage = (
         <div>
-          <p style={{ color: 'Red', background: 'gray', textAlign: 'center' }}>
-            {this.props.message}
-          </p>
+          <p
+            style={{
+              color: 'Red',
+              background: 'gray',
+              textAlign: 'center'
+            }}
+          >
+            {' '}
+            {this.props.message}{' '}
+          </p>{' '}
         </div>
       );
     }
@@ -163,16 +188,18 @@ class Register extends Component {
       authRedirect = <Redirect to={this.props.authRedirectPath} />;
     }
     return (
-      <div>
+      <div class="Register">
+        <h2>Register to with admin</h2>
         {authRedirect}
         {errorMessage}
         {myForm}
-        Or connect with
-        <Facebook />
+        Or connect with <Facebook />
         <Google />
       </div>
     );
   }
 }
 
-export default Form.create({ name: 'register' })(Register);
+export default Form.create({
+  name: 'register'
+})(Register);
