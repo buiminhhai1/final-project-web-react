@@ -24,6 +24,7 @@
     "comma-dangle": "off",
     "consistent-return": "off",
     "indent": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "no-unused-vars": "off"
   }
 }

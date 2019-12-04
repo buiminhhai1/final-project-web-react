@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel, Alert } from "react-bootstrap";
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom'
 import { bindActionCreators } from 'redux';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 
-import "./Login.css";
-import { loginAction, loginGoogleAction, loginFacebookAction } from '../asynchronous.action';
-import { getLoginPending, getLoginError } from "../../reducers/auth.reducer";
+import { getSignInError, getSignInPending } from "../../store/reducers/auth";
+import { signIn, signInFacebook, signInGoogle } from '../../store/actions/auth';
+
+import "./signIn.css";
 
 //reads in configuration from a .env file
 require('dotenv').config();
@@ -25,24 +27,25 @@ function Login(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        props.postLogin({ email, password, method: 'local' });
+        props.signIn(email, password);
     }
 
     const responseFacebook = async (response) => {
-        // await console.log(response.accessToken);
-        await props.facebookLogin({ access_token: response.accessToken })
+        await console.log(response);
+        await props.signInFacebook(response.accessToken);
     }
 
     const responseGoogle = async (response) => {
         await console.log(response);
-        const googleUser = {
-            method: 'google',
-            email: response.profileObj.email,
-            id: response.profileObj.googleId,
-            name: response.profileObj.name,
-            imageUrl: response.profileObj.imageUrl,
-        }
-        await props.googleLogin(googleUser)
+        await props.signInGoogle(response.accessToken);
+        // const googleUser = {
+        //     method: 'google',
+        //     email: response.profileObj.email,
+        //     id: response.profileObj.googleId,
+        //     name: response.profileObj.name,
+        //     imageUrl: response.profileObj.imageUrl,
+        // }
+        // await props.signInGoogle(googleUser)
     }
 
     return (
@@ -95,20 +98,24 @@ function Login(props) {
                     icon={<i class="fab fa-facebook-f mr-2"></i>}
                     cssClass="btn btn-primary btn-block my-2"
                 />
+                <NavLink
+                    className="signUpLink"
+                    to='/signUp'
+                    exact>
+                    Don't have account? Sign up now
+                </NavLink>
             </form>
         </div>
     );
 }
 
 const mapStateToProps = state => ({
-    error: getLoginError(state),
-    pending: getLoginPending(state),
+    error: getSignInError(state),
+    pending: getSignInPending(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    postLogin: loginAction,
-    googleLogin: loginGoogleAction,
-    facebookLogin: loginFacebookAction
+    signIn, signInGoogle, signInFacebook
 }, dispatch)
 
 export default connect(

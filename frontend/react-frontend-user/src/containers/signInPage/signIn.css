@@ -1,0 +1,23 @@
+@media all and (min-width: 480px) {
+    .Login {
+        padding: 60px 20px;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .Login form {
+        margin: 0 auto;
+        padding: 50px 10px;
+        background-color: rgb(255, 255, 255);
+        max-width: 320px;
+        border: 2px solid #3d3d3d;
+        border-radius: 5px;
+    }
+
+    .Login form .signUpLink{
+        display: flex;
+        justify-content: center;
+    }
+}
