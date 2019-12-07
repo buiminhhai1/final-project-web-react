@@ -50,10 +50,7 @@ export function signIn(email, password) {
             email,
             password
         };
-        console.log(data);
-        
         let signInUrl = apiUrl + "/users/login";
-
         axios.post(signInUrl, data)
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
@@ -78,7 +75,7 @@ export function signIn(email, password) {
 export function signInGoogle(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
-        let signInGoogleUrl = apiUrl + "/login/googleOauth";
+        let signInGoogleUrl = apiUrl + "/users/login/oauth";
 
         axios.post(signInGoogleUrl, accessToken)
             .then(res => {
@@ -104,7 +101,7 @@ export function signInGoogle(accessToken) {
 export function signInFacebook(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
-        let signInFacebookUrl = apiUrl + "/login/facebookOauth";
+        let signInFacebookUrl = apiUrl + "/users/login/oauth";
 
         axios.post(signInFacebookUrl, accessToken)
             .then(res => {
@@ -119,7 +116,7 @@ export function signInFacebook(accessToken) {
 
                 dispatch(signInSuccess());
                 dispatch(checkAuthTimeout(res.data.expiresIn));
-            })
+               })
             .catch(err => {
                 console.log(err);
                 dispatch(signInFail(err));

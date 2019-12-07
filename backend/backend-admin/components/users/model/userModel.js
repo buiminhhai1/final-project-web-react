@@ -11,7 +11,11 @@ const userSchema = mongoose.Schema({
   },
   password: {
     type: String,
+<<<<<<< HEAD
+    require: false,
+=======
     require: true,
+>>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
   },
   gender: {
     type: String,
@@ -27,4 +31,8 @@ const userSchema = mongoose.Schema({
   },
 });
 
+<<<<<<< HEAD
 module.exports = mongoose.model('user', userSchema);
+=======
+module.exports = mongoose.model('user', userSchema);
+>>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962

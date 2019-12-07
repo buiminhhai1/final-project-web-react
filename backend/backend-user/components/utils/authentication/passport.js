@@ -38,6 +38,8 @@ const local = new LocalStrategy({
   passwordField: 'password'
 },
 (email, password, cb) => {
+
+  console.log(email+" " + password);
   return UserModel.findOne({ email})
     .then(user => {
       if (!user) {
