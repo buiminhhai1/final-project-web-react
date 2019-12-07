@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Facebook from '../Facebook/Facebook';
 import Google from '../Google/Google';
 import './Register.css';
+import { connect } from 'http2';
 
 class Register extends Component {
   constructor(props) {
@@ -95,7 +96,6 @@ class Register extends Component {
         className="Register"
       >
         <Form.Item label="E-mail">
-          {' '}
           {getFieldDecorator('email', {
             rules: [
               {
@@ -107,15 +107,15 @@ class Register extends Component {
                 message: 'Please input your E-mail!'
               }
             ]
-          })(<Input />)}{' '}
-        </Form.Item>{' '}
+          })(<Input />)}
+        </Form.Item>
         <Form.Item
           label={
             <span>
-              Username & nbsp;{' '}
+              Username & nbsp;
               <Tooltip title="What do you want others to call you?">
                 <Icon type="question-circle-o" />
-              </Tooltip>{' '}
+              </Tooltip>
             </span>
           }
         >
@@ -127,10 +127,9 @@ class Register extends Component {
                 whitespace: true
               }
             ]
-          })(<Input />)}{' '}
+          })(<Input />)}
         </Form.Item>
         <Form.Item label="Password" hasFeedback>
-          {' '}
           {getFieldDecorator('password', {
             rules: [
               {
@@ -141,10 +140,9 @@ class Register extends Component {
                 validator: this.validateToNextPassword
               }
             ]
-          })(<Input.Password />)}{' '}
-        </Form.Item>{' '}
+          })(<Input.Password />)}
+        </Form.Item>
         <Form.Item label="Confirm Password" hasFeedback>
-          {' '}
           {getFieldDecorator('confirm', {
             rules: [
               {
@@ -155,8 +153,8 @@ class Register extends Component {
                 validator: this.compareToFirstPassword
               }
             ]
-          })(<Input.Password onBlur={this.handleConfirmBlur} />)}{' '}
-        </Form.Item>{' '}
+          })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+        </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit">
             Register
@@ -176,9 +174,8 @@ class Register extends Component {
               textAlign: 'center'
             }}
           >
-            {' '}
-            {this.props.message}{' '}
-          </p>{' '}
+            {this.props.message}
+          </p>
         </div>
       );
     }
@@ -188,18 +185,33 @@ class Register extends Component {
       authRedirect = <Redirect to={this.props.authRedirectPath} />;
     }
     return (
-      <div class="Register">
+      <div className="Register">
         <h2>Register to with admin</h2>
         {authRedirect}
         {errorMessage}
         {myForm}
-        Or connect with <Facebook />
+        Or connect with
+        <Facebook />
         <Google />
       </div>
     );
   }
 }
 
-export default Form.create({
+const mapStateToProps = (state) => (
+  {
+    loading: state.auth.loading,
+    error: state.auth.error,
+    message: state.auth.message,
+    isRegisterSuccess: state.auth.isRegisterSuccess,
+    loginRedirectPath: state.auth.loginRedirectPath
+  }
+);
+
+const mapDispatchToProps = (dispatch) => (
+  onRegister: (email, password) => dispatch(actions.auth(email, password, isSignup))   
+)
+
+export default connect(mapStateToProps)(mapDispatchToProps) (Form.create({
   name: 'register'
-})(Register);
+})(Register));

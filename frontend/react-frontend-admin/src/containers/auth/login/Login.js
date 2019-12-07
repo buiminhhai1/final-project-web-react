@@ -32,18 +32,11 @@ class Login extends Component {
             ]
           })(
             <Input
-              prefix={
-                <Icon
-                  type="user"
-                  style={{
-                    color: 'rgba(0,0,0,.25)'
-                  }}
-                />
-              }
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Email"
             />
-          )}{' '}
-        </Form.Item>{' '}
+          )}
+        </Form.Item>
         <Form.Item>
           {' '}
           {getFieldDecorator('password', {
@@ -55,28 +48,21 @@ class Login extends Component {
             ]
           })(
             <Input
-              prefix={
-                <Icon
-                  type="lock"
-                  style={{
-                    color: 'rgba(0,0,0,.25)'
-                  }}
-                />
-              }
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Password"
             />
-          )}{' '}
-        </Form.Item>{' '}
+          )}
+        </Form.Item>
         <Form.Item>
           {' '}
           {getFieldDecorator('remember', {
             valuePropName: 'checked',
             initialValue: true
-          })(<Checkbox> Remember me </Checkbox>)}{' '}
+          })(<Checkbox> Remember me </Checkbox>)}
           <NavLink className="login-form-forgot" to="/">
-            Forgot password{' '}
-          </NavLink>{' '}
+            Forgot password
+          </NavLink>
           <Button
             type="primary"
             htmlType="submit"
@@ -84,15 +70,19 @@ class Login extends Component {
           >
             Log in
           </Button>
-          Or <NavLink to="/admin/register"> register now! </NavLink>{' '}
-        </Form.Item>{' '}
+          Or
+          <NavLink to="/admin/register"> register now! </NavLink>
+        </Form.Item>
       </Form>
     );
     return (
       <div className="login">
         <h2>Login with Admin rule</h2>
         {form}
-        Connect with <Facebook /> Or <Google />
+        Connect with
+        <Facebook />
+        Or
+        <Google />
       </div>
     );
   }
