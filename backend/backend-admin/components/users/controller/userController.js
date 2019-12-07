@@ -5,7 +5,8 @@ const passport = require('passport');
 const UserModel = require('../model/userModel');
 const constant = require('../../utils/const/constant');
 
-exports.login = (req, res, next) => {
+
+exports.login = (req, res) => {
   passport.authenticate('local', {
     session: false
   }, (err, user, info) => {
@@ -36,7 +37,7 @@ exports.login = (req, res, next) => {
         expiresIn: 15 * 60
       });
     });
-  })(req, res, next);
+  })(req, res);
 };
 
 exports.register = async (req, res) => {
@@ -45,7 +46,7 @@ exports.register = async (req, res) => {
     password,
     name,
     gender,
-    role
+    rule,
   } = req.body;
 
   if (email.length === 0 || password.length === 0) {
@@ -64,24 +65,27 @@ exports.register = async (req, res) => {
     }
     const saltValue = await bcrypt.genSalt(10);
 
-    bcrypt.hash(password, saltValue, async (error, hash) => {
-      if (!error) {
-        const newUser = new UserModel({
-          email,
-          name,
-          password: hash,
-          gender,
-          role
+    bcrypt.getSalt(10, async (err, salt) => {
+      if (!err) {
+        bcrypt.hash(password, salt, async (error, hash) => {
+          if (!error) {
+            const newUser = new UserModel({
+              email,
+              name,
+              password: hash,
+              gender,
+              rule
+            });
+            const result = await newUser.save();
+            if (!!result) {
+              return res.json({
+                message: `Register user with email: ${email} successed!`
+              });
+            }
+          }
         });
-        const result = await newUser.save();
-        if (!!result) {
-          return res.json({
-            message: `Register user with email: ${email} successed!`
-          });
-        }
       }
     });
-
   } catch (err) {
     return res.json({
       message: 'something went wrong!'

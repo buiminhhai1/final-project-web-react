@@ -9,12 +9,15 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 
 const app = express();
-var mongoose = require('mongoose');
-const bodyParser = require("body-parser");
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-})); 
+app.use(
+  bodyParser.urlencoded({
+    // to support URL-encoded bodies
+    extended: true
+  })
+);
 
 const passport = require('passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -22,7 +25,7 @@ app.use(passport.initialize());
 require('./components/utils/authentication/passport');
 
 var uri = dbInfo.CONNECTION_STRING;
-mongoose.connect(uri, {useNewUrlParser: true,useUnifiedTopology: true});
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -36,17 +39,19 @@ app.set('view engine', 'ejs');
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: false
-}));
+app.use(
+  express.urlencoded({
+    extended: false
+  })
+);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.get('/me',passport.authenticate('jwt'),(req,res,next)=>{
-  res.send({ 'info':req.user.user});
-})
+app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
+  res.send({ info: req.user.user });
+});
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
