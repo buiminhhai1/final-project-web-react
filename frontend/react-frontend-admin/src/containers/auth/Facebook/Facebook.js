@@ -29,7 +29,7 @@ class Facebook extends Component {
         <FacebookLogin
           textButton="Continue with Facebook"
           size="small"
-          appId="444158143149682"
+          appId="2483517738600678"
           autoLoad={false}
           fields="name,email,picture"
           onClick={this.componentClicked}

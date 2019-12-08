@@ -1,10 +1,10 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
 
-export const selectedTab = (tabNum) => ({
+export const selectedTab = tabNum => ({
   type: actionTypes.SELECTED_TAB,
   tabNum
-})
+});
 
 export const refreshLogin = () => ({
   type: actionTypes.LOGIN_REFRESH
@@ -63,8 +63,8 @@ export const login = (email, password) => dispatch => {
         );
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('expirationDate', expirationDate);
-        localStorage.setItem('userId', response.data.user._id);
-        dispatch(loginSuccess(response.data.token, response.data.user._id));
+        localStorage.setItem('userId', response.data.user.userId);
+        dispatch(loginSuccess(response.data.token, response.data.user.userId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       } else {
         dispatch(loginFail('Tên đăng nhập hoặc mật khẩu chưa đúng'));

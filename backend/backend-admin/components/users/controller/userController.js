@@ -1,19 +1,23 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-
+const mongoose = require('mongoose');
 const UserModel = require('../model/userModel');
 const constant = require('../../utils/const/constant');
 
 exports.login = (req, res, next) => {
-  passport.authenticate('local', { session: false }, (err, user, info) => {
+  passport.authenticate('local', {
+    session: false
+  }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
         message: info ? info.message : 'Đăng nhập thất bại',
         user
       });
     }
-    req.login(user, { session: false }, err2 => {
+    req.login(user, {
+      session: false
+    }, err2 => {
       if (err2) {
         res.json({
           message: 'Đăng nhập thất bại',
@@ -24,6 +28,7 @@ exports.login = (req, res, next) => {
         expiresIn: '15m'
       });
       const newUser = {
+        userId: user._id,
         name: user.name
       };
       return res.json({
@@ -36,7 +41,11 @@ exports.login = (req, res, next) => {
 };
 
 exports.register = async (req, res, next) => {
-  const { email, password, name } = req.body;
+  const {
+    email,
+    password,
+    name
+  } = req.body;
 
   if (email.length === 0 || password.length === 0) {
     res.json({
@@ -57,6 +66,7 @@ exports.register = async (req, res, next) => {
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err1, hash) => {
           const user = new UserModel({
+            _id: new mongoose.Types.ObjectId(),
             email,
             name,
             password: hash
@@ -88,7 +98,12 @@ exports.register = async (req, res, next) => {
 };
 
 exports.OAuthRegister = async (req, res) => {
-  const { email, token, name, role } = req.body;
+  const {
+    email,
+    token,
+    name,
+    role
+  } = req.body;
 
   if (
     email.length === 0 ||
@@ -129,7 +144,12 @@ exports.OAuthRegister = async (req, res) => {
 };
 
 exports.OAuthLogin = async (req, res, next) => {
-  const { email, token, name, role } = req.body;
+  const {
+    email,
+    token,
+    name,
+    role
+  } = req.body;
 
   const user = await UserModel.findOne({
     email

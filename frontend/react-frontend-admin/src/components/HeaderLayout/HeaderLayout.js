@@ -12,16 +12,16 @@ const HeaderLayout = props => {
     <Menu
       theme="dark"
       mode="horizontal"
-      defaultSelectedKeys={[props.tabNum + '']}
+      defaultSelectedKeys={[props.tabNum]}
       style={{
         lineHeight: '64px',
         textAlign: 'right'
       }}
     >
-      <Menu.Item key="2">
+      <Menu.Item key="1">
         <NavLink to="/admin/login"> Login </NavLink>
       </Menu.Item>
-      <Menu.Item key="3">
+      <Menu.Item key="2">
         <NavLink to="/admin/register"> Register </NavLink>
       </Menu.Item>
     </Menu>
@@ -40,7 +40,7 @@ const HeaderLayout = props => {
         <Menu.Item key="1">
           <NavLink to="/"> HomePage </NavLink>
         </Menu.Item>
-        <Menu.Item key="4">
+        <Menu.Item key="2">
           <NavLink to="/admin/logout"> Logout </NavLink>
         </Menu.Item>
       </Menu>

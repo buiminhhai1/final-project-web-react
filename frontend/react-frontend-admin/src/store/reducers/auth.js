@@ -1,8 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 
-import {
-  updateObject
-} from '../../shared/utility';
+import { updateObject } from '../../shared/utility';
 
 const initialState = {
   token: null,
@@ -16,7 +14,7 @@ const initialState = {
   loginRedirectPath: '',
   emailRegister: null,
   registerSuccess: false,
-  tabNum: '2'
+  tabNum: '1'
 };
 const selectedTab = (state, action) =>
   updateObject(state, {
@@ -49,7 +47,7 @@ const registerSuccess = (state, action) =>
     loading: false,
     loginRedirectPath: '/admin/login',
     emailRegister: action.email,
-    tabNum: '2'
+    tabNum: '1'
   });
 
 const registerFail = (state, action) =>
@@ -88,7 +86,7 @@ const authLogout = state =>
   updateObject(state, {
     token: null,
     userId: null,
-    tabNum: '2'
+    tabNum: '1'
   });
 
 const setAuthRedirectPath = (state, action) =>
@@ -121,6 +119,7 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.AUTH_LOGOUT:
       return authLogout(state);
+
     case actionTypes.SET_AUTH_REDIRECT_PATH:
       return setAuthRedirectPath(state, action);
     default:
