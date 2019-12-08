@@ -28,14 +28,14 @@ class Google extends Component {
       ggContent = (
         <GoogleLogin
           clientId="520556548555-saaoeeulltifvrmilmhag3ds6u19rjt9.apps.googleusercontent.com"
-          buttonText="Login with Google"
+          buttonText="Continue with Google"
           onSuccess={this.responseGoogle}
           onFailure={this.responseGoogle}
           cookiePolicy={'single_host_origin'}
         />
       );
     }
-    return <div className={classes.Facebook}> {ggContent} </div>;
+    return <div className={classes.Google}>{ggContent}</div>;
   }
 }
 

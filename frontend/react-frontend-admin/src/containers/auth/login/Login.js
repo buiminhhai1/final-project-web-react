@@ -1,11 +1,13 @@
 import 'antd/dist/antd.css';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Spin, message } from 'antd';
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-
+import { NavLink, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions/index';
 import './Login.css';
 import Facebook from '../Facebook/Facebook';
 import Google from '../Google/Google';
+import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 
 class Login extends Component {
   handleSubmit = e => {
@@ -13,13 +15,22 @@ class Login extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        this.props.onLogin(values.email, values.password);
       }
     });
   };
 
   render() {
+    let errorMessage = null;
+    if (this.props.error) {
+      errorMessage = message.error(this.props.message);
+    }
+    let authRedirect = null;
+    if (!!this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
+    }
     const { getFieldDecorator } = this.props.form;
-    const form = (
+    let form = (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <Form.Item>
           {' '}
@@ -34,6 +45,8 @@ class Login extends Component {
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Email"
+              type="email"
+              onChange={this.props.onRefresh}
             />
           )}
         </Form.Item>
@@ -51,6 +64,7 @@ class Login extends Component {
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Password"
+              onChange={this.props.onRefresh}
             />
           )}
         </Form.Item>
@@ -75,19 +89,37 @@ class Login extends Component {
         </Form.Item>
       </Form>
     );
+    if (this.props.loading) {
+      form = <Spin size="large" />;
+    }
+
     return (
-      <div className="login">
-        <h2>Login with Admin rule</h2>
+      <Auxiliary>
+        <h2 className="login">Login with Admin rule</h2>
+        {authRedirect}
+        {errorMessage}
         {form}
-        Connect with
         <Facebook />
-        Or
         <Google />
-      </div>
+      </Auxiliary>
     );
   }
 }
 
-export default Form.create({
-  name: 'login'
-})(Login);
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+  error: state.auth.errorLogin,
+  message: state.auth.messageLogin,
+  isAuthenticated: state.auth.token,
+  authRedirectPath: state.auth.authRedirectPath
+});
+
+const mapDispatchToProps = dispatch => ({
+  onLogin: (email, password) => dispatch(actions.login(email, password)),
+  onRefresh: () => dispatch(actions.refreshLogin())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Form.create({ name: 'login' })(Login));

@@ -27,6 +27,8 @@ class Facebook extends Component {
     } else {
       fbContent = (
         <FacebookLogin
+          textButton="Continue with Facebook"
+          size="small"
           appId="444158143149682"
           autoLoad={false}
           fields="name,email,picture"
@@ -35,7 +37,7 @@ class Facebook extends Component {
         />
       );
     }
-    return <div className={classes.Facebook}> {fbContent} </div>;
+    return <div className={classes.Facebook}>{fbContent}</div>;
   }
 }
 

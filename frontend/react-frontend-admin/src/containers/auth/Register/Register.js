@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Tooltip, Icon } from 'antd';
+import { Form, Input, Button, Tooltip, Icon, message, Spin } from 'antd';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions/index';
 import Facebook from '../Facebook/Facebook';
 import Google from '../Google/Google';
 import './Register.css';
-import { connect } from 'http2';
 
 class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmDirty: false
+      confirmDirty: false,
+      email: null
     };
   }
 
@@ -21,11 +23,8 @@ class Register extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        const isSignup = {
-          value: true,
-          username: values.username
-        };
-        this.props.onAuth(values.email, values.password, isSignup);
+        this.setState({ email: values.email });
+        this.props.onRegister(values.email, values.password, values.fullname);
       }
     });
   };
@@ -47,6 +46,7 @@ class Register extends Component {
   };
 
   validateToNextPassword = (rule, value, callback) => {
+    this.props.onRefresh();
     const { form } = this.props;
     if (value && this.state.confirmDirty) {
       form.validateFields(['confirm'], {
@@ -61,35 +61,35 @@ class Register extends Component {
     const formItemLayout = {
       labelCol: {
         xs: {
-          span: 8
+          span: 9
         },
         sm: {
-          span: 8
+          span: 9
         }
       },
       wrapperCol: {
         xs: {
-          span: 8
+          span: 6
         },
         sm: {
-          span: 8
+          span: 6
         }
       }
     };
     const tailFormItemLayout = {
       wrapperCol: {
         xs: {
-          span: 24,
+          span: 12,
           offset: 0
         },
         sm: {
-          span: 16,
+          span: 12,
           offset: 8
         }
       }
     };
 
-    const myForm = (
+    let myForm = (
       <Form
         {...formItemLayout}
         onSubmit={this.handleSubmit}
@@ -107,23 +107,23 @@ class Register extends Component {
                 message: 'Please input your E-mail!'
               }
             ]
-          })(<Input />)}
+          })(<Input onChange={this.props.onRefresh} />)}
         </Form.Item>
         <Form.Item
           label={
             <span>
-              Username & nbsp;
+              Full name
               <Tooltip title="What do you want others to call you?">
                 <Icon type="question-circle-o" />
               </Tooltip>
             </span>
           }
         >
-          {getFieldDecorator('username', {
+          {getFieldDecorator('fullname', {
             rules: [
               {
                 required: true,
-                message: 'Please input your Username!',
+                message: 'Please input your Fullname!',
                 whitespace: true
               }
             ]
@@ -163,55 +163,55 @@ class Register extends Component {
       </Form>
     );
 
+    if (this.props.loading) {
+      myForm = <Spin size="large" />;
+    }
     let errorMessage = null;
     if (this.props.error) {
-      errorMessage = (
-        <div>
-          <p
-            style={{
-              color: 'Red',
-              background: 'gray',
-              textAlign: 'center'
-            }}
-          >
-            {this.props.message}
-          </p>
-        </div>
-      );
+      errorMessage = message.error(this.props.message);
     }
 
-    let authRedirect = null;
-    if (this.props.isRegisterSuccess && !this.props.message) {
-      authRedirect = <Redirect to={this.props.authRedirectPath} />;
+    let loginRedirect = null;
+    if (
+      this.props.emailRegister &&
+      this.state.email === this.props.emailRegister
+    ) {
+      loginRedirect = <Redirect to={this.props.loginRedirectPath} />;
     }
     return (
       <div className="Register">
         <h2>Register to with admin</h2>
-        {authRedirect}
+        {loginRedirect}
         {errorMessage}
         {myForm}
-        Or connect with
+        Connect with
         <Facebook />
+        Or
         <Google />
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => (
-  {
-    loading: state.auth.loading,
-    error: state.auth.error,
-    message: state.auth.message,
-    isRegisterSuccess: state.auth.isRegisterSuccess,
-    loginRedirectPath: state.auth.loginRedirectPath
-  }
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+  error: state.auth.errorRegister,
+  message: state.auth.messageRegister,
+  emailRegister: state.auth.emailRegister,
+  loginRedirectPath: state.auth.loginRedirectPath
+});
+
+const mapDispatchToProps = dispatch => ({
+  onRegister: (email, password, name) =>
+    dispatch(actions.register(email, password, name)),
+  onRefresh: () => dispatch(actions.refreshRegister())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  Form.create({
+    name: 'register'
+  })(Register)
 );
-
-const mapDispatchToProps = (dispatch) => (
-  onRegister: (email, password) => dispatch(actions.auth(email, password, isSignup))   
-)
-
-export default connect(mapStateToProps)(mapDispatchToProps) (Form.create({
-  name: 'register'
-})(Register));

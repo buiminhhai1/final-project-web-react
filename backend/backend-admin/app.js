@@ -4,13 +4,18 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
+require('./components/utils/authentication/passport');
+const dbInfo = require('./components/utils/const/constant');
 
+const uri = dbInfo.CONNECTION_STRING;
 const app = express();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -19,16 +24,13 @@ app.use(
   })
 );
 
-const passport = require('passport');
-const dbInfo = require('./components/utils/const/constant');
-app.use(passport.initialize());
-require('./components/utils/authentication/passport');
-
-var uri = dbInfo.CONNECTION_STRING;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-var db = mongoose.connection;
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.once('open', () => {
   console.log('database connected');
 });
 
@@ -48,9 +50,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/admin', usersRouter);
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
-  res.send({ info: req.user.user });
+  res.send({
+    info: req.user.user
+  });
 });
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

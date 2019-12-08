@@ -5,31 +5,26 @@ const passport = require('passport');
 const UserModel = require('../model/userModel');
 const constant = require('../../utils/const/constant');
 
-
-exports.login = (req, res) => {
-  passport.authenticate('local', {
-    session: false
-  }, (err, user, info) => {
+exports.login = (req, res, next) => {
+  passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
-        message: info ? info.message : 'Login has failed!',
+        message: info ? info.message : 'Đăng nhập thất bại',
         user
       });
     }
-    req.login(user, {
-      session: false
-    }, (error) => {
-      if (!!error) {
-        res.send(error);
+    req.login(user, { session: false }, err2 => {
+      if (err2) {
+        res.json({
+          message: 'Đăng nhập thất bại',
+          user: ''
+        });
       }
       const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
         expiresIn: '15m'
       });
       const newUser = {
-        name: user.name,
-        gennder: user.gender,
-        picture: user.picture,
-        rule: user.rule
+        name: user.name
       };
       return res.json({
         user: newUser,
@@ -40,70 +35,67 @@ exports.login = (req, res) => {
   })(req, res);
 };
 
-exports.register = async (req, res) => {
-  const {
-    email,
-    password,
-    name,
-    gender,
-    rule,
-  } = req.body;
+exports.register = async (req, res, next) => {
+  const { email, password, name } = req.body;
 
   if (email.length === 0 || password.length === 0) {
-    return res.json({
-      message: 'Username or password must not null :))'
+    res.json({
+      message: 'Thông tin người dùng không được để trống'
     });
   }
+
   try {
-    const user = await UserModel.findOne({
+    const resultUser = await UserModel.findOne({
       email
     });
-    if (!!user) {
+    if (resultUser) {
       return res.json({
-        message: `email: ${email} has already exsit`
+        message: `email: ${email} đã tồn tại`,
+        email: ''
+      });
+    } else {
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err1, hash) => {
+          const user = new UserModel({
+            email,
+            name,
+            password: hash
+          });
+
+          user
+            .save()
+            .then(result => {
+              if (!!result) {
+                return res.json({
+                  email,
+                  message: `Đăng kí email: ${email} thành công!`
+                });
+              }
+            })
+            .catch(error1 => {
+              res.json({
+                message: `something wrong! ${error1}`
+              });
+            });
+        });
       });
     }
-    const saltValue = await bcrypt.genSalt(10);
-
-    bcrypt.getSalt(10, async (err, salt) => {
-      if (!err) {
-        bcrypt.hash(password, salt, async (error, hash) => {
-          if (!error) {
-            const newUser = new UserModel({
-              email,
-              name,
-              password: hash,
-              gender,
-              rule
-            });
-            const result = await newUser.save();
-            if (!!result) {
-              return res.json({
-                message: `Register user with email: ${email} successed!`
-              });
-            }
-          }
-        });
-      }
-    });
-  } catch (err) {
-    return res.json({
-      message: 'something went wrong!'
+  } catch (error) {
+    res.json({
+      message: `some thing went wrong ${error}`
     });
   }
 };
 
-
-
 exports.OAuthRegister = async (req, res) => {
-  const {
-    email,
-    token,
-    name,
-    role
-  } = req.body;
+  const { email, token, name, role } = req.body;
 
-  if (email.length === 0 || token.length === 0 || role.length === 0 || name.length === 0) {
+  if (
+    email.length === 0 ||
+    token.length === 0 ||
+    role.length === 0 ||
+    name.length === 0
+  ) {
     return res.json({
       message: 'Something wrong'
     });
@@ -129,8 +121,6 @@ exports.OAuthRegister = async (req, res) => {
         message: `Register user with email: ${email} successed!`
       });
     }
-
-
   } catch (err) {
     return res.json({
       message: 'something went wrong!'
@@ -138,21 +128,15 @@ exports.OAuthRegister = async (req, res) => {
   }
 };
 
-
-
 exports.OAuthLogin = async (req, res, next) => {
-  const {
-    email,
-    token,
-    name,
-    role
-  } = req.body;
+  const { email, token, name, role } = req.body;
 
   const user = await UserModel.findOne({
     email
   });
+
   if (!!user) {
-    const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
+    const tokenResult = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
       expiresIn: '15m'
     });
     const newUser = {
@@ -162,12 +146,12 @@ exports.OAuthLogin = async (req, res, next) => {
     };
     return res.json({
       user: newUser,
-      token,
+      tokenResult,
       expiresIn: 15 * 60
     });
-  } else {
-    return res.json({
-      message: 'something went wrong!'
-    });
   }
+
+  res.json({
+    message: 'something went wrong!'
+  });
 };
