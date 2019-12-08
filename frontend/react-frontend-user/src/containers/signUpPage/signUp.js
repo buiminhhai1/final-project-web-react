@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { FormGroup, FormControl, FormLabel, Button, Alert } from "react-bootstrap";
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import "./signUp.css";
 import { signUp } from '../../store/actions/auth';
-import { getAuthError, getAuthPending } from "../../store/reducers/auth";
+import { getAuthError, getAuthPending, getAuthToken, getAuthRedirectPage } from "../../store/reducers/auth";
 
 function SignUp(props) {
     const [email, setEmail] = useState("");
@@ -27,13 +28,17 @@ function SignUp(props) {
         props.signUp(email, password, name);
     }
 
+    if (props.token != null) {
+        return <Redirect to={props.redirectPage} />
+    }
+
     return (
         <div className="Signup">
             <form onSubmit={handleSubmit}>
-                {props.error && <Alert variant='danger'>
-                    Something wrong happened!!!
+                {props.error && <Alert variant='danger' className="text-center">
+                    {props.error}
                 </Alert>}
-                <FormGroup controlId="email" bsSize="large">
+                <FormGroup controlId="email">
                     <FormLabel>Email</FormLabel>
                     <FormControl
                         autoFocus
@@ -42,7 +47,7 @@ function SignUp(props) {
                         onChange={e => setEmail(e.target.value)}
                     />
                 </FormGroup>
-                <FormGroup controlId="name" bsSize="large">
+                <FormGroup controlId="name">
                     <FormLabel>Name</FormLabel>
                     <FormControl
                         type="text"
@@ -50,7 +55,7 @@ function SignUp(props) {
                         onChange={e => setName(e.target.value)}
                     />
                 </FormGroup>
-                <FormGroup controlId="password" bsSize="large">
+                <FormGroup controlId="password">
                     <FormLabel>Password</FormLabel>
                     <FormControl
                         type="password"
@@ -58,7 +63,7 @@ function SignUp(props) {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </FormGroup>
-                <FormGroup controlId="confirmPassword" bsSize="large">
+                <FormGroup controlId="confirmPassword">
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl
                         type="password"
@@ -66,17 +71,11 @@ function SignUp(props) {
                         value={confirmPassword}
                     />
                 </FormGroup>
-                <Button block bsSize="large"
-                    disabled={!validateForm()}
+                <Button block
+                    disabled={!validateForm() || props.pending}
                     type="submit"
                     variant="primary">
-                    REGISTER AS TUTOR
-                </Button>
-                <Button block bsSize="large"
-                    disabled={!validateForm()}
-                    type="submit"
-                    variant="warning">
-                    REGISTER AS STUDENT
+                    {props.pending ? "Loading" : "REGISTER"}
                 </Button>
             </form>
         </div>
@@ -86,6 +85,8 @@ function SignUp(props) {
 const mapStateToProps = state => ({
     error: getAuthError(state),
     pending: getAuthPending(state),
+    token: getAuthToken(state),
+    redirectPage: getAuthRedirectPage(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -5,6 +5,8 @@ const initialState = {
     user: null,
     error: null,
     pending: false,
+    redirectToPage: '',
+    isAuthenticated: false
 }
 
 export default function authReducer(state = initialState, action) {
@@ -19,7 +21,8 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 pending: false,
                 user: action.user,
-                token: action.token
+                token: action.token,
+                redirectToPage: '/'
             }
         case actionTypes.SIGNIN_ERROR:
             return {
@@ -37,13 +40,24 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 pending: false,
                 user: action.user,
-                token: action.token
+                token: action.token,
+                redirectToPage: '/'
             }
         case actionTypes.SIGNUP_ERROR:
             return {
                 ...state,
                 pending: false,
                 error: action.error
+            }
+        case actionTypes.LOGOUT:
+            return {
+                ...state,
+                token: null,
+                user: null,
+                error: null,
+                pending: false,
+                redirectToPage: '',
+                isAuthenticated: false
             }
 
         default:
@@ -53,3 +67,5 @@ export default function authReducer(state = initialState, action) {
 
 export const getAuthPending = state => state.authReducer.pending;
 export const getAuthError = state => state.authReducer.error;
+export const getAuthToken = state => state.authReducer.token;
+export const getAuthRedirectPage = state => state.authReducer.redirectToPage;

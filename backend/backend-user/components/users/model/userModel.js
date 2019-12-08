@@ -6,18 +6,17 @@ const userSchema = mongoose.Schema({
     enum: ['local', 'google', 'facebook'],
     required: true
   },
-  role: {
-    type: String,
-    enum: ['tutor', 'student'],
+  isTeacher: {
+    type: Boolean,
     required: true
   },
   imageUrl: {
     type: String,
-    require: false,
+    require: true,
   },
   local: {
     name: String,
-    emailAddress: {
+    email: {
       type: String,
       lowercase: true,
     },

@@ -19,12 +19,17 @@ const asyncTutorRegister = AsyncComponent(() => {
   return import('./containers/tutorInfoRegister/tutorInfoRegister');
 })
 
+const asyncLogOut = AsyncComponent(() => {
+  return import('./containers/logOut/logOut');
+})
+
 function App() {
   const routes = (
     <Switch>
       <Route exact path="/" component={asyncTutorRegister}></Route>
       <Route path="/signIn" component={asyncSignIn}></Route>
       <Route path="/signUp" component={asyncSignUp}></Route>
+      <Route path="/logout" component={asyncLogOut}></Route>
       {/* <Route path="/profile" component={Profile}></Route> */}
     </Switch>
   )
