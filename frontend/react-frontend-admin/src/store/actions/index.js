@@ -1,5 +1,6 @@
 export {
   login,
+  signInOauth,
   logout,
   register,
   setAuthRedirectPath,

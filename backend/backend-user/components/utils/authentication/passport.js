@@ -1,15 +1,20 @@
 const constant = require('../const/constant');
 const passport = require('passport');
-const jwtExtension = require('jwt-simple');
 const passportJWT = require("passport-jwt");
 const passportLocal = require('passport-local');
 const bcrypt = require('bcryptjs');
-// const passportFacebook = require('passport-facebook');
+const facebookStrategy = require('passport-facebook-token');
+
 const LocalStrategy = passportLocal.Strategy;
-// const FacebookStrategy = passportFacebook.Strategy;
-const JWTStrategy   = passportJWT.Strategy;
+const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
+
 const UserModel = require('../../users/model/userModel');
+
+require('dotenv').config();
+const facebookClientId = process.env.FACEBOOK_CLIENT_ID;
+const facebookClientSecret = process.env.FACEBOOK_CLIENT_SECRET;
+
 passport.serializeUser((user, done) => {
   done(null, user);
 });
@@ -21,39 +26,79 @@ const jwt = new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: constant.JWT_SECRET
 },
-(jwtPayload, cb) => {
-  return UserModel.findOne({'email':jwtPayload.email})
-    .then(user => {
-      return cb(null, {
-        message: 'success',
-        user: user});
-    })
-    .catch(err => {
-      return cb(err);
-    });
+  (jwtPayload, cb) => {
+    return UserModel.findOne({ 'local.email': jwtPayload.email })
+      .then(user => {
+        return cb(null, {
+          message: 'success',
+          user: user
+        });
+      })
+      .catch(err => {
+        return cb(err);
+      });
   }
 );
+
 const local = new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password'
 },
-(email, password, cb) => {
-
-  console.log(email+" " + password);
-  return UserModel.findOne({ email})
-    .then(user => {
-      if (!user) {
-        return cb(null, false, { message: 'Incorrect email or password.' });
-      }
-      bcrypt.compare(password, user.password, (err, res) => { // so sánh mật khẩu (pass chưa hash và pash đã hash)
-        if (res) { // mat khau dung
-          return cb(null, user, { 'message': 'Đăng nhập thành công' });
+  (email, password, cb) => {
+    return UserModel.findOne({ "local.email": email })
+      .then(user => {
+        if (!user) {
+          return cb(null, false, { message: 'Incorrect email or password.' });
         }
-        return cb(null, false, { message: 'Incorrect email or password.' });
-      });
-    })
-    .catch(err => cb(err));
+        bcrypt.compare(password, user.local.password, (err, res) => { // so sánh mật khẩu (pass chưa hash và pash đã hash)
+          if (res) { // mat khau dung
+            return cb(null, user, { message: 'Sign in success' });
+          }
+          return cb(null, false, { message: 'Incorrect email or password.' });
+        });
+      })
+      .catch(err => cb(err));
   }
 );
+
+// Facebook strategy
+const facebook = new facebookStrategy({
+  clientID: facebookClientId,
+  clientSecret: facebookClientSecret
+}, async (accessToken, refreshToken, profile, cb) => {
+  // console.log("accessToken", accessToken);
+  // console.log("refreshToken", refreshToken);
+  // console.log("profile", profile);
+
+  // Check existed user
+  UserModel.findOne({ "facebook.id": profile.id })
+    .then(user => {
+      if (user) {
+        return cb(null, user, { message: 'Sign in success' });
+      }
+
+      // Create new account
+      const newUser = new UserModel({
+        method: 'facebook',
+        facebook: {
+          id: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+        },
+        imageUrl: profile.photos[0].value,
+        isTeacher: false
+      });
+      newUser.save()
+        .then(user => {
+          return cb(null, user, { message: 'Sign in success' });
+        })
+        .catch(err => {
+          cb(null, false, { message: err.errmsg });
+        });
+    })
+    .catch(err => cb(err));
+});
+
 passport.use(jwt);
 passport.use(local);
+passport.use('facebook', facebook);

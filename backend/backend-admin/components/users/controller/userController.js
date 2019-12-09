@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const mongoose = require('mongoose');
+
 const UserModel = require('../model/userModel');
 const constant = require('../../utils/const/constant');
 
@@ -97,81 +98,110 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.OAuthRegister = async (req, res) => {
+exports.facebookLogin = async (req, res, next) => {
   const {
     email,
-    token,
     name,
-    role
+    picture,
+    id,
+    accessToken
   } = req.body;
-
-  if (
-    email.length === 0 ||
-    token.length === 0 ||
-    role.length === 0 ||
-    name.length === 0
-  ) {
+  if (!accessToken) {
     return res.json({
-      message: 'Something wrong'
+      error: 'Cannot signing with Facebook!'
     });
   }
   try {
-    const user = await UserModel.findOne({
+    const isUser = await UserModel.findOne({
       email
     });
-    if (!!user) {
-      return res.json({
-        message: `email: ${email} has already exsit`
+    if (!!isUser) {
+      if (!isUser.idFacebook) {
+        isUser.idFacebook = id;
+        await isUser.save();
+      }
+      res.json({
+        user: isUser,
+        token: accessToken,
+        expiresIn: 15 * 60
       });
-    }
-
-    const newUser = new UserModel({
-      email,
-      name,
-      role
-    });
-    const result = await newUser.save();
-    if (!!result) {
-      return res.json({
-        message: `Register user with email: ${email} successed!`
+    } else {
+      const newUser = new UserModel({
+        _id: new mongoose.Types.ObjectId(),
+        idFacebook: id,
+        email,
+        name,
+        picture,
+      });
+      await newUser.save();
+      res.json({
+        user: {
+          userId: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          picture: newUser.picture
+        },
+        token: accessToken,
+        expiresIn: 15 * 60
       });
     }
   } catch (err) {
     return res.json({
-      message: 'something went wrong!'
+      err
     });
   }
 };
 
-exports.OAuthLogin = async (req, res, next) => {
+exports.googleLogin = async (req, res, next) => {
   const {
     email,
-    token,
     name,
-    role
+    picture,
+    id,
+    accessToken
   } = req.body;
-
-  const user = await UserModel.findOne({
-    email
-  });
-
-  if (!!user) {
-    const tokenResult = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-      expiresIn: '15m'
-    });
-    const newUser = {
-      name: user.name,
-      email: user.email,
-      role: user.role
-    };
+  if (!accessToken) {
     return res.json({
-      user: newUser,
-      tokenResult,
-      expiresIn: 15 * 60
+      error: 'Cannot signing with Facebook!'
     });
   }
-
-  res.json({
-    message: 'something went wrong!'
-  });
+  try {
+    const isUser = await UserModel.findOne({
+      email,
+    });
+    if (!!isUser) {
+      if (!isUser.idGoogle) {
+        isUser.idGoogle = id;
+        await isUser.save();
+      }
+      res.json({
+        user: isUser,
+        token: accessToken,
+        expiresIn: 15 * 60
+      });
+    } else {
+      const newUser = new UserModel({
+        _id: new mongoose.Types.ObjectId(),
+        idGoogle: id,
+        email,
+        name,
+        picture,
+      });
+      await newUser.save();
+      res.json({
+        user: {
+          userId: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          picture: newUser.picture
+        },
+        token: accessToken,
+        expiresIn: 15 * 60
+      });
+    }
+  } catch (err) {
+    return res.json({
+      err
+    });
+  }
 };

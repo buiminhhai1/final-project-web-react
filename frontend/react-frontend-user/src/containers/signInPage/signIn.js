@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel, Alert } from "react-bootstrap";
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom'
+import { NavLink, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 
-import { getAuthError, getAuthPending } from "../../store/reducers/auth";
+import { getAuthError, getAuthPending, getAuthToken, getAuthRedirectPage } from "../../store/reducers/auth";
 import { signIn, signInFacebook, signInGoogle } from '../../store/actions/auth';
 
 import "./signIn.css";
@@ -38,14 +38,10 @@ function Login(props) {
     const responseGoogle = async (response) => {
         await console.log(response);
         await props.signInGoogle(response.accessToken);
-        // const googleUser = {
-        //     method: 'google',
-        //     email: response.profileObj.email,
-        //     id: response.profileObj.googleId,
-        //     name: response.profileObj.name,
-        //     imageUrl: response.profileObj.imageUrl,
-        // }
-        // await props.signInGoogle(googleUser)
+    }
+
+    if (props.token != null) {
+        return <Redirect to={props.redirectPage} />
     }
 
     return (
@@ -54,7 +50,7 @@ function Login(props) {
                 {props.error && <Alert variant='danger'>
                     The account is not correct!!!
                 </Alert>}
-                <FormGroup controlId="email" bsSize="large">
+                <FormGroup controlId="email">
                     <FormLabel>Email</FormLabel>
                     <FormControl
                         autoFocus
@@ -63,7 +59,7 @@ function Login(props) {
                         onChange={e => setEmail(e.target.value)}
                     />
                 </FormGroup>
-                <FormGroup controlId="password" bsSize="large">
+                <FormGroup controlId="password">
                     <FormLabel>Password</FormLabel>
                     <FormControl
                         value={password}
@@ -72,7 +68,7 @@ function Login(props) {
                         autoComplete="true"
                     />
                 </FormGroup>
-                <Button block bsSize="large"
+                <Button block
                     disabled={!validateForm() || isPending}
                     type="submit"
                     variant="warning">
@@ -84,7 +80,7 @@ function Login(props) {
                         <button className="btn btn-danger btn-block my-2"
                             onClick={renderProps.onClick}
                             disabled={renderProps.disabled}>
-                            <i class="fab fa-google mr-2"></i>
+                            <i className="fab fa-google mr-2"></i>
                             Login with Google
                         </button>
                     )}
@@ -95,7 +91,7 @@ function Login(props) {
                     appId={facebookClientId}
                     fields="name,email,picture"
                     callback={responseFacebook}
-                    icon={<i class="fab fa-facebook-f mr-2"></i>}
+                    icon={<i className="fab fa-facebook-f mr-2"></i>}
                     cssClass="btn btn-primary btn-block my-2"
                 />
                 <NavLink
@@ -112,6 +108,8 @@ function Login(props) {
 const mapStateToProps = state => ({
     error: getAuthError(state),
     pending: getAuthPending(state),
+    token: getAuthToken(state),
+    redirectPage: getAuthRedirectPage(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

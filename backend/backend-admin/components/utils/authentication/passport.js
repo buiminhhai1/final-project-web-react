@@ -21,64 +21,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-const facebook = new FacebookStrategy({
-    clientID: constant.FACEBOOK_APP_ID,
-    clientSecret: constant.FACEBOOK_APP_SECRET,
-    callbackURL: '/admin/facebook/redirect',
-    profileFields: ['id', 'email', 'name', 'picture']
-  },
-  (accessToken, refreshToken, profile, done) => {
-    const {
-      email,
-      name,
-      picture
-    } = profile;
-    UserModel.findOne({
-        email,
-        type: 'facebook'
-      })
-      .then(user => {
-        if (user) {
-          let tempUser = {
-            email: user.email,
-            name: user.name,
-            picture: user.picture,
-            type: user.type,
-          };
-          tempUser = {
-            ...tempUser,
-            token: jwtExtension.encode(tempUser, constant.JWT_SECRET)
-          };
-          return done(null, tempUser);
-        } else {
-          const newUser = new UserModel({
-            _id: new mongoose.Types.ObjectId(),
-            email,
-            name,
-            picture,
-          });
-          newUser.save()
-            .then(result => {
-              let tempUser = {
-                email: result.email,
-                name: result.name,
-                type: result.type,
-                picture: result.picture
-              };
-              tempUser = {
-                ...tempUser,
-                token: jwtExtension.encode(tempUser, constant.JWT_SECRET)
-              };
-              done(null, tempUser);
-            })
-            .catch(err => console.log(err));
-        }
-      })
-      .catch(error => {
-        return done(error);
-      });
-  });
-
 const jwt = new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: constant.JWT_SECRET
@@ -129,4 +71,3 @@ const local = new LocalStrategy({
 
 passport.use(jwt);
 passport.use(local);
-passport.use(facebook);

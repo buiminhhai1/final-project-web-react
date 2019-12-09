@@ -19,3 +19,7 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_REFRESH = 'LOGIN_REFRESH'
 
 export const SELECTED_TAB = 'SELECTED_TAB';
+
+export const SIGNIN_PENDING = 'SIGNIN_PENDING';
+export const SIGNIN_APROVED = 'SIGNIN_APROVED';
+export const SIGNIN_REJECT = 'SIGNIN_REJECT';

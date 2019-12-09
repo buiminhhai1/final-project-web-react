@@ -55,8 +55,6 @@ export const login = (email, password) => dispatch => {
   axios
     .post(url, authData)
     .then(response => {
-      console.log('login response');
-      console.log(response);
       if (!!response.data.user) {
         const expirationDate = new Date(
           new Date().getTime() + response.data.expiresIn * 1000
@@ -73,6 +71,39 @@ export const login = (email, password) => dispatch => {
     .catch(err => {
       console.log(err);
       dispatch(loginFail('Tên đăng nhập hoặc mật khẩu chưa đúng'));
+    });
+};
+
+export const signInOauth = Oauth => dispatch => {
+  dispatch(loginStart());
+  let url = 'http://localhost:4200/admin/login/facebookOauth';
+  const data = {
+    id: Oauth.idFacebook,
+    name: Oauth.name,
+    email: Oauth.email,
+    picture: Oauth.picture,
+    accessToken: Oauth.accessToken
+  };
+  if (!Oauth.idFacebook) {
+    url = 'http://localhost:4200/admin/login/googleOauth';
+    data.id = Oauth.idGoole;
+  }
+  axios
+    .post(url, data)
+    .then(response => {
+      if (!!response.data.user) {
+        const expirationDate = new Date(
+          new Date().getTime() + response.data.expiresIn * 1000
+        );
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userId', response.data.user.userId);
+        dispatch(loginSuccess(response.data.token, response.data.user.userId));
+        dispatch(checkAuthTimeout(response.data.expiresIn));
+      }
+    })
+    .catch(err => {
+      dispatch(loginFail(err));
     });
 };
 
@@ -101,7 +132,6 @@ export const register = (email, password, name) => dispatch => {
   axios
     .post(url, authData)
     .then(response => {
-      console.log(response);
       if (!!response.data.email) {
         dispatch(registerSuccess(response.data.email));
       } else {

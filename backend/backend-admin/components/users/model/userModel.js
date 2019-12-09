@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  id: {
+  idFacebook: {
+    type: String,
+    require: false
+  },
+  idGoogle: {
     type: String,
     require: false
   },

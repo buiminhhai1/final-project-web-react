@@ -14,7 +14,7 @@ export const signInPending = () => {
 export const signInSuccess = (token, user) => {
     return {
         type: actionTypes.SIGNIN_SUCCESS,
-        idToken: token,
+        token,
         user,
     };
 };
@@ -29,9 +29,13 @@ export const signInFail = (error) => {
 export const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
-    localStorage.removeItem('user');
-    return {
-        type: actionTypes.LOGOUT
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('method');
+    console.log("logout");
+
+    return dispatch => {
+        dispatch({ type: actionTypes.LOGOUT })
     };
 };
 
@@ -57,12 +61,12 @@ export function signIn(email, password) {
 
                 // Save user's token in session storage
                 localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userName", res.data.name);
+                localStorage.setItem("userName", res.data.user.name);
                 localStorage.setItem("method", "local");
-                localStorage.setItem("userId", res.data.userId);
+                localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
 
-                dispatch(signInSuccess());
+                dispatch(signInSuccess(res.data.token, res.data.user));
                 dispatch(checkAuthTimeout(res.data.expiresIn));
             })
             .catch(err => {
@@ -75,20 +79,20 @@ export function signIn(email, password) {
 export function signInGoogle(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
-        let signInGoogleUrl = apiUrl + "/users/login/oauth";
+        let signInGoogleUrl = apiUrl + "/users/login/googleOauth";
 
-        axios.post(signInGoogleUrl, accessToken)
+        axios.post(signInGoogleUrl, { accessToken })
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
 
                 // Save user's token in session storage
                 localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userName", res.data.name);
-                localStorage.setItem("method", "local");
-                localStorage.setItem("userId", res.data.userId);
+                localStorage.setItem("userName", res.data.user.name);
+                localStorage.setItem("method", "google");
+                localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
 
-                dispatch(signInSuccess());
+                dispatch(signInSuccess(res.data.token, res.data.user));
                 dispatch(checkAuthTimeout(res.data.expiresIn));
             })
             .catch(err => {
@@ -101,22 +105,23 @@ export function signInGoogle(accessToken) {
 export function signInFacebook(accessToken) {
     return (dispatch) => {
         dispatch(signInPending());
-        let signInFacebookUrl = apiUrl + "/users/login/oauth";
+        let signInFacebookUrl = apiUrl + "/users/login/facebookOauth";
 
-        axios.post(signInFacebookUrl, accessToken)
+        axios.post(signInFacebookUrl, { access_token: accessToken })
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
+                console.log(res);
 
                 // Save user's token in session storage
                 localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userName", res.data.name);
-                localStorage.setItem("method", "local");
-                localStorage.setItem("userId", res.data.userId);
+                localStorage.setItem("userName", res.data.user.name);
+                localStorage.setItem("method", "facebook");
+                localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
 
-                dispatch(signInSuccess());
+                dispatch(signInSuccess(res.data.token, res.data.user));
                 dispatch(checkAuthTimeout(res.data.expiresIn));
-               })
+            })
             .catch(err => {
                 console.log(err);
                 dispatch(signInFail(err));
@@ -133,8 +138,7 @@ export const signUpPending = () => {
 export const signUpSuccess = (token, user) => {
     return {
         type: actionTypes.SIGNUP_SUCCESS,
-        idToken: token,
-        user,
+        token, user,
     };
 };
 
@@ -156,13 +160,17 @@ export function signUp(email, password, name) {
 
         axios.post(signUpUrl, data)
             .then(res => {
-                // console.log(res.data);
-                dispatch(signUpSuccess());
-                return res.data.emailAddress;
+                console.log(res);
+                if (res.data.user) {
+                    dispatch(signUpSuccess(res.data.token, res.data.user));
+                }
+                else {
+                    dispatch(signUpFail(res.data.message));
+                }
             })
             .catch(err => {
                 console.log(err);
-                dispatch(signUpFail(err));
+                dispatch(signUpFail("Server is in maintenance"));
             })
     }
 }

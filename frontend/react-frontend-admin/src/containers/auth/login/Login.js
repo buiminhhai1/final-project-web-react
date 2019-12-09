@@ -99,8 +99,8 @@ class Login extends Component {
         {authRedirect}
         {errorMessage}
         {form}
-        <Facebook />
-        <Google />
+        <Facebook disabled={this.props.loading} />
+        <Google disabled={this.props.loading} />
       </Auxiliary>
     );
   }
