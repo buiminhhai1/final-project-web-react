@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
 import { Layout } from 'antd';
+import 'antd/dist/antd.css';
+
 const { Content } = Layout;
 
 class ContentLayout extends Component {

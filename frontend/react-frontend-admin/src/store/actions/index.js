@@ -10,3 +10,11 @@ export {
   selectedTab
 }
 from './auth';
+
+export {
+  createSkill,
+  updateSkill,
+  getListSkill,
+  deleteSkill
+}
+from './skill';

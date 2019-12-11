@@ -1,10 +1,14 @@
 import * as actionTypes from '../actions/actionTypes';
 
-import { updateObject } from '../../shared/utility';
+import {
+  updateObject
+} from '../../shared/utility';
 
 const initialState = {
   token: null,
   userId: null,
+  name: null,
+  picture: null,
   errorLogin: null,
   errorRegister: null,
   messageRegister: null,
@@ -69,6 +73,8 @@ const loginSuccess = (state, action) =>
   updateObject(state, {
     token: action.idToken,
     userId: action.userId,
+    name: action.name,
+    picture: action.picture,
     errorLogin: false,
     loading: false,
     authRedirectPath: '/',
@@ -86,6 +92,8 @@ const authLogout = state =>
   updateObject(state, {
     token: null,
     userId: null,
+    name: null,
+    pciture: null,
     tabNum: '1'
   });
 
