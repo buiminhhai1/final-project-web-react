@@ -40,6 +40,9 @@ function NavigationItems(props) {
                             <NavLink to="/profile" > Profile</NavLink>
                         </Dropdown.Item>
                         <Dropdown.Item>
+                            <NavLink to="/teacher-profile" > Teacher Profile</NavLink>
+                        </Dropdown.Item>
+                        <Dropdown.Item>
                             <NavLink to="/logout" > Log out</NavLink>
                         </Dropdown.Item>
                     </Dropdown.Menu>

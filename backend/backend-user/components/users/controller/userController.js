@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
-          const newProfile = new ProfileModel({idUser:result._id});
+          const newProfile = new ProfileModel({ idUser: result._id });
           newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
@@ -97,7 +97,7 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
-          const newProfile = new ProfileModel({idUser:result._id});
+          const newProfile = new ProfileModel({ idUser: result._id });
           newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
@@ -179,17 +179,17 @@ getTokenAndUser = (user) => {
 }
 
 exports.getUser = async (req, res, next) => {
-  const{idUser} = req.query;
+  const { idUser } = req.query;
   const profile = await ProfileModel.findOne({
     "idUser": idUser
   });
   if (!!profile) {
     return res.json(profile);
-  }else return res.json({message:"something wrong"}); 
+  } else return res.json({ message: "something wrong" });
 };
 
-exports.updateUser = async(req, res, next) => {
-  const {idUser,name,location,avatar,skills,about,price} = req.body;
+exports.updateUser = async (req, res, next) => {
+  const { idUser, name, location, avatar, skills, about, price } = req.body;
   const profile = await ProfileModel.findOne({
     "idUser": idUser
   });
@@ -203,10 +203,10 @@ exports.updateUser = async(req, res, next) => {
     profile.save().then(item => {
       return res.json(profile);
     })
-    .catch(err => {
-      res.status(400).send("unable to save to database");
+      .catch(err => {
+        res.status(400).send("unable to save to database");
       });
-  }else return res.json({message:"User cannot find"});
+  } else return res.json({ message: "User cannot find" });
 };
 
 exports.facebookLogin = (req, res, next) => {
@@ -225,11 +225,11 @@ exports.facebookLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-exports.upimage = (req, res,next) => {
+exports.upimage = (req, res, next) => {
 
   const values = Object.values(req.files)
   const promises = values.map(image => cloudinary.uploader.upload(image.path))
   const image = Object.values(req.files)[0];
 
-  cloudinary.uploader.upload(image.path).then(results=>res.json(results));
-  };
+  cloudinary.uploader.upload(image.path).then(results => res.json(results));
+};

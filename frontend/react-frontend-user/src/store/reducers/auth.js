@@ -57,6 +57,28 @@ export default function authReducer(state = initialState, action) {
                 pending: false,
                 redirectToPage: '/',
             }
+        case actionTypes.CLEAR_USER_IMAGE_URL:
+            return {
+                ...state,
+                user: {
+                    email: state.user.email,
+                    imageUrl: null,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                }
+            }
+        case actionTypes.SET_USER_IMAGE_URL:
+            return {
+                ...state,
+                user: {
+                    email: state.user.email,
+                    imageUrl: action.image,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                }
+            }
 
         default:
             return state;

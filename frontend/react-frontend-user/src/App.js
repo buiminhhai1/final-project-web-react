@@ -19,8 +19,8 @@ const asyncSignUp = AsyncComponent(() => {
   return import('./containers/signUpPage/signUp');
 })
 
-const asyncTutorRegister = AsyncComponent(() => {
-  return import('./containers/tutorInfoRegister/tutorInfoRegister');
+const asyncTeacherProfile = AsyncComponent(() => {
+  return import('./containers/teacherInfoRegister/teacherInfoRegister');
 })
 
 const asyncLogOut = AsyncComponent(() => {
@@ -39,7 +39,7 @@ function App() {
       <Route path="/signUp" component={asyncSignUp}></Route>
       <Route path="/logout" component={asyncLogOut}></Route>
       <Route path="/profile" component={asyncUpdateProfie}></Route>
-      <Route path="/tutorRegister" component={asyncTutorRegister}></Route>
+      <Route path="/teacher-profile" component={asyncTeacherProfile}></Route>
       {/* <Route path="/profile" component={Profile}></Route> */}
     </Switch>
   )

@@ -1,9 +1,25 @@
 import React, { Component } from 'react'
 import { Card, Button, Form } from "react-bootstrap";
 import Select from 'react-select';
-import './tutorInfoRegister.css'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class tutorInfoRegister extends Component {
+import './teacherInfoRegister.css'
+import { updateTeacherProfile } from '../../store/actions/profile';
+
+var gradeLevel = [];
+for (let i = 1; i <= 12; i++) {
+  gradeLevel.push({
+    value: i,
+    isChecked: false
+  });
+}
+gradeLevel.push({
+  value: `Over 12`,
+  isChecked: false
+});
+
+class TeacherProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,20 +30,49 @@ export default class tutorInfoRegister extends Component {
         { value: 'Chemistry', label: 'Chemistry' },
         { value: 'English', label: 'English' },
       ],
-      selectedSubject: null,
-      level: [true, false, false]
+      selectedSubject: [],
+      level: [true, false, false],
+      gradeLevel,
+      description: ''
     }
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();
+    let submitSubjects = [];
+    this.state.selectedSubject.map(subject => {
+      submitSubjects.push(subject.value)
+    })
+    let submitGrades = [];
+    this.state.gradeLevel.map(grade => {
+      if (grade.isChecked)
+        submitGrades.push(grade.value)
+    })
+    let submitLevel = this.state.level.findIndex((element) => element === true);
+    let submitDescription = this.state.description;
+
+    this.props.updateTeacherProfile({ submitSubjects, submitGrades, submitLevel, submitDescription });
+  }
+
+  handleChangeGradeLevel = index => {
+    // console.log(index);
+    let newGradeLevel = this.state.gradeLevel;
+    newGradeLevel[index].isChecked = !newGradeLevel[index].isChecked;
+    this.setState({
+      gradeLevel: newGradeLevel
+    })
   }
 
   handleSubjectChange = selectedOption => {
     this.setState(
-      { selectedOption },
+      { selectedSubject: selectedOption },
     );
   };
+
+  handleDescription = e => {
+    this.setState({
+      description: e.target.value
+    })
+  }
 
   handleLevelChange = (index) => {
     let levelArr = [false, false, false];
@@ -54,6 +99,7 @@ export default class tutorInfoRegister extends Component {
             <Card.Text>
               <b>What is your major(Subject)?</b>
               <Select
+                isMulti
                 className="subjectSelect"
                 value={selectedSubject}
                 onChange={this.handleSubjectChange}
@@ -64,13 +110,14 @@ export default class tutorInfoRegister extends Component {
             <Card.Text>
               <b>Which grade do you prefer?</b>
               <Form>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'Over 12'].map(grade => (
-                  <div key={`custom-checkbox-${grade}`} className="mb-1">
+                {this.state.gradeLevel.map((grade, index) => (
+                  <div key={`custom-checkbox-${grade.value}`} className="mb-1">
                     <Form.Check
                       custom
                       type='checkbox'
-                      id={`checkbox-${grade}`}
-                      label={`${grade}`}
+                      id={`custom-checkbox-${grade.value}`}
+                      label={`${grade.value}`}
+                      onClick={() => this.handleChangeGradeLevel(index)}
                     />
                   </div>
                 ))}
@@ -78,7 +125,7 @@ export default class tutorInfoRegister extends Component {
             </Card.Text>
 
             <Card.Text>
-              <b>Which grade do you prefer?</b>
+              <b>Which level do you think you are?</b>
               <Form>
                 {['Entry level', 'Intermidiate', 'Expert'].map((level, index) =>
                   <div key={`custom-radio-${level}`} className="mb-1">
@@ -95,12 +142,36 @@ export default class tutorInfoRegister extends Component {
               </Form>
             </Card.Text>
 
+            <Card.Text>
+              <b>Describe about yourself</b>
+              <Form.Group controlId="exampleForm.ControlTextarea1">
+                <Form.Label>Example textarea</Form.Label>
+                <Form.Control as="textarea" rows="7"
+                  onChange={(event) => this.handleDescription(event)} />
+              </Form.Group>
+            </Card.Text>
+
           </Card.Body>
           <Card.Footer className="text-muted">
-            <Button variant="primary">Go somewhere</Button>
+            <Button onClick={() => this.handleSubmit()} variant="primary">
+              Update teaching profile
+            </Button>
           </Card.Footer>
         </Card>
       </form>
     )
   }
 }
+
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  updateTeacherProfile
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TeacherProfile);
