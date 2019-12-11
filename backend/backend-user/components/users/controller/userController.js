@@ -146,7 +146,6 @@ getTokenAndUser = (user) => {
   const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
     expiresIn: '15m'
   });
-  console.log(user);
 
   let newUser = {
     userId: user._id,
@@ -156,17 +155,19 @@ getTokenAndUser = (user) => {
   switch (user.method) {
     case "local": {
       newUser.name = user.local.name;
+      newUser.email = user.local.email;
       break;
     }
     case "google": {
       newUser.name = user.google.name;
+      newUser.email = user.google.email;
       break;
     }
     case "facebook": {
       newUser.name = user.facebook.name;
+      newUser.email = user.facebook.email;
     }
   }
-  console.log(123);
 
   return { token, newUser };
 }

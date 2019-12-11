@@ -32,10 +32,9 @@ export const logout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
     localStorage.removeItem('method');
-    console.log("logout");
 
-    return dispatch => {
-        dispatch({ type: actionTypes.LOGOUT })
+    return {
+        type: actionTypes.LOGOUT
     };
 };
 
