@@ -21,7 +21,10 @@
     "import/prefer-default-export": "off",
     "import/no-unresolved": "off",
     "react/jsx-curly-brace-presence": "off",
-    "react/no-access-state-in-setstate": "off"
+    "react/no-access-state-in-setstate": "off",
+    "react/jsx-wrap-multilines": "off",
+    "no-extra-boolean-cast": "off",
+    "prefer-template": "off"
   },
   "globals": {
     "window": true,

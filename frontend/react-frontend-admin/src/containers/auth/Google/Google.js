@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { GoogleLogin } from 'react-google-login';
+
+import * as actions from '../../../store/actions/index';
 import classes from './Google.module.css';
 
 class Google extends Component {
@@ -15,7 +18,13 @@ class Google extends Component {
 
   responseGoogle = response => {
     console.log(response);
-    // this.props.onAuthFacebook(response);
+    this.props.onSingInGoogle({
+      idGoole: response.googleId,
+      name: response.profileObj.name,
+      email: response.profileObj.email,
+      picture: response.profileObj.imageUrl,
+      accessToken: response.accessToken
+    });
   };
 
   componentClicked = () => console.log('clicked');
@@ -27,16 +36,21 @@ class Google extends Component {
     } else {
       ggContent = (
         <GoogleLogin
+          disabled={this.props.disabled}
           clientId="520556548555-saaoeeulltifvrmilmhag3ds6u19rjt9.apps.googleusercontent.com"
-          buttonText="Login with Google"
+          buttonText="Continue with Google"
           onSuccess={this.responseGoogle}
           onFailure={this.responseGoogle}
           cookiePolicy={'single_host_origin'}
         />
       );
     }
-    return <div className={classes.Facebook}> {ggContent} </div>;
+    return <div className={classes.Google}>{ggContent}</div>;
   }
 }
 
-export default Google;
+const mapDispatchToProps = dispatch => ({
+  onSingInGoogle: ggData => dispatch(actions.signInOauth(ggData))
+});
+
+export default connect(null, mapDispatchToProps)(Google);

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import FacebookLogin from 'react-facebook-login';
 import classes from './Facebook.module.css';
+import * as actions from '../../../store/actions/index';
 
 class Facebook extends Component {
   constructor(props) {
@@ -15,7 +17,14 @@ class Facebook extends Component {
 
   responseFacebook = response => {
     console.log(response);
-    // this.props.onAuthFacebook(response);
+    const fbData = {
+      idFacebook: response.id,
+      name: response.name,
+      email: response.email,
+      picture: response.picture.data.url,
+      accessToken: response.accessToken
+    };
+    this.props.onSingInFacebook(fbData);
   };
 
   componentClicked = () => console.log('clicked');
@@ -27,7 +36,10 @@ class Facebook extends Component {
     } else {
       fbContent = (
         <FacebookLogin
-          appId="444158143149682"
+          isDisabled={this.props.disabled}
+          textButton="Continue with Facebook"
+          size="small"
+          appId="2483517738600678"
           autoLoad={false}
           fields="name,email,picture"
           onClick={this.componentClicked}
@@ -35,8 +47,12 @@ class Facebook extends Component {
         />
       );
     }
-    return <div className={classes.Facebook}> {fbContent} </div>;
+    return <div className={classes.Facebook}>{fbContent}</div>;
   }
 }
 
-export default Facebook;
+const mapDispatchToProps = dispatch => ({
+  onSingInFacebook: fbData => dispatch(actions.signInOauth(fbData))
+});
+
+export default connect(null, mapDispatchToProps)(Facebook);

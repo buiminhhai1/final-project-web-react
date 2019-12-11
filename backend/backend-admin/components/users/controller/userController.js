@@ -1,38 +1,36 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const mongoose = require('mongoose');
 
 const UserModel = require('../model/userModel');
 const constant = require('../../utils/const/constant');
 
-<<<<<<< HEAD
-exports.login = (req, res,next) => {
-=======
-exports.login = (req, res) => {
->>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
+exports.login = (req, res, next) => {
   passport.authenticate('local', {
     session: false
   }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
-        message: info ? info.message : 'Login has failed!',
+        message: info ? info.message : 'Đăng nhập thất bại',
         user
       });
     }
     req.login(user, {
       session: false
-    }, (error) => {
-      if (!!error) {
-        res.send(error);
+    }, err2 => {
+      if (err2) {
+        res.json({
+          message: 'Đăng nhập thất bại',
+          user: ''
+        });
       }
       const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
         expiresIn: '15m'
       });
       const newUser = {
-        name: user.name,
-        gennder: user.gender,
-        picture: user.picture,
-        rule: user.rule
+        userId: user._id,
+        name: user.name
       };
       return res.json({
         user: newUser,
@@ -40,164 +38,170 @@ exports.login = (req, res) => {
         expiresIn: 15 * 60
       });
     });
-<<<<<<< HEAD
-  })(req, res,next);
-=======
   })(req, res);
->>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
 };
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   const {
     email,
     password,
-    name,
-    gender,
-<<<<<<< HEAD
-    role
-=======
-    rule
->>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
+    name
   } = req.body;
 
   if (email.length === 0 || password.length === 0) {
-    return res.json({
-      message: 'Username or password must not null :))'
+    res.json({
+      message: 'Thông tin người dùng không được để trống'
     });
   }
+
   try {
-    const user = await UserModel.findOne({
+    const resultUser = await UserModel.findOne({
       email
     });
-    if (!!user) {
+    if (resultUser) {
       return res.json({
-        message: `email: ${email} has already exsit`
+        message: `email: ${email} đã tồn tại`,
+        email: ''
+      });
+    } else {
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err1, hash) => {
+          const user = new UserModel({
+            _id: new mongoose.Types.ObjectId(),
+            email,
+            name,
+            password: hash
+          });
+
+          user
+            .save()
+            .then(result => {
+              if (!!result) {
+                return res.json({
+                  email,
+                  message: `Đăng kí email: ${email} thành công!`
+                });
+              }
+            })
+            .catch(error1 => {
+              res.json({
+                message: `something wrong! ${error1}`
+              });
+            });
+        });
       });
     }
-<<<<<<< HEAD
-    const saltValue =await bcrypt.genSalt(10);
-
-    bcrypt.hash(password, saltValue, async (error, hash) => {
-      if (!error) {
-        const newUser = new UserModel({
-          email,
-          name,
-          password: hash,
-          gender,
-          role
-        });
-        const result = await newUser.save();
-        if (!!result) {
-          return res.json({
-            message: `Register user with email: ${email} successed!`
-          });
-        }
-      }
-    });
-
-=======
-    bcrypt.getSalt(10, async (err, salt) => {
-      if (!err) {
-        bcrypt.hash(password, salt, async (error, hash) => {
-          if (!error) {
-            const newUser = new UserModel({
-              email,
-              name,
-              password: hash,
-              gender,
-              rule
-            });
-            const result = await newUser.save();
-            if (!!result) {
-              return res.json({
-                message: `Register user with email: ${email} successed!`
-              });
-            }
-          }
-        });
-      }
-    });
->>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
-  } catch (err) {
-    return res.json({
-      message: 'something went wrong!'
+  } catch (error) {
+    res.json({
+      message: `some thing went wrong ${error}`
     });
   }
-<<<<<<< HEAD
 };
 
-
-
-exports.OAuthRegister = async (req, res) => {
+exports.facebookLogin = async (req, res, next) => {
   const {
     email,
-    token,
     name,
-    role
+    picture,
+    id,
+    accessToken
   } = req.body;
-
-  if (email.length === 0 || token.length === 0 || role.length === 0 || name.length === 0) {
+  if (!accessToken) {
     return res.json({
-      message: 'Something wrong'
+      error: 'Cannot signing with Facebook!'
     });
   }
   try {
-    const user = await UserModel.findOne({
+    const isUser = await UserModel.findOne({
       email
     });
-    if (!!user) {
-      return res.json({
-        message: `email: ${email} has already exsit`
+    if (!!isUser) {
+      if (!isUser.idFacebook) {
+        isUser.idFacebook = id;
+        await isUser.save();
+      }
+      res.json({
+        user: isUser,
+        token: accessToken,
+        expiresIn: 15 * 60
+      });
+    } else {
+      const newUser = new UserModel({
+        _id: new mongoose.Types.ObjectId(),
+        idFacebook: id,
+        email,
+        name,
+        picture,
+      });
+      await newUser.save();
+      res.json({
+        user: {
+          userId: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          picture: newUser.picture
+        },
+        token: accessToken,
+        expiresIn: 15 * 60
       });
     }
-    
-    const newUser = new UserModel({
-      email,
-      name,
-      role
-    });
-    const result = await newUser.save();
-    if (!!result) {
-      return res.json({
-        message: `Register user with email: ${email} successed!`
-      });
-    }
-      
-
   } catch (err) {
     return res.json({
-      message: 'something went wrong!'
+      err
     });
   }
 };
 
-
-
-exports.OAuthLogin = async(req, res,next) => {
-  const {email,token,name,role} = req.body;
-  
-      const user = await UserModel.findOne({
-        email
+exports.googleLogin = async (req, res, next) => {
+  const {
+    email,
+    name,
+    picture,
+    id,
+    accessToken
+  } = req.body;
+  if (!accessToken) {
+    return res.json({
+      error: 'Cannot signing with Facebook!'
+    });
+  }
+  try {
+    const isUser = await UserModel.findOne({
+      email,
+    });
+    if (!!isUser) {
+      if (!isUser.idGoogle) {
+        isUser.idGoogle = id;
+        await isUser.save();
+      }
+      res.json({
+        user: isUser,
+        token: accessToken,
+        expiresIn: 15 * 60
       });
-      if(!!user){
-        const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-          expiresIn: '15m'
-        });
-        const newUser = {
-          name: user.name,
-          email: user.email,
-          role: user.role
-        };
-        return res.json({
-          user: newUser,
-          token,
-          expiresIn: 15 * 60
-        });
-      }else{
-        return res.json({
-          message: 'something went wrong!'
-        });
-      }      
-=======
->>>>>>> 29d0b24b903ecc789d3f2f30e4d8d54b54d5b962
+    } else {
+      const newUser = new UserModel({
+        _id: new mongoose.Types.ObjectId(),
+        idGoogle: id,
+        email,
+        name,
+        picture,
+      });
+      await newUser.save();
+      res.json({
+        user: {
+          userId: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          picture: newUser.picture
+        },
+        token: accessToken,
+        expiresIn: 15 * 60
+      });
+    }
+  } catch (err) {
+    return res.json({
+      err
+    });
+  }
 };
