@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
-          const newProfile = new ProfileModel({idUser:result._id});
+          const newProfile = new ProfileModel({idUser:result._id,avatar:result});
           newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
@@ -64,15 +64,19 @@ exports.register = async (req, res) => {
 };
 
 exports.login = (req, res, next) => {
-  passport.authenticate('local', { session: false }, (err, user, message) => {
+  passport.authenticate('local', { session: false }, async(err, user, message) => {
     if (err || !user) {
       return res.status(400).json({
         message,
       });
     }
     const { token, newUser } = getTokenAndUser(user);
+    const profile = await ProfileModel.findOne({
+      "idUser": user._id
+    });
     return res.json({
       user: newUser,
+      profile,
       token,
       expiresIn: 15 * 60
     });
@@ -97,10 +101,13 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
-          const newProfile = new ProfileModel({idUser:result._id});
+          const newProfile = new ProfileModel({idUser:user._id,
+                              avatar:user.imageUrl,
+                              name:user.google.name});
           newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
+            profile:newProfile,
             user: newUser,
             token,
             expiresIn: 15 * 60
@@ -225,10 +232,17 @@ exports.facebookLogin = (req, res, next) => {
 };
 
 exports.upimage = (req, res,next) => {
-
-  const values = Object.values(req.files)
-  const promises = values.map(image => cloudinary.uploader.upload(image.path))
-  const image = Object.values(req.files)[0];
-
-  cloudinary.uploader.upload(image.path).then(results=>res.json(results));
+  const {image,idUser} = req.body;
+  
+  cloudinary.uploader.upload(image).then(async(results)=>{
+    const profile = await ProfileModel.findOne({
+      idUser
+    });
+    profile.avatar = results.url;
+    profile.save().then(profile=> {
+      if(!!profile) res.json(profile);
+      else res.json({message:"cannot save image"})
+    })
+    
+  });
   };
