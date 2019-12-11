@@ -45,7 +45,11 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
+<<<<<<< HEAD
           const newProfile = new ProfileModel({ idUser: result._id });
+=======
+          const newProfile = new ProfileModel({idUser:result._id,avatar:result});
+>>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
           newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
@@ -64,15 +68,19 @@ exports.register = async (req, res) => {
 };
 
 exports.login = (req, res, next) => {
-  passport.authenticate('local', { session: false }, (err, user, message) => {
+  passport.authenticate('local', { session: false }, async(err, user, message) => {
     if (err || !user) {
       return res.status(400).json({
         message,
       });
     }
     const { token, newUser } = getTokenAndUser(user);
+    const profile = await ProfileModel.findOne({
+      "idUser": user._id
+    });
     return res.json({
       user: newUser,
+      profile,
       token,
       expiresIn: 15 * 60
     });
@@ -97,10 +105,17 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
+<<<<<<< HEAD
           const newProfile = new ProfileModel({ idUser: result._id });
+=======
+          const newProfile = new ProfileModel({idUser:user._id,
+                              avatar:user.imageUrl,
+                              name:user.google.name});
+>>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
           newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
+            profile:newProfile,
             user: newUser,
             token,
             expiresIn: 15 * 60
@@ -225,6 +240,7 @@ exports.facebookLogin = (req, res, next) => {
   })(req, res, next);
 };
 
+<<<<<<< HEAD
 exports.upimage = (req, res, next) => {
 
   const values = Object.values(req.files)
@@ -233,3 +249,20 @@ exports.upimage = (req, res, next) => {
 
   cloudinary.uploader.upload(image.path).then(results => res.json(results));
 };
+=======
+exports.upimage = (req, res,next) => {
+  const {image,idUser} = req.body;
+  
+  cloudinary.uploader.upload(image).then(async(results)=>{
+    const profile = await ProfileModel.findOne({
+      idUser
+    });
+    profile.avatar = results.url;
+    profile.save().then(profile=> {
+      if(!!profile) res.json(profile);
+      else res.json({message:"cannot save image"})
+    })
+    
+  });
+  };
+>>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
