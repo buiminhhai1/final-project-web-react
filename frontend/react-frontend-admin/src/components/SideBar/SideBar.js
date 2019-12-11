@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
-import './SideBar.css';
 import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
+import 'antd/dist/antd.css';
+import './SideBar.css';
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
@@ -13,7 +13,6 @@ class SideBar extends Component {
       <Sider width={200} style={{ background: '#fff' }}>
         <Menu
           mode="inline"
-          defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           style={{ height: '100%', borderRight: 0 }}
         >
@@ -37,15 +36,14 @@ class SideBar extends Component {
             key="sub2"
             title={
               <span>
-                <Icon type="laptop" />
-                subnav 2
+                <Icon type="solution" />
+                Skills Management
               </span>
             }
           >
-            <Menu.Item key="5">option5</Menu.Item>
-            <Menu.Item key="6">option6</Menu.Item>
-            <Menu.Item key="7">option7</Menu.Item>
-            <Menu.Item key="8">option8</Menu.Item>
+            <Menu.Item key="5">
+              <NavLink to="/skill">List Skills</NavLink>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub3"

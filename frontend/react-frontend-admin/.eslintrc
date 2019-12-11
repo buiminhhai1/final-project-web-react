@@ -24,7 +24,11 @@
     "react/no-access-state-in-setstate": "off",
     "react/jsx-wrap-multilines": "off",
     "no-extra-boolean-cast": "off",
-    "prefer-template": "off"
+    "prefer-template": "off",
+    "react/prefer-stateless-function": "off",
+    "array-callback-return": "off",
+    "consistent-return": "off"
+
   },
   "globals": {
     "window": true,

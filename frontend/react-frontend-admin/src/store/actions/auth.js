@@ -18,6 +18,8 @@ export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('expirationDate');
   localStorage.removeItem('userId');
+  localStorage.removeItem('name');
+  localStorage.removeItem('picture');
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -33,10 +35,12 @@ export const loginStart = () => ({
   type: actionTypes.LOGIN_START
 });
 
-export const loginSuccess = (token, userId) => ({
+export const loginSuccess = (token, userId, name, picture) => ({
   type: actionTypes.LOGIN_SUCCESS,
   idToken: token,
-  userId
+  userId,
+  name,
+  picture
 });
 
 export const loginFail = error => ({
@@ -61,8 +65,17 @@ export const login = (email, password) => dispatch => {
         );
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('expirationDate', expirationDate);
-        localStorage.setItem('userId', response.data.user.userId);
-        dispatch(loginSuccess(response.data.token, response.data.user.userId));
+        localStorage.setItem('userId', response.data.user._id);
+        localStorage.setItem('name', response.data.user.name);
+        localStorage.setItem('picture', response.data.user.picture);
+        dispatch(
+          loginSuccess(
+            response.data.token,
+            response.data.user._id,
+            response.data.user.name,
+            response.data.user.picture
+          )
+        );
         dispatch(checkAuthTimeout(response.data.expiresIn));
       } else {
         dispatch(loginFail('Tên đăng nhập hoặc mật khẩu chưa đúng'));
@@ -95,10 +108,20 @@ export const signInOauth = Oauth => dispatch => {
         const expirationDate = new Date(
           new Date().getTime() + response.data.expiresIn * 1000
         );
+        console.log(response.data);
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('expirationDate', expirationDate);
-        localStorage.setItem('userId', response.data.user.userId);
-        dispatch(loginSuccess(response.data.token, response.data.user.userId));
+        localStorage.setItem('userId', response.data.user._id);
+        localStorage.setItem('name', response.data.user.name);
+        localStorage.setItem('picture', response.data.user.picture);
+        dispatch(
+          loginSuccess(
+            response.data.token,
+            response.data.user._id,
+            response.data.user.name,
+            response.data.user.picture
+          )
+        );
         dispatch(checkAuthTimeout(response.data.expiresIn));
       }
     })
@@ -158,7 +181,9 @@ export const authCheckState = () => dispatch => {
       dispatch(logout());
     } else {
       const userId = localStorage.getItem('userId');
-      dispatch(loginSuccess(token, userId));
+      const name = localStorage.getItem('name');
+      const picture = localStorage.getItem('picture');
+      dispatch(loginSuccess(token, userId, name, picture));
       dispatch(
         checkAuthTimeout(
           (expirationDate.getTime() - new Date().getTime()) / 1000

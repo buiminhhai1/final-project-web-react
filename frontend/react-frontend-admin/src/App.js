@@ -5,6 +5,8 @@ import 'antd/dist/antd.css';
 import { Layout } from 'antd';
 import AsyncComponent from './hoc/AsyncComponent/AsyncComponent';
 import HeaderLayout from './components/HeaderLayout/HeaderLayout';
+import BreadcrumbLayout from './components/BreadcrumbLayout/BreadcrumbLayout';
+import SideBar from './components/SideBar/SideBar';
 import * as actions from './store/actions/index';
 import './App.css';
 
@@ -24,6 +26,10 @@ const asyncLogout = AsyncComponent(() => {
   return import('./containers/auth/Logout/Logout');
 });
 
+const asyncSkill = AsyncComponent(() => {
+  return import('./containers/Skill/Skill');
+});
+
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
@@ -41,16 +47,27 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/" exact component={asyncHomePage} />
+          <Route path="/skill" component={asyncSkill} />
           <Route path="/admin/logout" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>
       );
     } // fix chỗ HeaderLayout
+    const sideBar = this.props.isAuthenticated ? <SideBar /> : null;
+    const breadcrumbLayout = this.props.isAuthenticated ? (
+      <BreadcrumbLayout />
+    ) : null;
     return (
       <div>
         <Layout>
           <HeaderLayout isAuthenticated={this.props.isAuthenticated} />
-          {routes}
+          <Layout>
+            {sideBar}
+            <Layout style={{ padding: '0 24px 24px' }}>
+              {breadcrumbLayout}
+              {routes}
+            </Layout>
+          </Layout>
         </Layout>
       </div>
     );
