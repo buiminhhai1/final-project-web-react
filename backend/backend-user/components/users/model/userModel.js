@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const userSchema = mongoose.Schema({
   method: {
     type: String,

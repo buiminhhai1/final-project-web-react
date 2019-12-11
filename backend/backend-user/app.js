@@ -8,6 +8,7 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 
+
 const app = express();
 var mongoose = require('mongoose');
 const bodyParser = require("body-parser");
@@ -15,7 +16,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
-
+const formData = require('express-form-data');
+app.use(formData.parse());
 const passport = require('passport');
 const dbInfo = require('./components/utils/const/constant');
 app.use(passport.initialize());
@@ -28,6 +30,12 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log('database connected');
 });
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+  cloud_name: 'dc4rxxjyt',
+  api_key: '182393896791142',
+  api_secret: 'g95hnkYtxrJWTGY0FfSDs0yms5w'
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

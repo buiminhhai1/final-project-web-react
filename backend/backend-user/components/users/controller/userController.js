@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
 const UserModel = require('../model/userModel');
+const ProfileModel = require('../model/profileModel');
 const constant = require('../../utils/const/constant');
 
 // Use for google login
@@ -10,6 +11,7 @@ const google = require('googleapis').google;
 const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2();
 
+const cloudinary = require('cloudinary').v2
 exports.register = async (req, res) => {
   const { email, password, name } = req.body;
   if (email.length === 0 || password.length === 0) {
@@ -43,6 +45,8 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
+          const newProfile = new ProfileModel({idUser:result._id});
+          newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
             user: newUser,
@@ -93,6 +97,8 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
+          const newProfile = new ProfileModel({idUser:result._id});
+          newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
             user: newUser,
@@ -171,6 +177,37 @@ getTokenAndUser = (user) => {
   return { token, newUser };
 }
 
+exports.getUser = async (req, res, next) => {
+  const{idUser} = req.query;
+  const profile = await ProfileModel.findOne({
+    "idUser": idUser
+  });
+  if (!!profile) {
+    return res.json(profile);
+  }else return res.json({message:"something wrong"}); 
+};
+
+exports.updateUser = async(req, res, next) => {
+  const {idUser,name,location,avatar,skills,about,price} = req.body;
+  const profile = await ProfileModel.findOne({
+    "idUser": idUser
+  });
+  if (!!profile) {
+    profile.name = name;
+    profile.location = location;
+    profile.avatar = avatar;
+    profile.skills = skills;
+    profile.about = about;
+    profile.price = price;
+    profile.save().then(item => {
+      return res.json(profile);
+    })
+    .catch(err => {
+      res.status(400).send("unable to save to database");
+      });
+  }else return res.json({message:"User cannot find"});
+};
+
 exports.facebookLogin = (req, res, next) => {
   passport.authenticate('facebook', { session: false }, (err, user, message) => {
     if (err || !user) {
@@ -186,3 +223,12 @@ exports.facebookLogin = (req, res, next) => {
     });
   })(req, res, next);
 };
+
+exports.upimage = (req, res,next) => {
+
+  const values = Object.values(req.files)
+  const promises = values.map(image => cloudinary.uploader.upload(image.path))
+  const image = Object.values(req.files)[0];
+
+  cloudinary.uploader.upload(image.path).then(results=>res.json(results));
+  };
