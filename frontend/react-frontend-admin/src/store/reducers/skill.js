@@ -1,39 +1,9 @@
-import { Divider, Tag, Icon } from 'antd';
-import React from 'react';
 import * as actionTypes from '../actions/actionTypes';
 
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
   skillData: [],
-  skillColumns: [
-    {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
-      render: text => (
-        <Tag color={'green'} key={text}>
-          {text.toUpperCase()}
-        </Tag>
-      )
-    },
-    {
-      title: 'Description',
-      dataIndex: 'content',
-      key: 'content'
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: () => (
-        <span>
-          <Icon type="edit" title="edit skill" />
-          <Divider type="vertical" />
-          <Icon type="delete" title="delete skill" />
-        </span>
-      )
-    }
-  ],
   loading: false,
   error: null,
   message: null,
@@ -56,8 +26,7 @@ const createSkillSuccess = (state, action) =>
     skillData: state.skillData.push({
       key: state.skillData.length + 1 + '',
       title: action.title,
-      _id: action._id,
-      content: action.content
+      _id: action._id
     })
   });
 
@@ -81,7 +50,6 @@ const updateSkillSuccess = (state, action) => {
       const updateItem = {
         _id: action._id,
         title: action.title,
-        content: action.content,
         key: item.key
       };
       return updateItem;
@@ -140,6 +108,7 @@ const deleteSkillStart = state =>
   });
 
 const deleteSkillSuccess = (state, action) => {
+  // eslint-disable-next-line
   const data = state.skillData.filter(item => {
     if (item._id !== action._id) {
       return item;

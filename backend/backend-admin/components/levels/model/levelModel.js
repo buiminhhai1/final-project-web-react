@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const skillSchema = mongoose.Schema({
+const levelSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   title: {
     type: String,
@@ -8,4 +8,4 @@ const skillSchema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('skill', skillSchema);
+module.exports = mongoose.model('level', levelSchema);

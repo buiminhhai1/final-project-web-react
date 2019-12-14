@@ -26,7 +26,7 @@ exports.login = (req, res, next) => {
         });
       }
       const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '15m'
+        expiresIn: '150m'
       });
       const newUser = {
         _id: user._id,
@@ -36,7 +36,7 @@ exports.login = (req, res, next) => {
       return res.json({
         user: newUser,
         token,
-        expiresIn: 15 * 60
+        expiresIn: 150 * 60
       });
     });
   })(req, res);
@@ -122,13 +122,13 @@ exports.facebookLogin = async (req, res, next) => {
         await isUser.save();
       }
       const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '15m'
+        expiresIn: '150m'
       });
       console.log(isUser);
       res.json({
         user: isUser,
         token,
-        expiresIn: 15 * 60
+        expiresIn: 150 * 60
       });
     } else {
       const newUser = new UserModel({
@@ -147,7 +147,7 @@ exports.facebookLogin = async (req, res, next) => {
           picture: newUser.picture
         },
         token: accessToken,
-        expiresIn: 15 * 60
+        expiresIn: 150 * 60
       });
     }
   } catch (err) {
@@ -180,12 +180,12 @@ exports.googleLogin = async (req, res, next) => {
         await isUser.save();
       }
       const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '15m'
+        expiresIn: '150m'
       });
       res.json({
         user: isUser,
         token,
-        expiresIn: 15 * 60
+        expiresIn: 150 * 60
       });
     } else {
       const newUser = new UserModel({
@@ -204,7 +204,7 @@ exports.googleLogin = async (req, res, next) => {
           picture: newUser.picture
         },
         token: accessToken,
-        expiresIn: 15 * 60
+        expiresIn: 150 * 60
       });
     }
   } catch (err) {
