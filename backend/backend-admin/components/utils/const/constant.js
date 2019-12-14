@@ -1,5 +1,5 @@
 module.exports = {
-  CONNECTION_STRING: 'mongodb://localhost:27017/final-admin',
+  CONNECTION_STRING: 'mongodb+srv://admin:admin@cluster0-hs8pp.mongodb.net/final-project-user',
   // 'mongodb+srv://admin:admin@cluster0-hs8pp.mongodb.net/final-project-admin',
   JWT_SECRET: process.env.JWT_SECRET || 'jwt_secret',
   FACEBOOK_APP_ID: '2483517738600678',

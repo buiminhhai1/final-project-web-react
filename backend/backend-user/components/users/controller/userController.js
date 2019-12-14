@@ -45,11 +45,7 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
-<<<<<<< HEAD
           const newProfile = new ProfileModel({ idUser: result._id });
-=======
-          const newProfile = new ProfileModel({idUser:result._id,avatar:result});
->>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
           newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
@@ -105,13 +101,9 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
-<<<<<<< HEAD
-          const newProfile = new ProfileModel({ idUser: result._id });
-=======
           const newProfile = new ProfileModel({idUser:user._id,
                               avatar:user.imageUrl,
                               name:user.google.name});
->>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
           newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
@@ -240,16 +232,6 @@ exports.facebookLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-<<<<<<< HEAD
-exports.upimage = (req, res, next) => {
-
-  const values = Object.values(req.files)
-  const promises = values.map(image => cloudinary.uploader.upload(image.path))
-  const image = Object.values(req.files)[0];
-
-  cloudinary.uploader.upload(image.path).then(results => res.json(results));
-};
-=======
 exports.upimage = (req, res,next) => {
   const {image,idUser} = req.body;
   
@@ -265,4 +247,3 @@ exports.upimage = (req, res,next) => {
     
   });
   };
->>>>>>> 121f427a10a4b6cc16928f045e90f36bb6702d92
