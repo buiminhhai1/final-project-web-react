@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux';
 
 import './teacherInfoRegister.css'
 import { updateTeacherProfile } from '../../store/actions/profile';
+import { getSubjects } from '../../store/actions/teaching';
+import { getTeachingSubjects } from '../../store/reducers/teaching';
 
 var gradeLevel = [];
 for (let i = 1; i <= 12; i++) {
@@ -23,18 +25,15 @@ class TeacherProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      subjects: [
-        { value: 'Math', label: 'Math' },
-        { value: 'Literature', label: 'Literature' },
-        { value: 'Physics', label: 'Physics' },
-        { value: 'Chemistry', label: 'Chemistry' },
-        { value: 'English', label: 'English' },
-      ],
       selectedSubject: [],
       level: [true, false, false],
       gradeLevel,
       description: ''
     }
+  }
+
+  componentDidMount = () => {
+    this.props.getSubjects();
   }
 
   handleSubmit = (event) => {
@@ -66,6 +65,7 @@ class TeacherProfile extends Component {
     this.setState(
       { selectedSubject: selectedOption },
     );
+    
   };
 
   handleDescription = e => {
@@ -83,7 +83,8 @@ class TeacherProfile extends Component {
   }
 
   render() {
-    const { selectedSubject, subjects } = this.state;
+    const { selectedSubject } = this.state;
+    const subjects = this.props.subjects;
 
     return (
       <form className="tutorInfoForm" onSubmit={this.handleSubmit}>
@@ -145,7 +146,6 @@ class TeacherProfile extends Component {
             <Card.Text>
               <b>Describe about yourself</b>
               <Form.Group controlId="exampleForm.ControlTextarea1">
-                <Form.Label>Example textarea</Form.Label>
                 <Form.Control as="textarea" rows="7"
                   onChange={(event) => this.handleDescription(event)} />
               </Form.Group>
@@ -164,11 +164,11 @@ class TeacherProfile extends Component {
 }
 
 const mapStateToProps = state => ({
-
+  subjects: getTeachingSubjects(state)
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTeacherProfile
+  updateTeacherProfile, getSubjects
 }, dispatch)
 
 export default connect(

@@ -20,4 +20,8 @@
         display: flex;
         justify-content: center;
     }
+
+    .Login form .facebook-btn{
+        background-color: #3d6da1 !important;
+    }
 }

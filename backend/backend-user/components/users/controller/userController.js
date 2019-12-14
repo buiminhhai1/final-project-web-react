@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
-          const newProfile = new ProfileModel({idUser:result._id,avatar:result});
+          const newProfile = new ProfileModel({ idUser: result._id });
           newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           return res.json({
@@ -236,15 +236,18 @@ exports.upimage = (req, res,next) => {
   const {image,idUser} = req.body;
   
   cloudinary.uploader.upload(image).then(async(results)=>{
-    const profile = await ProfileModel.findOne({
-      idUser
+    const user = await UserModel.findOne({
+      _id:idUser
     });
-    profile.avatar = results.url;
-    profile.save().then(profile=> {
-      if(!!profile) res.json(profile);
-      else res.json({message:"cannot save image"})
+    if(!!user){
+      user.imageUrl = results.url;
+      user.save().then(user=> {
+      if(!!user) res.json(user);
+      else res.json({message:"cannot update image"})
     })
+    }else{
+      res.json({message:'cannot update'});
+    }
     
   });
   };
-

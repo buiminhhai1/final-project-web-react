@@ -6,7 +6,7 @@
 }
 
 .NavigationItem a {
-    color: #368193;
+    color: #EFBB2D;
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
@@ -16,7 +16,7 @@
 .NavigationItem a:hover,
 .NavigationItem a:active,
 .NavigationItem a.active {
-    color: #368193;
+    color: #EFBB2D;
 }
 
 @media(min-width: 500px){
@@ -29,8 +29,10 @@
     }
     
     .NavigationItem a {
-        color: white;
+        color: #626263;
         text-decoration: none;
+        font-size: medium;
+        text-transform: uppercase;
         height: 100%;
         padding: 16px 10px;
         border-bottom: 4px solid transparent; /*this border will become important once we actually highlight a link, once you hover over it.*/
@@ -39,9 +41,11 @@
     .NavigationItem a:hover,
     .NavigationItem a:active,
     .NavigationItem a.active {
-        background-color: #efbb2b;
-        border-bottom: 4px solid #5ef272;
-        color: white;
+        /* background-color: #4e8ac9; */
+        border-bottom: 6px solid #4e8ac9;
+        color: #4e8ac9;
+        font-weight: bold;
+        /* border-radius: 0px 0px 5px 5px; */
     }
     
 }

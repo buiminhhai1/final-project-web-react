@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const indexRouter = require('./components/home/router/homeRouter');
 const usersRouter = require('./components/users/router/userRouter');
+const teachersRouter = require('./components/teachers/routers/routers');
 
 
 const app = express();
@@ -52,6 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/teachers', teachersRouter);
 app.get('/me',passport.authenticate('jwt'),(req,res,next)=>{
   res.send({ 'info':req.user.user});
 })
