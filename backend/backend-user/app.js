@@ -13,7 +13,7 @@ const teachersRouter = require('./components/teachers/routers/routers');
 const app = express();
 var mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'10mb'}));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
