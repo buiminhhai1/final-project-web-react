@@ -64,7 +64,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = (req, res, next) => {
-  passport.authenticate('local', { session: false }, async(err, user, message) => {
+  passport.authenticate('local', { session: false }, async (err, user, message) => {
     if (err || !user) {
       return res.status(400).json({
         message,
@@ -101,13 +101,15 @@ exports.googleLogin = (req, res, next) => {
       } else {  // If success
         const user = await registerForGoogleAccount(response.data);
         if (user) {
-          const newProfile = new ProfileModel({idUser:user._id,
-                              avatar:user.imageUrl,
-                              name:user.google.name});
+          const newProfile = new ProfileModel({
+            idUser: user._id,
+            avatar: user.imageUrl,
+            name: user.google.name
+          });
           newProfile.save();
           const { token, newUser } = getTokenAndUser(user);
           return res.json({
-            profile:newProfile,
+            profile: newProfile,
             user: newUser,
             token,
             expiresIn: 15 * 60
@@ -232,18 +234,17 @@ exports.facebookLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-exports.upimage = (req, res,next) => {
-  const {image,idUser} = req.body;
+exports.upimage = (req, res, next) => {
+  const { image, idUser } = req.body;
+  console.log(req.body.image);
   
-  cloudinary.uploader.upload(image).then(async(results)=>{
-    const profile = await ProfileModel.findOne({
-      idUser
-    });
+  cloudinary.uploader.upload(image).then(async (results) => {
+    const profile = await ProfileModel.findOne({ idUser });
     profile.avatar = results.url;
-    profile.save().then(profile=> {
-      if(!!profile) res.json(profile);
-      else res.json({message:"cannot save image"})
+    profile.save().then(profile => {
+      if (!!profile) res.json(profile);
+      else res.json({ message: "cannot save image" })
     })
-    
+
   });
-  };
+};

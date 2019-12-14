@@ -45,11 +45,12 @@ function UpdateAvatar(props) {
             if (verifyAvatarFile(files)) {
                 // imageBase64Data
                 const avatarFile = files[0];
-                setAvatarFile(avatarFile);
+                // setAvatarFile(avatarFile);
                 const avatarReader = new FileReader();
                 avatarReader.addEventListener("load", () => {
                     // console.log(avatarReader);
                     props.setUserImageUrl(avatarReader.result);
+                    setAvatarFile(avatarReader.result);
                 }, false);
 
                 avatarReader.readAsDataURL(avatarFile);
@@ -65,7 +66,8 @@ function UpdateAvatar(props) {
         event.preventDefault();
         // Authenticate current user with token
         let token = props.token;
-        props.updateAvatar({ token, avatarFile });
+        let userId = props.user._id;
+        props.updateAvatar({ token, avatarFile, userId });
         setAlert(true);
         setAvatarFile(null);
         setTimeout(() => setAlert(false), 3000);

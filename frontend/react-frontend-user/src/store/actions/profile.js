@@ -41,9 +41,7 @@ export const updateAvatarFail = (error) => {
 export function updateAvatar(data) {
     return (dispatch) => {
         dispatch(updateAvatarPending());
-        const updateUrl = apiUrl + "/me/updateImageUrl";
-        const fd = new FormData();
-        fd.append('avatarImage', data.avatarFile);
+        const updateUrl = apiUrl + "/users/image-upload";
 
         axios({
             method: 'post',
@@ -51,13 +49,15 @@ export function updateAvatar(data) {
             headers: {
                 Authorization: data.token
             },
-            data: fd
+            data: {
+                image: data.avatarFile,
+                idUser: data.userId
+            }
         })
             .then(res => {
-                // console.log(res.data);
-                if (res.data.avatar){
+                console.log(res.data);
+                if (res.data.avatar) {
                     dispatch(updateAvatarSuccess(res.data.avatar));
-                    window.location.reload();
                 }
                 else
                     dispatch(updateAvatarFail({ error: "Cannot upload avatar" }));
@@ -106,7 +106,7 @@ export function updateTeacherProfile(data) {
         })
             .then(res => {
                 // console.log(res.data);
-                if (res.data.avatar){
+                if (res.data.avatar) {
                     dispatch(updateTeacherProfileSuccess(res.data));
                     window.location.reload();
                 }

@@ -39,12 +39,14 @@ class TeacherProfile extends Component {
   handleSubmit = (event) => {
     let submitSubjects = [];
     this.state.selectedSubject.map(subject => {
-      submitSubjects.push(subject.value)
+      return submitSubjects.push(subject.value)
     })
     let submitGrades = [];
     this.state.gradeLevel.map(grade => {
       if (grade.isChecked)
-        submitGrades.push(grade.value)
+        return submitGrades.push(grade.value)
+      else
+        return false;
     })
     let submitLevel = this.state.level.findIndex((element) => element === true);
     let submitDescription = this.state.description;
@@ -65,7 +67,7 @@ class TeacherProfile extends Component {
     this.setState(
       { selectedSubject: selectedOption },
     );
-    
+
   };
 
   handleDescription = e => {

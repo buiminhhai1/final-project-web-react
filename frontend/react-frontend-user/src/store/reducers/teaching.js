@@ -15,7 +15,7 @@ export default function teachingReducer(state = initialState, action) {
         case actionTypes.GET_SUBJECTS_SUCCESS:
             let subjects = [];
             action.subjects.map(subject => {
-                subjects.push({
+                return subjects.push({
                     value: subject,
                     label: subject
                 })
