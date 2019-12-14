@@ -8,8 +8,6 @@ import { getAuthToken } from "../../store/reducers/auth";
 class logOut extends Component {
     async componentWillMount() {
         await this.props.onLogout();
-        console.log(this.props.token);
-
     };
 
     render() {

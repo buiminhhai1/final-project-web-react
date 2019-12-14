@@ -236,15 +236,20 @@ exports.facebookLogin = (req, res, next) => {
 
 exports.upimage = (req, res, next) => {
   const { image, idUser } = req.body;
-  console.log(req.body.image);
-  
+
   cloudinary.uploader.upload(image).then(async (results) => {
-    const profile = await ProfileModel.findOne({ idUser });
-    profile.avatar = results.url;
-    profile.save().then(profile => {
-      if (!!profile) res.json(profile);
-      else res.json({ message: "cannot save image" })
-    })
+    const user = await UserModel.findOne({
+      _id: idUser
+    });
+    if (!!user) {
+      user.imageUrl = results.url;
+      user.save().then(user => {
+        if (!!user) res.json({ imageUrl: results.url });
+        else res.json({ message: "cannot update image" })
+      })
+    } else {
+      res.json({ message: 'cannot update' });
+    }
 
   });
 };

@@ -6,6 +6,7 @@ const initialState = {
     error: null,
     pending: false,
     redirectToPage: '',
+    message: null,
 }
 
 export default function authReducer(state = initialState, action) {
@@ -79,7 +80,32 @@ export default function authReducer(state = initialState, action) {
                     userId: state.user.userId,
                 }
             }
-
+        case actionTypes.UPDATE_IMAGE_URL_PENDING:
+            return {
+                ...state,
+                pending: true,
+                message: null,
+            }
+        case actionTypes.UPDATE_IMAGE_URL_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                user: {
+                    email: state.user.email,
+                    imageUrl: action.imageUrl,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                },
+                message: 'Upload image success'
+            }
+        case actionTypes.UPDATE_IMAGE_URL_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error,
+                message: null
+            }
         default:
             return state;
     }

@@ -18,29 +18,29 @@ export const setUserImageUrl = (image) => {
     };
 };
 
-export const updateAvatarPending = () => {
+export const updateImageUrlPending = () => {
     return {
-        type: actionTypes.UPDATE_AVATAR_PENDING
+        type: actionTypes.UPDATE_IMAGE_URL_PENDING
     };
 };
 
-export const updateAvatarSuccess = (user) => {
+export const updateImageUrlSuccess = (imageUrl) => {
     return {
-        type: actionTypes.UPDATE_AVATAR_SUCCESS,
-        user,
+        type: actionTypes.UPDATE_IMAGE_URL_SUCCESS,
+        imageUrl,
     };
 };
 
-export const updateAvatarFail = (error) => {
+export const updateImageUrlFail = (error) => {
     return {
-        type: actionTypes.UPDATE_AVATAR_ERROR,
+        type: actionTypes.UPDATE_IMAGE_URL_ERROR,
         error
     };
 };
 
-export function updateAvatar(data) {
+export function updateImageUrl(data) {
     return (dispatch) => {
-        dispatch(updateAvatarPending());
+        dispatch(updateImageUrlPending());
         const updateUrl = apiUrl + "/users/image-upload";
 
         axios({
@@ -55,16 +55,17 @@ export function updateAvatar(data) {
             }
         })
             .then(res => {
-                console.log(res.data);
-                if (res.data.avatar) {
-                    dispatch(updateAvatarSuccess(res.data.avatar));
+                let imageUrl = res.data.imageUrl;
+                if (res.data.imageUrl) {
+                    localStorage.setItem('imageUrl', imageUrl);
+                    dispatch(updateImageUrlSuccess(imageUrl));
                 }
                 else
-                    dispatch(updateAvatarFail({ error: "Cannot upload avatar" }));
+                    dispatch(updateImageUrlFail({ error: "Cannot upload avatar" }));
             })
             .catch(err => {
                 console.log(err);
-                dispatch(updateAvatarFail(err));
+                dispatch(updateImageUrlFail(err));
             })
     }
 }

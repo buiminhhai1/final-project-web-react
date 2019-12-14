@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import classes from './Logo.module.css';
 import workLogo from '../../assets/Images/logo.jpg';
 
-const Logo = props => (
-  <div className={classes.Logo} style={{ height: props.height }}>
-    <img src={workLogo} alt="MyBurger" />
-  </div>
-);
+function Logo(props) {
+  const [redirect, setRedirect] = useState(false);
+  return (
+    redirect === true ?
+      (<div className={classes.Logo} style={{ height: props.height }} onClick={() => setRedirect(true)}>
+        <Redirect to="/" />
+        <img src={workLogo} alt="MyBurger" />
+      </div>
+      )
+      :
+      (
+        <div className={classes.Logo} style={{ height: props.height }} onClick={() => setRedirect(true)}>
+          <img src={workLogo} alt="MyBurger" />
+        </div>
+      )
+  )
+};
 
 export default Logo;
