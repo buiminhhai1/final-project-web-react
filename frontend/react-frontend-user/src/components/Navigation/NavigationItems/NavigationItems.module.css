@@ -7,8 +7,17 @@
     align-items: center;
     height: 100%;
 }
-@media (min-width: 500px){
-    .NavigationItems{
+
+@media (min-width: 500px) {
+    .NavigationItems {
         flex-flow: row;
     }
+}
+
+.avatarDropdown::after {
+    content: none !important;
+}
+
+.dropdown button {
+    background-color: transparent !important;
 }

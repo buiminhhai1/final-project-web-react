@@ -1,0 +1,45 @@
+.updateAvatar {
+    display: flex;
+    justify-content: center !important;
+    align-content: center;
+}
+
+#avatar {
+    text-align: center;
+}
+
+.avatarDropzone {
+    border: dashed 1px #000000;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.avatarDropzone:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.avatarImage {
+    max-width: 300px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.avatarBtn {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.changeAvatarBtn {
+    margin: 10px;
+}
+
+.uploadAvatarBtn {
+    margin: 10px;
+}
