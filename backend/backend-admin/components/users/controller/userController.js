@@ -29,8 +29,9 @@ exports.login = (req, res, next) => {
         expiresIn: '15m'
       });
       const newUser = {
-        userId: user._id,
-        name: user.name
+        _id: user._id,
+        name: user.name,
+        picture: user.picture
       };
       return res.json({
         user: newUser,
@@ -120,9 +121,13 @@ exports.facebookLogin = async (req, res, next) => {
         isUser.idFacebook = id;
         await isUser.save();
       }
+      const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
+        expiresIn: '15m'
+      });
+      console.log(isUser);
       res.json({
         user: isUser,
-        token: accessToken,
+        token,
         expiresIn: 15 * 60
       });
     } else {
@@ -136,7 +141,7 @@ exports.facebookLogin = async (req, res, next) => {
       await newUser.save();
       res.json({
         user: {
-          userId: newUser._id,
+          _id: newUser._id,
           name: newUser.name,
           email: newUser.email,
           picture: newUser.picture
@@ -174,9 +179,12 @@ exports.googleLogin = async (req, res, next) => {
         isUser.idGoogle = id;
         await isUser.save();
       }
+      const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
+        expiresIn: '15m'
+      });
       res.json({
         user: isUser,
-        token: accessToken,
+        token,
         expiresIn: 15 * 60
       });
     } else {
@@ -190,7 +198,7 @@ exports.googleLogin = async (req, res, next) => {
       await newUser.save();
       res.json({
         user: {
-          userId: newUser._id,
+          _id: newUser._id,
           name: newUser.name,
           email: newUser.email,
           picture: newUser.picture
@@ -204,4 +212,9 @@ exports.googleLogin = async (req, res, next) => {
       err
     });
   }
+};
+
+exports.getDetailUser = (req, res, next) => {
+  console.log(req);
+  res.json(req.user);
 };

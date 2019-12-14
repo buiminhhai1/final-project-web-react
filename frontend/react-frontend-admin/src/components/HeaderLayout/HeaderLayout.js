@@ -1,59 +1,74 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import 'antd/dist/antd.css';
 import './HeaderLayout.css';
+import UserInfo from '../UI/UserInfo/UserInfo';
 
 const { Header } = Layout;
 
-const HeaderLayout = props => {
-  let menuH = (
-    <Menu
-      theme="dark"
-      mode="horizontal"
-      defaultSelectedKeys={[props.tabNum]}
-      style={{
-        lineHeight: '64px',
-        textAlign: 'right'
-      }}
-    >
-      <Menu.Item key="1">
-        <NavLink to="/admin/login"> Login </NavLink>
-      </Menu.Item>
-      <Menu.Item key="2">
-        <NavLink to="/admin/register"> Register </NavLink>
-      </Menu.Item>
-    </Menu>
-  );
-  if (props.isAuthenticated) {
-    menuH = (
+class HeaderLayout extends Component {
+  componentDidMount() {
+    console.log('didmount');
+    console.log(this.props);
+  }
+
+  componentDidUpdate() {
+    console.log('hello props');
+    console.log(this.props);
+  }
+
+  render() {
+    let menuH = (
       <Menu
         theme="dark"
         mode="horizontal"
-        defaultSelectedKeys={[props.tabNum]}
+        defaultSelectedKeys={[this.props.tabNum]}
         style={{
           lineHeight: '64px',
           textAlign: 'right'
         }}
       >
         <Menu.Item key="1">
-          <NavLink to="/"> HomePage </NavLink>
+          <NavLink to="/admin/login"> Login </NavLink>
         </Menu.Item>
         <Menu.Item key="2">
-          <NavLink to="/admin/logout"> Logout </NavLink>
+          <NavLink to="/admin/register"> Register </NavLink>
         </Menu.Item>
       </Menu>
     );
+    if (this.props.isAuthenticated) {
+      menuH = (
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={[this.props.tabNum]}
+          style={{
+            lineHeight: '64px',
+            textAlign: 'right'
+          }}
+        >
+          <Menu.Item key="1">
+            <NavLink to="/"> HomePage </NavLink>
+          </Menu.Item>
+          <Menu.Item key="2" style={{ background: '#001529' }}>
+            <UserInfo name={this.props.name} picture={this.props.picture} />
+          </Menu.Item>
+        </Menu>
+      );
+    }
+    return (
+      <Header className="header">
+        <div className="logo" />
+        {menuH}
+      </Header>
+    );
   }
-  return (
-    <Header className="header">
-      <div className="logo" />
-      {menuH}
-    </Header>
-  );
-};
+}
 const mapStateToProps = state => ({
-  tabNum: state.auth.tabNum
+  tabNum: state.auth.tabNum,
+  name: state.auth.name,
+  picture: state.auth.picture
 });
 export default connect(mapStateToProps)(HeaderLayout);

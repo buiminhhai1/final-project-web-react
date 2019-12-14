@@ -10,4 +10,8 @@ router.post('/register', userController.register);
 router.post('/login/facebookOauth', userController.facebookLogin);
 router.post('/login/googleOauth', userController.googleLogin);
 
+router.get('/detail', passport.authenticate('jwt', {
+  session: false
+}), userController.getDetailUser);
+
 module.exports = router;

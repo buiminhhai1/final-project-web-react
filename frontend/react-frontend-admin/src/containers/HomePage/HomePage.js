@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
+import { Layout } from 'antd';
 import 'antd/dist/antd.css';
 import './HomePage.css';
-import { Layout } from 'antd';
-import SideBar from '../../components/SideBar/SideBar';
-import BreadcrumbLayout from '../../components/BreadcrumbLayout/BreadcrumbLayout';
-import ContentLayout from '../../components/ContentLayout/ContentLayout';
+
+const { Content } = Layout;
 
 class HomePage extends Component {
-  componentDidMount() {}
-
   render() {
     return (
-      <Layout>
-        <SideBar />
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <BreadcrumbLayout />
-          <ContentLayout />
-        </Layout>
-      </Layout>
+      <Content
+        style={{
+          background: '#fff',
+          padding: 24,
+          margin: 0,
+          minHeight: 800
+        }}
+      >
+        Content
+      </Content>
     );
   }
 }

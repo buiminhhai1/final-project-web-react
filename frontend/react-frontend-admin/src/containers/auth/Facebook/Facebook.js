@@ -42,6 +42,7 @@ class Facebook extends Component {
           appId="2483517738600678"
           autoLoad={false}
           fields="name,email,picture"
+          scope="public_profile"
           onClick={this.componentClicked}
           callback={this.responseFacebook}
         />
