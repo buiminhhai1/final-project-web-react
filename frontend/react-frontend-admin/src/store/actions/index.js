@@ -15,6 +15,7 @@ export {
   createSkill,
   updateSkill,
   getListSkill,
-  deleteSkill
+  deleteSkill,
+  refreshMessageCRUD
 }
 from './skill';
