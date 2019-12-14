@@ -4,5 +4,9 @@ form.tutorInfoForm {
 }
 
 .subjectSelect {
-    max-width: 500px;
+    max-width: 600px;
+}
+
+.levelSelect {
+    max-width: 600px;
 }

@@ -81,8 +81,7 @@ export const login = (email, password) => dispatch => {
         dispatch(loginFail('Tên đăng nhập hoặc mật khẩu chưa đúng'));
       }
     })
-    .catch(err => {
-      console.log(err);
+    .catch(() => {
       dispatch(loginFail('Tên đăng nhập hoặc mật khẩu chưa đúng'));
     });
 };
@@ -108,7 +107,6 @@ export const signInOauth = Oauth => dispatch => {
         const expirationDate = new Date(
           new Date().getTime() + response.data.expiresIn * 1000
         );
-        console.log(response.data);
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userId', response.data.user._id);

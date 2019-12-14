@@ -24,8 +24,7 @@ exports.getListSkill = async (req, res, next) => {
 
 exports.addSkill = async (req, res, next) => {
   const {
-    title,
-    content
+    title
   } = req.body;
 
   try {
@@ -40,8 +39,7 @@ exports.addSkill = async (req, res, next) => {
     }
     const newSkill = new SkillModel({
       _id: new mongoose.Types.ObjectId(),
-      title,
-      content
+      title
     });
     const result = await newSkill.save();
     if (!!result) {
@@ -60,18 +58,15 @@ exports.addSkill = async (req, res, next) => {
 
 exports.updateSkill = async (req, res, next) => {
   const {
-    skillId,
-    title,
-    content
+    _id,
+    title
   } = req.body;
   try {
     const updateSkill = await SkillModel.findOne({
-      _id: skillId,
-      title
+      _id,
     });
     if (!!updateSkill) {
       updateSkill.title = title;
-      updateSkill.content = content;
       const result = await updateSkill.save();
       return res.json({
         skill: result,

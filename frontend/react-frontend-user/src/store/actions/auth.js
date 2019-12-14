@@ -29,7 +29,6 @@ export const signInFail = (error) => {
 
 export const logout = () => {
     localStorage.clear();
-
     return {
         type: actionTypes.LOGOUT
     };

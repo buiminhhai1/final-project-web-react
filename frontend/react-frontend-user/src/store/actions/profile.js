@@ -93,9 +93,7 @@ export const updateTeacherProfileFail = (error) => {
 export function updateTeacherProfile(data) {
     return (dispatch) => {
         dispatch(updateTeacherProfilePending());
-        const updateUrl = apiUrl + "/me/updateImageUrl";
-        const fd = new FormData();
-        fd.append('avatarImage', data.avatarFile);
+        const updateUrl = apiUrl + "/";
 
         axios({
             method: 'post',
@@ -103,7 +101,7 @@ export function updateTeacherProfile(data) {
             headers: {
                 Authorization: data.token
             },
-            data: fd
+            data
         })
             .then(res => {
                 // console.log(res.data);

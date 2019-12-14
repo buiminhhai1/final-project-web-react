@@ -11,6 +11,7 @@ const passport = require('passport');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 const skillRouter = require('./components/skills/router/skillRouter');
+const levelRouter = require('./components/levels/router/levelRouter');
 
 require('./components/utils/authentication/passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -54,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/admin', usersRouter);
 app.use('/skill', skillRouter);
+app.use('/level', levelRouter);
 
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({
