@@ -14,5 +14,7 @@ router.get('/detail', userController.getUser);
 router.post('/detail', userController.updateUser);
 router.post('/image-upload', userController.upimage);
 
-// router.get('/verify/',userController.verifyUser);
+router.get('/verify',userController.verifyUser);
+router.post('/changePassword',userController.changePassword);
+router.post('/forgetPassword',userController.forgetPassword);
 module.exports = router;

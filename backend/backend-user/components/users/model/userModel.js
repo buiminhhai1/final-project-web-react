@@ -5,6 +5,11 @@ const userSchema = mongoose.Schema({
     enum: ['local', 'google', 'facebook'],
     required: true
   },
+  verify:{
+    type : Boolean,
+    default: false,
+    require: true
+  },
   isTeacher: {
     type: Boolean,
     required: true
