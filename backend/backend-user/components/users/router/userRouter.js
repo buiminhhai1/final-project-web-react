@@ -16,5 +16,6 @@ router.post('/image-upload', userController.upimage);
 
 router.get('/verify',userController.verifyUser);
 router.post('/changePassword',userController.changePassword);
-router.post('/forgetPassword',userController.forgetPassword);
+router.post('/resetPassword',userController.resetPassword);
+router.post('/sendEmailResetPassword',userController.sendEmailResetPassword);
 module.exports = router;
