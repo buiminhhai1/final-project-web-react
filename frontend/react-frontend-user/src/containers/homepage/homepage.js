@@ -5,7 +5,7 @@ export default class homepage extends Component {
     render() {
         return (
             <div>
-                <TeacherInfoCard loading={false} />
+                
             </div>
         )
     }

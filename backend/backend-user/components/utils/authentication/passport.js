@@ -66,10 +66,6 @@ const facebook = new facebookStrategy({
   clientID: facebookClientId,
   clientSecret: facebookClientSecret
 }, async (accessToken, refreshToken, profile, cb) => {
-  // console.log("accessToken", accessToken);
-  // console.log("refreshToken", refreshToken);
-  // console.log("profile", profile);
-
   // Check existed user
   UserModel.findOne({ "facebook.id": profile.id })
     .then(user => {
@@ -85,6 +81,8 @@ const facebook = new facebookStrategy({
           name: profile.displayName,
           email: profile.emails[0].value,
         },
+        name: profile.displayName,
+        email: profile.emails[0].value,
         imageUrl: profile.photos[0].value,
         isTeacher: false
       });

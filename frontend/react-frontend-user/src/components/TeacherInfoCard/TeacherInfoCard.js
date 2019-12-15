@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Avatar, Tag, Button } from 'antd';
+import { Card, Avatar, Tag, Button, Divider } from 'antd';
 
 import './TeacherInfoCard.css'
 
@@ -8,11 +8,12 @@ const { Meta } = Card;
 export default function TeacherInfoCard(props) {
     return (
         <div>
-            <Card style={{ width: 300, margin: 8, borderRadius: 5 }}
+            <Card style={{ width: 280, margin: 8, borderRadius: 5 }}
+            bodyStyle={{paddingTop: 0}}
                 loading={props.loading} hoverable
                 cover={
                     <Meta
-                        style={{ padding: 16, marginBottom: 0, backgroundColor: '#E8E8E8', borderRadius: 5 }}
+                        style={{ paddingLeft: 16, paddingTop: 16, borderRadius: 5 }}
                         avatar={
                             <Avatar size="large"
                                 src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -29,6 +30,7 @@ export default function TeacherInfoCard(props) {
                 <Meta
                     description={
                         <div>
+                            <Divider />
                             <div style={{ marginBottom: 10 }}>
                                 <Tag color="#f50">Math</Tag>
                                 <Tag color="#2db7f5">Literature</Tag>

@@ -42,6 +42,8 @@ exports.register = async (req, res) => {
             name,
             password: hash,
           },
+          email,
+          name,
           imageUrl: "https://icon-library.net/images/bot-icon/bot-icon-18.jpg",
           method: 'local',
           isTeacher: false
@@ -75,7 +77,7 @@ exports.register = async (req, res) => {
 exports.login = (req, res, next) => {
   passport.authenticate('local', { session: false }, async (err, user, message) => {
     if (err || !user) {
-      return res.status(400).json({
+      return res.json({
         message,
       });
     }
@@ -153,6 +155,8 @@ registerForGoogleAccount = async (user) => {
         email: user.email,
         name: user.name,
       },
+      email: user.email,
+      name: user.name,
       imageUrl: user.picture,
       method: 'google',
       isTeacher: false
@@ -174,24 +178,11 @@ getTokenAndUser = (user) => {
   let newUser = {
     userId: user._id,
     imageUrl: user.imageUrl,
-    isTeacher: user.isTeacher
+    isTeacher: user.isTeacher,
+    name: user.name,
+    email: user.email,
+    verify: user.verify,
   };
-  switch (user.method) {
-    case "local": {
-      newUser.name = user.local.name;
-      newUser.email = user.local.email;
-      break;
-    }
-    case "google": {
-      newUser.name = user.google.name;
-      newUser.email = user.google.email;
-      break;
-    }
-    case "facebook": {
-      newUser.name = user.facebook.name;
-      newUser.email = user.facebook.email;
-    }
-  }
 
   return { token, newUser };
 }
@@ -229,7 +220,7 @@ exports.updateUser = async (req, res, next) => {
         return res.json(profile);
       })
         .catch(err => {
-          res.status(400).send("unable to save to database");
+          res.send("unable to save to database");
         });
     } else return res.json({ message: "User cannot find" });
 
@@ -280,7 +271,7 @@ exports.upimage = (req, res, next) => {
 
 exports.verifyUser = async (req, res, next) => {
   const { id, successRedirectUrl, failureRedirectUrl } = req.query;
-  try{
+  try {
     const user = await UserModel.findOne({
       _id: id
     });
@@ -291,10 +282,10 @@ exports.verifyUser = async (req, res, next) => {
         else res.redirect(failureRedirectUrl);
       })
     } else res.redirect(failureRedirectUrl);
-  }catch(error){
+  } catch (error) {
     res.redirect(failureRedirectUrl);
   }
-  
+
 }
 
 exports.changePassword = async (req, res, next) => {
