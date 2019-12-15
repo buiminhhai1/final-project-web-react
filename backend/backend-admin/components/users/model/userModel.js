@@ -178,7 +178,7 @@ const userSchema = mongoose.Schema({
   },
   isBlocking: {
     type: Boolean,
-    requier: true
+    requier: false
   }
 });
 

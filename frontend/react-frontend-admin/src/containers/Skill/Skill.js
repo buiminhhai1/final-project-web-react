@@ -216,7 +216,6 @@ class Skill extends Component {
 
 const mapStateToProps = state => ({
   skillData: state.skill.skillData,
-  skillColumns: state.skill.skillColumns,
   message: state.skill.message,
   error: state.skill.error,
   loading: state.skill.loading

@@ -13,6 +13,7 @@ const adminRouter = require('./components/admins/router/adminRouter');
 const skillRouter = require('./components/skills/router/skillRouter');
 const levelRouter = require('./components/levels/router/levelRouter');
 const userRouter = require('./components/users/router/userRouter');
+const locationRouter = require('./components/locations/router/locationRouter');
 
 require('./components/utils/authentication/passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -55,8 +56,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
-app.use('/skill', skillRouter);
 app.use('/level', levelRouter);
+app.use('/location', locationRouter);
+app.use('/skill', skillRouter);
 app.use('/users', userRouter);
 
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
