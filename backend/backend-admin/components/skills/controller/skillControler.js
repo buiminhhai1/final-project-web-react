@@ -10,8 +10,20 @@ exports.getListSkillEnabled = async (req, res, next) => {
 
 exports.getListSkill = async (req, res, next) => {
   // update get pagination
+  console.log('test query');
+  const {
+    searchString
+  } = req.query;
+  let skills;
   try {
-    const skills = await SkillModel.find();
+    if (searchString) {
+      console.log('search with handle search string');
+      skills = await SkillModel.findOne({
+        title: searchString
+      });
+    } else {
+      skills = await SkillModel.find({});
+    }
     return res.json({
       skills
     });
@@ -82,12 +94,14 @@ exports.updateSkill = async (req, res, next) => {
 };
 
 exports.deleteSkill = async (req, res, next) => {
+  console.log(req.params);
   const {
-    skillId
-  } = req.body;
+    id
+  } = req.params;
+
   try {
-    const result = SkillModel.deleteOne({
-      _id: skillId
+    const result = await SkillModel.deleteOne({
+      _id: id
     });
     if (!!result) {
       return res.json({

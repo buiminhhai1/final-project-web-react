@@ -4,14 +4,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
 
-router.post('/login', userController.login);
-router.post('/register', userController.register);
-
-router.post('/login/facebookOauth', userController.facebookLogin);
-router.post('/login/googleOauth', userController.googleLogin);
-
-router.get('/detail', passport.authenticate('jwt', {
+router.get('/get-list-user', userController.getListUser);
+router.put('/blocking-user', passport.authenticate('jwt', {
   session: false
-}), userController.getDetailUser);
+}), userController.blockingUser);
 
 module.exports = router;

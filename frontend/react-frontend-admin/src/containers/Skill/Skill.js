@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Icon, Divider, Tag, Modal, Input, message } from 'antd';
+import {
+  Table,
+  Spin,
+  Icon,
+  Divider,
+  Tag,
+  Modal,
+  Input,
+  message,
+  Col,
+  Row,
+  Button
+} from 'antd';
+import 'antd/dist/antd.css';
 import * as actions from '../../store/actions/index';
+
+const { Search } = Input;
 
 class Skill extends Component {
   constructor(props) {
@@ -9,14 +24,16 @@ class Skill extends Component {
     this.state = {
       _id: '',
       title: '',
+      modalName: '',
+      confirmName: 'Delete skill',
       skillColumns: [
         {
           title: 'Title',
           dataIndex: 'title',
           key: 'title',
           render: text => (
-            <Tag color={'green'} key={text}>
-              {text.toUpperCase()}
+            <Tag color={'geekblue'} key={text}>
+              <strong>{text.toUpperCase()}</strong>
             </Tag>
           )
         },
@@ -32,40 +49,79 @@ class Skill extends Component {
                   await this.setState({
                     visible: true,
                     _id: record._id,
-                    title: record.title
+                    title: record.title,
+                    modalName: 'Edit skill'
                   });
                 }}
               />
               <Divider type="vertical" />
-              <Icon type="delete" title="delete skill" />
+              <Icon
+                type="delete"
+                title="delete skill"
+                onClick={async () => {
+                  await this.setState({
+                    visibleConfirm: true,
+                    _id: record._id,
+                    title: record.title
+                  });
+                }}
+              />
             </span>
           )
         }
       ],
       visible: false,
+      visibleConfirm: false,
       confirmLoading: false
     };
   }
 
   componentDidMount() {
-    this.props.onGetListSkill();
+    this.props.onGetListSkill('');
   }
+
+  componentDidUpdate() {
+    this.props.onRefreshMessage();
+    if (this.props.error) {
+      this.render.actionMessage = message.error(this.props.message);
+    } else if (this.props.message) {
+      this.render.actionMessage = message.success(this.props.message);
+    }
+  }
+
+  handleDeleteForm = async () => {
+    const { _id } = this.state;
+    await this.props.onDeleteSkill(_id);
+    this.setState({
+      visibleConfirm: false,
+      confirmLoading: false
+    });
+  };
 
   handleSubmitUpdateForm = async () => {
     this.setState({
       confirmLoading: true
     });
     const { _id, title } = this.state;
-    await this.props.onUpdateSkill(_id, title);
-    this.setState({
-      visible: false,
-      confirmLoading: false
-    });
+    if (_id) {
+      await this.props.onUpdateSkill(_id, title);
+      this.setState({
+        visible: false,
+        confirmLoading: false
+      });
+    } else {
+      await this.props.onCreateSkill(title);
+      this.setState({
+        visible: false,
+        confirmLoading: false
+      });
+    }
   };
 
   handleCancel = () => {
     this.setState({
-      visible: false
+      visible: false,
+      visibleConfirm: false
     });
   };
 
@@ -73,50 +129,86 @@ class Skill extends Component {
     this.setState({ title: value });
   };
 
+  addNewSkill = async () => {
+    this.setState({
+      visible: true,
+      _id: '',
+      title: '',
+      modalName: 'Add skill'
+    });
+  };
+
   render() {
-    const { visible, confirmLoading } = this.state;
-    const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
-    let skillResult = <Spin indicator={antIcon} />;
-    if (this.props.skillData) {
-      skillResult = (
-        <Table
-          columns={this.state.skillColumns}
-          dataSource={this.props.skillData}
-        />
-      );
-    }
-    let actionMessage = null;
-    if (this.props.error) {
-      actionMessage = message.error(this.props.message);
-    } else if (this.props.message) {
-      actionMessage = message.success(this.props.message);
-    }
+    const { visible, confirmLoading, visibleConfirm } = this.state;
+    const actionMessage = null;
 
     return (
       <div>
-        {skillResult}
-        {actionMessage}
-        {this.props.skillData ? (
-          <Modal
-            title="Edit Skill"
-            visible={visible}
-            onOk={this.handleSubmitUpdateForm}
-            confirmLoading={confirmLoading}
-            onCancel={this.handleCancel}
-          >
-            <div>
+        <Row style={{ margin: '10px 0 20px 0' }}>
+          <Col span={6} offset={0}>
+            <Search
+              placeholder="input search text"
+              onSearch={value => {
+                console.log('search value');
+                console.log(value);
+                this.props.onGetListSkill(value);
+              }}
+              enterButton
+            />
+          </Col>
+          <Col span={1} offset={16}>
+            <Button type="primary" onClick={this.addNewSkill}>
+              Add
+            </Button>
+          </Col>
+        </Row>
+        <Spin spinning={this.props.loading}>
+          <div style={{ background: 'white' }}>
+            <Table
+              columns={this.state.skillColumns}
+              dataSource={this.props.skillData}
+              size="middle"
+            />
+            {actionMessage}
+            {this.props.skillData ? (
               <div>
-                Title
-                <span style={{ color: 'red' }}>*</span>
+                <Modal
+                  title={this.state.modalName}
+                  visible={visible}
+                  onOk={this.handleSubmitUpdateForm}
+                  confirmLoading={confirmLoading}
+                  onCancel={this.handleCancel}
+                >
+                  <div>
+                    <div>
+                      Title
+                      <span style={{ color: 'red', marginBottom: '5px' }}>
+                        *
+                      </span>
+                    </div>
+                    <Input
+                      placeholder="Title"
+                      value={this.state.title}
+                      onChange={this.onTitleChange}
+                    />
+                  </div>
+                </Modal>
+                <Modal
+                  title={this.state.confirmName}
+                  visible={visibleConfirm}
+                  onOk={this.handleDeleteForm}
+                  confirmLoading={confirmLoading}
+                  onCancel={this.handleCancel}
+                >
+                  <span>
+                    Do you want to delete
+                    {this.state.title}
+                  </span>
+                </Modal>
               </div>
-              <Input
-                placeholder="Title"
-                value={this.state.title}
-                onChange={this.onTitleChange}
-              />
-            </div>
-          </Modal>
-        ) : null}
+            ) : null}
+          </div>
+        </Spin>
       </div>
     );
   }
@@ -126,14 +218,16 @@ const mapStateToProps = state => ({
   skillData: state.skill.skillData,
   skillColumns: state.skill.skillColumns,
   message: state.skill.message,
-  error: state.skill.error
+  error: state.skill.error,
+  loading: state.skill.loading
 });
 
 const mapDispatchToProps = dispatch => ({
   onCreateSkill: title => dispatch(actions.createSkill(title)),
   onUpdateSkill: (_id, title) => dispatch(actions.updateSkill(_id, title)),
   onDeleteSkill: _id => dispatch(actions.deleteSkill(_id)),
-  onGetListSkill: () => dispatch(actions.getListSkill())
+  onGetListSkill: searchString => dispatch(actions.getListSkill(searchString)),
+  onRefreshMessage: () => dispatch(actions.refreshMessageCRUD())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Skill);

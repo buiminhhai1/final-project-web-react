@@ -61,9 +61,9 @@ class App extends Component {
       <div>
         <Layout>
           <HeaderLayout isAuthenticated={this.props.isAuthenticated} />
-          <Layout>
+          <Layout style={{ background: 'white' }}>
             {sideBar}
-            <Layout style={{ padding: '0 24px 24px' }}>
+            <Layout style={{ padding: '24px' }}>
               {breadcrumbLayout}
               {routes}
             </Layout>

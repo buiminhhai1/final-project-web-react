@@ -30,6 +30,7 @@
     "no-else-return": "off",
     "arrow-body-style": "off",
     "arrow-parens": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "default-case": "off"
   }
 }

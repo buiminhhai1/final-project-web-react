@@ -1,220 +1,96 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
 const mongoose = require('mongoose');
+const UserSchema = require('../model/userModel');
 
-const UserModel = require('../model/userModel');
-const constant = require('../../utils/const/constant');
-
-exports.login = (req, res, next) => {
-  passport.authenticate('local', {
-    session: false
-  }, (err, user, info) => {
-    if (err || !user) {
-      return res.status(400).json({
-        message: info ? info.message : 'Đăng nhập thất bại',
-        user
-      });
-    }
-    req.login(user, {
-      session: false
-    }, err2 => {
-      if (err2) {
-        res.json({
-          message: 'Đăng nhập thất bại',
-          user: ''
-        });
-      }
-      const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '150m'
-      });
-      const newUser = {
-        _id: user._id,
-        name: user.name,
-        picture: user.picture
-      };
-      return res.json({
-        user: newUser,
-        token,
-        expiresIn: 150 * 60
-      });
-    });
-  })(req, res);
+const typeGet = {
+  teacher: 1,
+  student: 2,
+  all: 0,
+  teacherNonBlock: 3,
+  studentNonBlock: 4,
+  teacherBlock: 5,
+  studentBlock: 6
 };
 
-exports.register = async (req, res, next) => {
-  const {
-    email,
-    password,
-    name
-  } = req.body;
+const typeBlock = {
+  blocked: 1,
+  nonBlocked: 2,
+  all: 0
+};
 
-  if (email.length === 0 || password.length === 0) {
-    res.json({
-      message: 'Thông tin người dùng không được để trống'
-    });
-  }
-
+exports.getListUser = async (req, res, next) => {
+  const { type, blocking } = req.query;
   try {
-    const resultUser = await UserModel.findOne({
-      email
-    });
-    if (resultUser) {
-      return res.json({
-        message: `email: ${email} đã tồn tại`,
-        email: ''
-      });
-    } else {
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, (err1, hash) => {
-          const user = new UserModel({
-            _id: new mongoose.Types.ObjectId(),
-            email,
-            name,
-            password: hash
-          });
-
-          user
-            .save()
-            .then(result => {
-              if (!!result) {
-                return res.json({
-                  email,
-                  message: `Đăng kí email: ${email} thành công!`
-                });
-              }
-            })
-            .catch(error1 => {
-              res.json({
-                message: `something wrong! ${error1}`
-              });
-            });
-        });
-      });
+    let condition = {};
+    switch (+type) {
+      case typeGet.teacher:
+        condition = {
+          isTeacher: true
+        };
+        break;
+      case typeGet.student:
+        condition = {
+          isTeacher: false
+        };
+        break;
+      case typeGet.all:
+        condition = {};
+        break;
+      case typeGet.teacherNonBlock:
+        condition = {
+          ...condition,
+          isBlocking: false
+        };
+        break;
+      case typeGet.studentNonBlock:
+        condition = {
+          ...condition,
+          isBlocking: false
+        };
+        break;
+      case typeGet.teacherBlock:
+        condition = {
+          ...condition,
+          isBlocking: true
+        };
+        break;
+      case typeGet.studentBlock:
+        condition = {
+          ...condition,
+          isBlocking: true
+        };
     }
-  } catch (error) {
-    res.json({
-      message: `some thing went wrong ${error}`
-    });
-  }
-};
 
-exports.facebookLogin = async (req, res, next) => {
-  const {
-    email,
-    name,
-    picture,
-    id,
-    accessToken
-  } = req.body;
-  if (!accessToken) {
+    const users = await UserSchema.find(condition);
     return res.json({
-      error: 'Cannot signing with Facebook!'
+      users,
+      message: 'Get list user success'
+    });
+  } catch (err) {
+    return res.json({
+      error: err,
+      message: 'Get list user has failed!'
     });
   }
+};
+
+exports.blockingUser = async (req, res, next) => {
+  const { _id, blocking } = req.body;
   try {
-    const isUser = await UserModel.findOne({
-      email
+    const user = await UserSchema.findById({
+      _id
     });
-    if (!!isUser) {
-      if (!isUser.idFacebook) {
-        isUser.idFacebook = id;
-        await isUser.save();
-      }
-      const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '150m'
-      });
-      console.log(isUser);
-      res.json({
-        user: isUser,
-        token,
-        expiresIn: 150 * 60
-      });
-    } else {
-      const newUser = new UserModel({
-        _id: new mongoose.Types.ObjectId(),
-        idFacebook: id,
-        email,
-        name,
-        picture,
-      });
-      await newUser.save();
-      res.json({
-        user: {
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          picture: newUser.picture
-        },
-        token: accessToken,
-        expiresIn: 150 * 60
+    if (user) {
+      user.isBlocking = blocking;
+      await user.save();
+      return res.json({
+        user,
+        message: `user ${user.local.email} has blocked!`
       });
     }
   } catch (err) {
     return res.json({
-      err
+      error: err,
+      message: 'Blocked user has failed!'
     });
   }
-};
-
-exports.googleLogin = async (req, res, next) => {
-  const {
-    email,
-    name,
-    picture,
-    id,
-    accessToken
-  } = req.body;
-  if (!accessToken) {
-    return res.json({
-      error: 'Cannot signing with Facebook!'
-    });
-  }
-  try {
-    const isUser = await UserModel.findOne({
-      email,
-    });
-    if (!!isUser) {
-      if (!isUser.idGoogle) {
-        isUser.idGoogle = id;
-        await isUser.save();
-      }
-      const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
-        expiresIn: '150m'
-      });
-      res.json({
-        user: isUser,
-        token,
-        expiresIn: 150 * 60
-      });
-    } else {
-      const newUser = new UserModel({
-        _id: new mongoose.Types.ObjectId(),
-        idGoogle: id,
-        email,
-        name,
-        picture,
-      });
-      await newUser.save();
-      res.json({
-        user: {
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          picture: newUser.picture
-        },
-        token: accessToken,
-        expiresIn: 150 * 60
-      });
-    }
-  } catch (err) {
-    return res.json({
-      err
-    });
-  }
-};
-
-exports.getDetailUser = (req, res, next) => {
-  console.log(req);
-  res.json(req.user);
 };
