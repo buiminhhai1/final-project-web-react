@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import './teacherInfoRegister.css'
 import { updateTeacherProfile } from '../../store/actions/profile';
-import { getSubjects, getLevel, changeLevelStatus } from '../../store/actions/teaching';
+import { getSubjects, getLevel } from '../../store/actions/teaching';
 import { getTeachingSubjects, getTeachingLevel } from '../../store/reducers/teaching';
 
 class TeacherProfile extends Component {
@@ -38,7 +38,7 @@ class TeacherProfile extends Component {
     let submitDescription = this.state.description;
 
     console.log({ submitSubjects, submitLevel, submitEducationLevel, submitDescription });
-    
+
     // this.props.updateTeacherProfile({ submitSubjects, submitLevel, submitEducationLevel, submitDescription });
   }
 
@@ -150,7 +150,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTeacherProfile, getSubjects, getLevel, changeLevelStatus
+  updateTeacherProfile, getSubjects, getLevel
 }, dispatch)
 
 export default connect(

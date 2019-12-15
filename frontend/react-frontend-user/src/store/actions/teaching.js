@@ -3,7 +3,7 @@ import axios from 'axios';
 
 //reads in configuration from a .env file
 require('dotenv').config();
-const apiUrl = process.env.REACT_APP_API_URL;
+// const apiUrl = process.env.REACT_APP_API_URL;
 const apiUtilUrl = process.env.REACT_APP_API_UTILITY;
 
 export const getSubjectsPending = () => {
@@ -80,8 +80,39 @@ export function getLevel() {
     }
 }
 
-export function changeLevelStatus(index) {
-    return dispatch => {
-        dispatch({ type: actionTypes.CHANGE_LEVEL_STATUS, index })
+export const getTeachersPending = () => {
+    return {
+        type: actionTypes.GET_TEACHERS_PENDING
+    };
+};
+
+export const getTeachersSuccess = (teachers) => {
+    return {
+        type: actionTypes.GET_TEACHERS_SUCCESS,
+        teachers
+    };
+};
+
+export const getTeachersFail = (error) => {
+    return {
+        type: actionTypes.GET_TEACHERS_ERROR,
+        error
+    };
+};
+
+export function getTeachers() {
+    return (dispatch) => {
+        dispatch(getLevelPending());
+
+        let url = apiUtilUrl + "users/get-list-user?type=1";
+        axios.get(url)
+            .then(res => {
+                let teachers = res.data.users;
+                dispatch(getLevelSuccess(teachers));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getLevelFail(err));
+            })
     }
 }

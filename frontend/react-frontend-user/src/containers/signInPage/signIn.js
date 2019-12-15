@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel, Alert } from "react-bootstrap";
 import { connect } from 'react-redux';
-import { NavLink, Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -94,12 +94,12 @@ function Login(props) {
                     icon={<i className="fab fa-facebook-f mr-2"></i>}
                     cssClass="btn facebook-btn btn-primary btn-block my-2"
                 />
-                <NavLink
+                <Link
                     className="signUpLink"
                     to='/signUp'
                     exact>
                     Don't have account? Sign up now
-                </NavLink>
+                </Link>
             </form>
         </div>
     );

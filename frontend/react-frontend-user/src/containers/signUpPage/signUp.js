@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FormGroup, FormControl, FormLabel, Button, Alert } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, Button } from "react-bootstrap";
+import { message } from 'antd';
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -32,12 +33,15 @@ function SignUp(props) {
         return <Redirect to={props.redirectPage} />
     }
 
+    let errorMeassage = null;
+    if (props.error) {
+        errorMeassage = message.error(props.error);
+    }
+
     return (
         <div className="Signup">
             <form onSubmit={handleSubmit}>
-                {props.error && <Alert variant='danger' className="text-center">
-                    {props.error}
-                </Alert>}
+                {errorMeassage}
                 <FormGroup controlId="email">
                     <FormLabel>Email</FormLabel>
                     <FormControl
