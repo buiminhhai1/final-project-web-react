@@ -1,6 +1,8 @@
 import * as actionTypes from '../actions/actionTypes';
 
-import { updateObject } from '../../shared/utility';
+import {
+  updateObject
+} from '../../shared/utility';
 
 const initialState = {
   skillData: [],
@@ -18,17 +20,22 @@ const createSkillStart = state =>
     message: null
   });
 
-const createSkillSuccess = (state, action) =>
-  updateObject(state, {
+const createSkillSuccess = (state, action) => {
+  const updatedData = [...state.skillData];
+  console.log('updated data');
+  updatedData.push({
+    key: updatedData.length + 1 + '',
+    _id: action._id,
+    title: action.title
+  });
+
+  return updateObject(state, {
     loading: false,
     error: null,
     message: action.message,
-    skillData: state.skillData.push({
-      key: state.skillData.length + 1 + '',
-      title: action.title,
-      _id: action._id
-    })
+    skillData: updatedData
   });
+};
 
 const createSkillFail = (state, action) =>
   updateObject(state, {
@@ -81,7 +88,9 @@ const getListSkillStart = state =>
 
 const getListSkillSuccess = (state, action) => {
   const data = action.skills.map((item, index) => {
-    const result = { ...item };
+    const result = {
+      ...item
+    };
     result.key = index + 1 + '';
     return result;
   });
@@ -129,6 +138,12 @@ const deleteSkillFail = (state, action) =>
     message: action.error
   });
 
+const refreshMessage = (state) =>
+  updateObject(state, {
+    message: null,
+    error: null
+  });
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.CREATE_SKILL_START:
@@ -159,6 +174,8 @@ const reducer = (state = initialState, action) => {
     case actionTypes.DELETE_SKILL_FAIL:
       return deleteSkillFail(state, action);
 
+    case actionTypes.REFRESH_MESSAGE_CRUD:
+      return refreshMessage(state);
     default:
       return state;
   }

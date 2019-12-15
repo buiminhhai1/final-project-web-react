@@ -18,7 +18,7 @@ router.put('/update-skill/:id', passport.authenticate('jwt', {
   session: false
 }), skillController.updateSkill);
 
-router.delete('delete-skill/:id', passport.authenticate('jwt', {
+router.delete('/delete-skill/:id', passport.authenticate('jwt', {
   session: false
 }), skillController.deleteSkill);
 

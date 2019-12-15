@@ -5,11 +5,10 @@ export const createSkillStart = () => ({
   type: actionTypes.CREATE_SKILL_START
 });
 
-export const createSkillSuccess = (_id, title, content, message) => ({
+export const createSkillSuccess = (_id, title, message) => ({
   type: actionTypes.CREATE_SKILL_SUCCESS,
   _id,
   title,
-  content,
   message
 });
 
@@ -18,11 +17,10 @@ export const createSkillFail = err => ({
   error: err
 });
 
-export const createSkill = (title, content) => dispatch => {
+export const createSkill = title => dispatch => {
   dispatch(createSkillStart());
   const skillData = {
-    title,
-    content
+    title
   };
   const authToken = localStorage.getItem('token');
   const headers = {
@@ -40,7 +38,6 @@ export const createSkill = (title, content) => dispatch => {
           createSkillSuccess(
             res.data.skill._id,
             res.data.skill.title,
-            res.data.skill.content,
             res.data.message
           )
         );
@@ -57,11 +54,10 @@ export const updateSkillStart = () => ({
   type: actionTypes.UPDATE_SKILL_START
 });
 
-export const updateSkillSuccess = (_id, title, content, message) => ({
+export const updateSkillSuccess = (_id, title, message) => ({
   type: actionTypes.UPDATE_SKILL_SUCCESS,
   _id,
   title,
-  content,
   message
 });
 
@@ -70,12 +66,11 @@ export const updateSkillFail = err => ({
   error: err
 });
 
-export const updateSkill = (_id, title, content) => dispatch => {
+export const updateSkill = (_id, title) => dispatch => {
   dispatch(updateSkillStart());
   const updated = {
     _id,
-    title,
-    content
+    title
   };
   const authToken = localStorage.getItem('token');
   const headers = {
@@ -93,7 +88,6 @@ export const updateSkill = (_id, title, content) => dispatch => {
           updateSkillSuccess(
             res.data.skill._id,
             res.data.skill.title,
-            res.data.skill.content,
             res.data.message
           )
         );
@@ -120,14 +114,15 @@ export const getListSkillFail = err => ({
   error: err
 });
 
-export const getListSkill = () => dispatch => {
+export const getListSkill = searchString => dispatch => {
   dispatch(getListSkillStart());
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = 'http://localhost:4200/skill/get-list';
+
+  const url = `http://localhost:4200/skill/get-list?searchString=${searchString}`;
   axios
     .get(url, {
       headers
@@ -148,11 +143,9 @@ export const deleteSkillStart = () => ({
   type: actionTypes.DELETE_SKILL_START
 });
 
-export const deleteSkillSuccess = (_id, title, content, message) => ({
+export const deleteSkillSuccess = (_id, message) => ({
   type: actionTypes.DELETE_SKILL_SUCCESS,
   _id,
-  title,
-  content,
   message
 });
 
@@ -175,17 +168,19 @@ export const deleteSkill = _id => dispatch => {
     })
     .then(res => {
       if (!!res.data.skill) {
-        dispatch(
-          deleteSkillSuccess(
-            res.data.skill._id,
-            res.data.skill.title,
-            res.data.skill.content,
-            res.data.message
-          )
-        );
+        console.log(res.data);
+        dispatch(deleteSkillSuccess(_id, res.data.message));
       } else dispatch(deleteSkillFail('delete has failled!'));
     })
     .catch(err => {
       dispatch(deleteSkillFail(err));
     });
+};
+
+export const refreshMessage = () => ({
+  type: actionTypes.REFRESH_MESSAGE_CRUD
+});
+
+export const refreshMessageCRUD = () => dispatch => {
+  dispatch(refreshMessage());
 };
