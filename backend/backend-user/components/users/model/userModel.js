@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
-
 const userSchema = mongoose.Schema({
   method: {
     type: String,
     enum: ['local', 'google', 'facebook'],
     required: true
+  },
+  verify:{
+    type : Boolean,
+    default: false,
+    require: true
   },
   isTeacher: {
     type: Boolean,

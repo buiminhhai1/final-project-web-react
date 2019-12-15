@@ -6,7 +6,7 @@ const initialState = {
     error: null,
     pending: false,
     redirectToPage: '',
-    isAuthenticated: false
+    message: null,
 }
 
 export default function authReducer(state = initialState, action) {
@@ -56,10 +56,56 @@ export default function authReducer(state = initialState, action) {
                 user: null,
                 error: null,
                 pending: false,
-                redirectToPage: '',
-                isAuthenticated: false
+                redirectToPage: '/',
             }
-
+        case actionTypes.CLEAR_USER_IMAGE_URL:
+            return {
+                ...state,
+                user: {
+                    email: state.user.email,
+                    imageUrl: null,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                }
+            }
+        case actionTypes.SET_USER_IMAGE_URL:
+            return {
+                ...state,
+                user: {
+                    email: state.user.email,
+                    imageUrl: action.image,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                }
+            }
+        case actionTypes.UPDATE_IMAGE_URL_PENDING:
+            return {
+                ...state,
+                pending: true,
+                message: null,
+            }
+        case actionTypes.UPDATE_IMAGE_URL_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                user: {
+                    email: state.user.email,
+                    imageUrl: action.imageUrl,
+                    isTeacher: state.user.isTeacher,
+                    name: state.user.name,
+                    userId: state.user.userId,
+                },
+                message: 'Upload image success'
+            }
+        case actionTypes.UPDATE_IMAGE_URL_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error,
+                message: null
+            }
         default:
             return state;
     }
@@ -68,4 +114,5 @@ export default function authReducer(state = initialState, action) {
 export const getAuthPending = state => state.authReducer.pending;
 export const getAuthError = state => state.authReducer.error;
 export const getAuthToken = state => state.authReducer.token;
+export const getAuthUser = state => state.authReducer.user;
 export const getAuthRedirectPage = state => state.authReducer.redirectToPage;

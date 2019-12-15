@@ -1,0 +1,12 @@
+form.tutorInfoForm {
+    padding: 0px 200px;
+    padding-bottom: 50px;
+}
+
+.subjectSelect {
+    max-width: 600px;
+}
+
+.levelSelect {
+    max-width: 600px;
+}

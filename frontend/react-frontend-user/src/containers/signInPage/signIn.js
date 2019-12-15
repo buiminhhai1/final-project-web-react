@@ -92,7 +92,7 @@ function Login(props) {
                     fields="name,email,picture"
                     callback={responseFacebook}
                     icon={<i className="fab fa-facebook-f mr-2"></i>}
-                    cssClass="btn btn-primary btn-block my-2"
+                    cssClass="btn facebook-btn btn-primary btn-block my-2"
                 />
                 <NavLink
                     className="signUpLink"

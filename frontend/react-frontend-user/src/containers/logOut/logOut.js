@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import { logout } from '../../store/actions/auth';
+import { getAuthToken } from "../../store/reducers/auth";
 
 class logOut extends Component {
-    componentWillMount() {
-        this.props.onLogout();
+    async componentWillMount() {
+        await this.props.onLogout();
     };
 
     render() {
@@ -16,12 +17,17 @@ class logOut extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    token: getAuthToken(state),
+})
+
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch(logout)
+        onLogout: () => dispatch(logout())
     }
 }
 
 export default connect(
+    mapStateToProps,
     mapDispatchToProps
 )(logOut);
