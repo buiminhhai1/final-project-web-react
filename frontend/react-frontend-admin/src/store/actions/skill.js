@@ -133,7 +133,6 @@ export const getListSkill = () => dispatch => {
       headers
     })
     .then(res => {
-      console.log(res);
       if (!!res.data.skills) {
         dispatch(getListSkillSuccess(res.data.skills));
       } else {

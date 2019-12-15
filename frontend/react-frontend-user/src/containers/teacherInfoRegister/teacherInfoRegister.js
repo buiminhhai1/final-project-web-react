@@ -6,66 +6,52 @@ import { bindActionCreators } from 'redux';
 
 import './teacherInfoRegister.css'
 import { updateTeacherProfile } from '../../store/actions/profile';
-import { getSubjects } from '../../store/actions/teaching';
-import { getTeachingSubjects } from '../../store/reducers/teaching';
-
-var gradeLevel = [];
-for (let i = 1; i <= 12; i++) {
-  gradeLevel.push({
-    value: i,
-    isChecked: false
-  });
-}
-gradeLevel.push({
-  value: `Over 12`,
-  isChecked: false
-});
+import { getSubjects, getLevel, changeLevelStatus } from '../../store/actions/teaching';
+import { getTeachingSubjects, getTeachingLevel } from '../../store/reducers/teaching';
 
 class TeacherProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedSubject: [],
-      level: [true, false, false],
-      gradeLevel,
+      selectedLevel: [],
+      teachingLevel: [true, false, false],
       description: ''
     }
   }
 
   componentDidMount = () => {
     this.props.getSubjects();
+    this.props.getLevel();
   }
 
   handleSubmit = (event) => {
     let submitSubjects = [];
     this.state.selectedSubject.map(subject => {
-      submitSubjects.push(subject.value)
+      return submitSubjects.push(subject.data)
     })
-    let submitGrades = [];
-    this.state.gradeLevel.map(grade => {
-      if (grade.isChecked)
-        submitGrades.push(grade.value)
+    let submitLevel = [];
+    this.state.selectedLevel.map(level => {
+      return submitLevel.push(level.data)
     })
-    let submitLevel = this.state.level.findIndex((element) => element === true);
+    let submitEducationLevel = this.state.teachingLevel.findIndex((element) => element === true);
     let submitDescription = this.state.description;
 
-    this.props.updateTeacherProfile({ submitSubjects, submitGrades, submitLevel, submitDescription });
+    console.log({ submitSubjects, submitLevel, submitEducationLevel, submitDescription });
+    
+    // this.props.updateTeacherProfile({ submitSubjects, submitLevel, submitEducationLevel, submitDescription });
   }
 
-  handleChangeGradeLevel = index => {
-    // console.log(index);
-    let newGradeLevel = this.state.gradeLevel;
-    newGradeLevel[index].isChecked = !newGradeLevel[index].isChecked;
-    this.setState({
-      gradeLevel: newGradeLevel
-    })
+  handleChangeGradeLevel = selectedOption => {
+    this.setState(
+      { selectedLevel: selectedOption },
+    );
   }
 
   handleSubjectChange = selectedOption => {
     this.setState(
       { selectedSubject: selectedOption },
     );
-    
   };
 
   handleDescription = e => {
@@ -78,13 +64,14 @@ class TeacherProfile extends Component {
     let levelArr = [false, false, false];
     levelArr[index] = true;
     this.setState({
-      level: levelArr
+      teachingLevel: levelArr
     });
   }
 
   render() {
-    const { selectedSubject } = this.state;
+    const { selectedSubject, selectedLevel } = this.state;
     const subjects = this.props.subjects;
+    const levels = this.props.level;
 
     return (
       <form className="tutorInfoForm" onSubmit={this.handleSubmit}>
@@ -109,20 +96,14 @@ class TeacherProfile extends Component {
             </Card.Text>
 
             <Card.Text>
-              <b>Which grade do you prefer?</b>
-              <Form>
-                {this.state.gradeLevel.map((grade, index) => (
-                  <div key={`custom-checkbox-${grade.value}`} className="mb-1">
-                    <Form.Check
-                      custom
-                      type='checkbox'
-                      id={`custom-checkbox-${grade.value}`}
-                      label={`${grade.value}`}
-                      onClick={() => this.handleChangeGradeLevel(index)}
-                    />
-                  </div>
-                ))}
-              </Form>
+              <b>Which level do you want to teach?</b>
+              <Select
+                isMulti
+                className="levelSelect"
+                value={selectedLevel}
+                onChange={this.handleChangeGradeLevel}
+                options={levels}
+              />
             </Card.Text>
 
             <Card.Text>
@@ -135,7 +116,7 @@ class TeacherProfile extends Component {
                       type='radio'
                       id={`radio-${level}`}
                       label={`${level}`}
-                      checked={this.state.level[index]}
+                      checked={this.state.teachingLevel[index]}
                       onClick={() => this.handleLevelChange(index)}
                     />
                   </div>
@@ -164,11 +145,12 @@ class TeacherProfile extends Component {
 }
 
 const mapStateToProps = state => ({
-  subjects: getTeachingSubjects(state)
+  subjects: getTeachingSubjects(state),
+  level: getTeachingLevel(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTeacherProfile, getSubjects
+  updateTeacherProfile, getSubjects, getLevel, changeLevelStatus
 }, dispatch)
 
 export default connect(

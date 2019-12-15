@@ -16,7 +16,7 @@ import { getAuthToken, getAuthUser } from "../../store/reducers/auth";
 import UpdateAvatar from './updateAvatar/updateAvatar';
 
 const { Option } = Select;
-const AutoCompleteOption = AutoComplete.Option;
+// const AutoCompleteOption = AutoComplete.Option;
 const formItemLayout = {
   labelCol: {
     xs: { span: 9 },
@@ -76,7 +76,7 @@ class UpdateProfile extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
+    // const { autoCompleteResult } = this.state;
 
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: '84',
@@ -87,11 +87,6 @@ class UpdateProfile extends React.Component {
         <Option value="86">+86</Option>
       </Select>,
     );
-
-    const websiteOptions = autoCompleteResult.map(website => (
-      <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-    ));
-
 
     if (this.props.user === null) {
       return <Redirect to='/signIn' />
@@ -129,24 +124,6 @@ class UpdateProfile extends React.Component {
                 </AutoComplete>
               )}
             </Form.Item>
-            <Form.Item label="Phone Number">
-              {getFieldDecorator('phone', {
-                rules: [{ required: false, message: 'Please input your phone number!' }],
-              })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
-            </Form.Item>
-            <Form.Item label="Website">
-              {getFieldDecorator('website', {
-                rules: [{ required: false, message: 'Please input website!' }],
-              })(
-                <AutoComplete
-                  dataSource={websiteOptions}
-                  onChange={this.handleWebsiteChange}
-                  placeholder="website"
-                >
-                  <Input />
-                </AutoComplete>,
-              )}
-            </Form.Item>
             <Form.Item label="Address">
               {getFieldDecorator('address', {
                 rules: [{ required: false, message: 'Please input address!' }],
@@ -157,6 +134,11 @@ class UpdateProfile extends React.Component {
                   <Input />
                 </AutoComplete>,
               )}
+            </Form.Item>
+            <Form.Item label="Phone Number">
+              {getFieldDecorator('phone', {
+                rules: [{ required: false, message: 'Please input your phone number!' }],
+              })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
             </Form.Item>
             <Form.Item {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">

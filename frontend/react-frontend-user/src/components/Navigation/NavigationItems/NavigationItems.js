@@ -17,7 +17,7 @@ function NavigationItems(props) {
 
     return (
         <ul className={classes.NavigationItems} >
-            <NavigationItem link="/contact">Contact</NavigationItem>
+            <NavigationItem link="/">HOME</NavigationItem>
             {props.token ?
                 <Dropdown>
                     <Dropdown.Toggle

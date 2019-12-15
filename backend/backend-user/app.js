@@ -13,10 +13,10 @@ const teachersRouter = require('./components/teachers/routers/routers');
 const app = express();
 var mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-app.use(bodyParser.json({limit:'10mb'}));
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 const formData = require('express-form-data');
 app.use(formData.parse());
 const passport = require('passport');
@@ -25,10 +25,10 @@ app.use(passport.initialize());
 require('./components/utils/authentication/passport');
 
 var uri = dbInfo.CONNECTION_STRING;
-mongoose.connect(uri, {useNewUrlParser: true,useUnifiedTopology: true});
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.once('open', function () {
   console.log('database connected');
 });
 const cloudinary = require('cloudinary').v2
@@ -54,8 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/teachers', teachersRouter);
-app.get('/me',passport.authenticate('jwt'),(req,res,next)=>{
-  res.send({ 'info':req.user.user});
+app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
+  res.send({ 'info': req.user.user });
 })
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

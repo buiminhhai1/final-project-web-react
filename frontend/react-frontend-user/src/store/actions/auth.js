@@ -5,6 +5,7 @@ import axios from 'axios';
 require('dotenv').config();
 const apiUrl = process.env.REACT_APP_API_URL;
 
+
 export const signInPending = () => {
     return {
         type: actionTypes.SIGNIN_PENDING
@@ -27,12 +28,7 @@ export const signInFail = (error) => {
 };
 
 export const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expirationDate');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('method');
-
+    localStorage.clear();
     return {
         type: actionTypes.LOGOUT
     };
@@ -58,9 +54,12 @@ export function signIn(email, password) {
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
 
-                // Save user's token in session storage
+                // Save user's token in local storage
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("userName", res.data.user.name);
+                localStorage.setItem("email", res.data.user.email);
+                localStorage.setItem("imageUrl", res.data.user.imageUrl);
+                localStorage.setItem("isTeacher", res.data.user.isTeacher);
                 localStorage.setItem("method", "local");
                 localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
@@ -84,9 +83,11 @@ export function signInGoogle(accessToken) {
             .then(res => {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
 
-                // Save user's token in session storage
+                // Save user's token in local storage
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("userName", res.data.user.name);
+                localStorage.setItem("email", res.data.user.email);
+                localStorage.setItem("imageUrl", res.data.user.imageUrl);
                 localStorage.setItem("method", "google");
                 localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
@@ -111,9 +112,11 @@ export function signInFacebook(accessToken) {
                 const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
                 console.log(res);
 
-                // Save user's token in session storage
+                // Save user's token in local storage
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("userName", res.data.user.name);
+                localStorage.setItem("email", res.data.user.email);
+                localStorage.setItem("imageUrl", res.data.user.imageUrl);
                 localStorage.setItem("method", "facebook");
                 localStorage.setItem("userId", res.data.user.userId);
                 localStorage.setItem('expirationDate', expirationDate);
@@ -125,6 +128,34 @@ export function signInFacebook(accessToken) {
                 console.log(err);
                 dispatch(signInFail(err));
             })
+    }
+}
+
+export function reLogin() {
+    return (dispatch) => {
+        let token = localStorage.getItem('token');
+        if (!token) {
+            dispatch(logout());
+        } else {
+            const expirationDate = new Date(localStorage.getItem('expirationDate'));
+            if (expirationDate <= new Date()) {
+                dispatch(logout());
+            } else {
+                let user = {
+                    name: localStorage.getItem('userName'),
+                    email: localStorage.getItem('email'),
+                    imageUrl: localStorage.getItem('imageUrl'),
+                    isTeacher: localStorage.getItem('isTeacher'),
+                    userId: localStorage.getItem('userId'),
+                }
+                dispatch(signInSuccess(token, user));
+                dispatch(
+                    checkAuthTimeout(
+                        (expirationDate.getTime() - new Date().getTime()) / 1000
+                    )
+                );
+            }
+        }
     }
 }
 

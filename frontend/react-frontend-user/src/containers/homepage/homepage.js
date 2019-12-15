@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import TeacherInfoCard from '../../components/TeacherInfoCard/TeacherInfoCard';
 
 export default class homepage extends Component {
     render() {
         return (
             <div>
-                <h1>HELLO TO HOMEPAGE</h1>
+                <TeacherInfoCard loading={false} />
             </div>
         )
     }
