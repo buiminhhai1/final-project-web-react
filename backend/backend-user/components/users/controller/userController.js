@@ -321,28 +321,21 @@ exports.changePassword = async (req, res, next) => {
 
 }
 
-exports.forgetPassword = async (req, res, next) => {
-  const { email } = req.body;
+exports.resetPassword = async (req, res, next) => {
+  const { idUser, newPassword } = req.body;
   try {
     const user = await UserModel.findOne({
-      "local.email": email
+      _id: idUser
     });
 
     if (!!user) {
-      const randomPassword = Math.random().toString(10).substr(2, 5);
-
+      
       const saltValue = await bcrypt.genSalt(10);
-      bcrypt.hash(randomPassword, saltValue, async (error, hash) => {
+      bcrypt.hash(newPassword, saltValue, async (error, hash) => {
         if (!error) {
           user.local.password = hash;
           user.save().then(user => {
             if (!!user) {
-              const message = {
-                to: email,
-                subject: 'Reset password',
-                text: 'Your password:' + randomPassword,
-              }
-              sendEmail(message);
               res.json({ message: 'Reset password success' });
             }
             else res.json({ message: "Reset password error" })
@@ -358,3 +351,24 @@ exports.forgetPassword = async (req, res, next) => {
 }
 
 
+
+exports.sendEmailResetPassword = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await UserModel.findOne({
+      'local.email': email
+    });
+    if(!!user){
+      const message = {
+        to: email,
+        subject: 'Reset password',
+        html: `<h2>Click a link below to reset your password</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:3000/resetpassword?id=${user._id}">Reset password</a>`
+      }
+      sendEmail(message);
+      res.json({result:true,message:'send email success'});
+    }else 
+    res.json({result:false,message:'send email error'});
+  }catch(error){
+    res.json({result:false,message:'send email error'});
+  }
+}

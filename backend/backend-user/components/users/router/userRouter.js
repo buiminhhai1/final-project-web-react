@@ -17,7 +17,8 @@ router.post('/user-profile', passport.authenticate('jwt', {
 }), userController.updateUser);
 router.post('/image-upload', userController.uploadImage);
 
-router.get('/verify', userController.verifyUser);
-router.post('/changePassword', userController.changePassword);
-router.post('/forgetPassword', userController.forgetPassword);
+router.get('/verify',userController.verifyUser);
+router.post('/changePassword',userController.changePassword);
+router.post('/resetPassword',userController.resetPassword);
+router.post('/sendEmailResetPassword',userController.sendEmailResetPassword);
 module.exports = router;
