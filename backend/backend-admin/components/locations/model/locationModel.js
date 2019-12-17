@@ -5,23 +5,15 @@ const locationSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     require: true
   },
-  city: {
-    district: [{
-      name: {
-        type: String,
-        require: false
-      },
-      ward: [{
-        name: {
-          type: String,
-          require: false
-        }
-      }]
-    }],
+  district: [{
     name: {
       type: String,
-      require: true
+      require: false
     }
+  }],
+  city: {
+    type: String,
+    require: true
   }
 });
 

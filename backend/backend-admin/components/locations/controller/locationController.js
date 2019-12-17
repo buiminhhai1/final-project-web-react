@@ -18,11 +18,12 @@ module.exports.getListLocation = async (req, res, next) => {
 
 module.exports.addLocation = async (req, res, next) => {
   const {
-    city
+    city,
+    district
   } = req.body;
   try {
     const location = await LocationModel.findOne({
-      'city.name': city,
+      city
     });
     if (location) {
       return res.json({
@@ -32,7 +33,8 @@ module.exports.addLocation = async (req, res, next) => {
     }
     const newLocation = new LocationModel({
       _id: new mongoose.Types.ObjectId(),
-      city
+      city,
+      district
     });
     await newLocation.save();
     return res.json({

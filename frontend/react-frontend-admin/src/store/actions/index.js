@@ -21,6 +21,15 @@ export {
 from './skill';
 
 export {
+  createLocation,
+  updateLocation,
+  getListLocation,
+  deleteLocation,
+  refreshMessageCRUDLocation
+}
+from './location';
+
+export {
   getListUser
 }
 from './user';

@@ -1,8 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 
-import {
-  updateObject
-} from '../../shared/utility';
+import { updateObject } from '../../shared/utility';
 
 const initialState = {
   skillData: [],
@@ -22,7 +20,6 @@ const createSkillStart = state =>
 
 const createSkillSuccess = (state, action) => {
   const updatedData = [...state.skillData];
-  console.log('updated data');
   updatedData.push({
     key: updatedData.length + 1 + '',
     _id: action._id,
@@ -141,7 +138,7 @@ const deleteSkillFail = (state, action) =>
     message: action.error
   });
 
-const refreshMessage = (state) =>
+const refreshMessage = state =>
   updateObject(state, {
     message: null,
     error: null

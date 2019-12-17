@@ -22,12 +22,23 @@ const asyncHomePage = AsyncComponent(() => {
   return import('./containers/HomePage/HomePage');
 });
 
+const asyncStudent = AsyncComponent(() => {
+  return import('./containers/HomePage/HomePage');
+});
+
+const asyncTeacher = AsyncComponent(() => {
+  return import('./containers/HomePage/HomePage');
+});
 const asyncLogout = AsyncComponent(() => {
   return import('./containers/auth/Logout/Logout');
 });
 
 const asyncSkill = AsyncComponent(() => {
   return import('./containers/Skill/Skill');
+});
+
+const asyncLocation = AsyncComponent(() => {
+  return import('./containers/Location/Location');
 });
 
 class App extends Component {
@@ -47,7 +58,10 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/" exact component={asyncHomePage} />
-          <Route path="/skill" component={asyncSkill} />
+          <Route path="/skills" component={asyncSkill} />
+          <Route path="/students" component={asyncStudent} />
+          <Route path="/teachers" component={asyncTeacher} />
+          <Route path="/locations" component={asyncLocation} />
           <Route path="/admin/logout" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>
