@@ -15,16 +15,16 @@ import './updateProfile.css';
 import { getAuthToken, getAuthUser } from "../../store/reducers/auth";
 import UpdateAvatar from './updateAvatar/updateAvatar';
 
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 // const AutoCompleteOption = AutoComplete.Option;
 const formItemLayout = {
   labelCol: {
-    xs: { span: 9 },
-    sm: { span: 9 },
-  },
-  wrapperCol: {
     xs: { span: 7 },
     sm: { span: 7 },
+  },
+  wrapperCol: {
+    xs: { span: 10 },
+    sm: { span: 10 },
   },
 };
 const tailFormItemLayout = {
@@ -40,6 +40,8 @@ const tailFormItemLayout = {
   },
 };
 
+
+
 class UpdateProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -53,8 +55,8 @@ class UpdateProfile extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        message.success('Update profile complete')
-        console.log('Received values of form: ', values);
+        const phone = values.prefix + values.phone;
+
       }
     });
   };
@@ -86,6 +88,47 @@ class UpdateProfile extends React.Component {
         <Option value="85">+85</Option>
         <Option value="86">+86</Option>
       </Select>,
+    );
+
+    const selectAddress = (
+      <div>
+        <Select defaultValue="District/ Ward" style={{ width: 150, paddingLeft: 5 }}>
+          <OptGroup label="District">
+            <Option value="1">District 1</Option>
+            <Option value="2">District 2</Option>
+            <Option value="3">District 3</Option>
+            <Option value="4">District 4</Option>
+            <Option value="5">District 5</Option>
+            <Option value="6">District 6</Option>
+            <Option value="7">District 7</Option>
+            <Option value="8">District 8</Option>
+            <Option value="9">District 9</Option>
+            <Option value="10">District 10</Option>
+            <Option value="11">District 11</Option>
+            <Option value="12">District 12</Option>
+            <Option value="Binh Tan">District Binh Tan</Option>
+            <Option value="Binh Thanh">District Binh Thanh</Option>
+            <Option value="Go Vap">District Go Vap</Option>
+            <Option value="Phu Nhuan">District Phu Nhuan</Option>
+            <Option value="Tan Binh">District Tan Binh</Option>
+            <Option value="Tan Phu">District Tan Phu</Option>
+            <Option value="Thu Duc">District Thu Duc</Option>
+          </OptGroup>
+          <OptGroup label="Ward">
+            <Option value="Binh Chanh">Ward Binh Chanh</Option>
+            <Option value="Can Gio">Ward Can Gio</Option>
+            <Option value="Cu Chi">Ward Cu Chi</Option>
+            <Option value="Hoc Mon">Ward Hoc Mon</Option>
+            <Option value="Nha Be">Ward Nha Be</Option>
+          </OptGroup>
+        </Select>
+        <Select defaultValue="City" style={{ width: 90 }}>
+          <Option value="Ho Chi Minh">Ho Chi Minh</Option>
+          <Option value="Ha Noi">Ha Noi</Option>
+          <Option value="Da Nang">Da Nang</Option>
+          <Option value="Khanh Hoa">Khanh Hoa</Option>
+        </Select>
+      </div>
     );
 
     if (this.props.user === null) {
@@ -131,7 +174,7 @@ class UpdateProfile extends React.Component {
                 <AutoComplete
                   placeholder="address"
                 >
-                  <Input />
+                  <Input addonAfter={selectAddress} />
                 </AutoComplete>,
               )}
             </Form.Item>
@@ -142,7 +185,7 @@ class UpdateProfile extends React.Component {
             </Form.Item>
             <Form.Item {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">
-                Register
+                Update
               </Button>
             </Form.Item>
           </Form>

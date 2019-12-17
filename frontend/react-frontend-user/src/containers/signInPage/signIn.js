@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, FormGroup, FormControl, FormLabel, Alert } from "react-bootstrap";
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { message } from 'antd';
 import { connect } from 'react-redux';
 import { NavLink, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -44,12 +45,15 @@ function Login(props) {
         return <Redirect to={props.redirectPage} />
     }
 
+    let errorMeassage = null;
+    if (props.error) {
+        errorMeassage = message.error(props.error);
+    }
+
     return (
         <div className="Login">
             <form onSubmit={handleSubmit}>
-                {props.error && <Alert variant='danger'>
-                    The account is not correct!!!
-                </Alert>}
+                {errorMeassage}
                 <FormGroup controlId="email">
                     <FormLabel>Email</FormLabel>
                     <FormControl

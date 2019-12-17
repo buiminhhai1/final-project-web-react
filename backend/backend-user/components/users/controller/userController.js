@@ -42,6 +42,8 @@ exports.register = async (req, res) => {
             name,
             password: hash,
           },
+          email,
+          name,
           imageUrl: "https://icon-library.net/images/bot-icon/bot-icon-18.jpg",
           method: 'local',
           isTeacher: false
@@ -75,7 +77,7 @@ exports.register = async (req, res) => {
 exports.login = (req, res, next) => {
   passport.authenticate('local', { session: false }, async (err, user, message) => {
     if (err || !user) {
-      return res.status(400).json({
+      return res.json({
         message,
       });
     }
@@ -153,6 +155,8 @@ registerForGoogleAccount = async (user) => {
         email: user.email,
         name: user.name,
       },
+      email: user.email,
+      name: user.name,
       imageUrl: user.picture,
       method: 'google',
       isTeacher: false
@@ -174,69 +178,58 @@ getTokenAndUser = (user) => {
   let newUser = {
     userId: user._id,
     imageUrl: user.imageUrl,
-    isTeacher: user.isTeacher
+    isTeacher: user.isTeacher,
+    name: user.name,
+    email: user.email,
+    verify: user.verify,
   };
-  switch (user.method) {
-    case "local": {
-      newUser.name = user.local.name;
-      newUser.email = user.local.email;
-      break;
-    }
-    case "google": {
-      newUser.name = user.google.name;
-      newUser.email = user.google.email;
-      break;
-    }
-    case "facebook": {
-      newUser.name = user.facebook.name;
-      newUser.email = user.facebook.email;
-    }
-  }
 
   return { token, newUser };
 }
 
 exports.getUser = async (req, res, next) => {
-  const { idUser } = req.query;
-  try {
-    const profile = await ProfileModel.findOne({
-      "idUser": idUser
-    });
-    if (!!profile) {
-      return res.json(profile);
-    } else return res.json({ message: "something wrong" });
+  const { userId } = req.query;
 
+  try {
+    const user = await UserModel.findOne({
+      "_id": userId
+    });
+    if (!!user) {
+      const teacher = {
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
+        location: user.location,
+        experience: user.experience,
+        status: user.status,
+        contracts: user.contracts,
+        totalScore: user.totalScore
+      }
+      res.json({ teacher });
+    } else {
+      return res.json({ message: "something wrong" });
+    }
   } catch (error) {
+    console.log(error);
     res.json({ message: "something wrong" });
 
   }
 };
 
 exports.updateUser = async (req, res, next) => {
-  const { idUser, name, location, avatar, skills, about, price } = req.body;
-  try {
-    const profile = await ProfileModel.findOne({
-      "idUser": idUser
-    });
-    if (!!profile) {
-      profile.name = name;
-      profile.location = location;
-      profile.avatar = avatar;
-      profile.skills = skills;
-      profile.about = about;
-      profile.price = price;
-      profile.save().then(item => {
-        return res.json(profile);
-      })
-        .catch(err => {
-          res.status(400).send("unable to save to database");
-        });
-    } else return res.json({ message: "User cannot find" });
-
-  } catch (error) {
-    res.json({ message: "User cannot find" });
-
-  }
+  const { user } = req.user;
+  console.log(req);
+  
+  // if (!!user) {
+  //   user.save()
+  //     .then(item => {
+  //       return res.json(profile);
+  //     })
+  //     .catch(err => {
+  //       res.send("unable to save to database");
+  //     });
+  // } else return res.json({ message: "User cannot find" });
+  return res.status(500);
 };
 
 exports.facebookLogin = (req, res, next) => {
@@ -255,7 +248,7 @@ exports.facebookLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-exports.upimage = (req, res, next) => {
+exports.uploadImage = (req, res, next) => {
   const { image, idUser } = req.body;
 
   cloudinary.uploader.upload(image).then(async (results) => {
@@ -280,7 +273,7 @@ exports.upimage = (req, res, next) => {
 
 exports.verifyUser = async (req, res, next) => {
   const { id, successRedirectUrl, failureRedirectUrl } = req.query;
-  try{
+  try {
     const user = await UserModel.findOne({
       _id: id
     });
@@ -291,10 +284,10 @@ exports.verifyUser = async (req, res, next) => {
         else res.redirect(failureRedirectUrl);
       })
     } else res.redirect(failureRedirectUrl);
-  }catch(error){
+  } catch (error) {
     res.redirect(failureRedirectUrl);
   }
-  
+
 }
 
 exports.changePassword = async (req, res, next) => {

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const passportFacebook = require('passport-facebook');
 const constant = require('../const/constant');
-const UserModel = require('../../users/model/userModel');
+const UserModel = require('../../admins/model/adminModel');
 
 const LocalStrategy = passportLocal.Strategy;
 const FacebookStrategy = passportFacebook.Strategy;

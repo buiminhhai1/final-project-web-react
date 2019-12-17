@@ -9,9 +9,10 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./components/users/router/userRouter');
+const adminRouter = require('./components/admins/router/adminRouter');
 const skillRouter = require('./components/skills/router/skillRouter');
 const levelRouter = require('./components/levels/router/levelRouter');
+const userRouter = require('./components/users/router/userRouter');
 
 require('./components/utils/authentication/passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -53,9 +54,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/admin', usersRouter);
+app.use('/admin', adminRouter);
 app.use('/skill', skillRouter);
 app.use('/level', levelRouter);
+app.use('/users', userRouter);
 
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({

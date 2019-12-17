@@ -69,7 +69,7 @@ export function signIn(email, password) {
             })
             .catch(err => {
                 console.log(err);
-                dispatch(signInFail(err));
+                dispatch(signInFail("This account not existed"));
             })
     }
 }
@@ -97,7 +97,7 @@ export function signInGoogle(accessToken) {
             })
             .catch(err => {
                 console.log(err);
-                dispatch(signInFail(err));
+                dispatch(signInFail("This account not existed"));
             })
     }
 }
@@ -126,7 +126,7 @@ export function signInFacebook(accessToken) {
             })
             .catch(err => {
                 console.log(err);
-                dispatch(signInFail(err));
+                dispatch(signInFail("This account not existed"));
             })
     }
 }
