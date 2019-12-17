@@ -3,7 +3,7 @@ import axios from 'axios';
 
 //reads in configuration from a .env file
 require('dotenv').config();
-// const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL;
 const apiUtilUrl = process.env.REACT_APP_API_UTILITY;
 
 export const getSubjectsPending = () => {
@@ -102,17 +102,62 @@ export const getTeachersFail = (error) => {
 
 export function getTeachers() {
     return (dispatch) => {
-        dispatch(getLevelPending());
+        dispatch(getTeachersPending());
 
-        let url = apiUtilUrl + "users/get-list-user?type=1";
+        let url = apiUtilUrl + "/users/get-list-user?type=2";
         axios.get(url)
             .then(res => {
                 let teachers = res.data.users;
-                dispatch(getLevelSuccess(teachers));
+                dispatch(getTeachersSuccess(teachers));
             })
             .catch(err => {
                 console.log(err);
-                dispatch(getLevelFail(err));
+                dispatch(getTeachersFail(err));
+            })
+    }
+}
+
+export const getTeacherPending = () => {
+    return {
+        type: actionTypes.GET_TEACHER_PENDING
+    };
+};
+
+export const getTeacherSuccess = (teacher) => {
+    return {
+        type: actionTypes.GET_TEACHER_SUCCESS,
+        teacher
+    };
+};
+
+export const getTeacherFail = (error) => {
+    return {
+        type: actionTypes.GET_TEACHER_ERROR,
+        error
+    };
+};
+
+export function getTeacher(userId) {
+    return (dispatch) => {
+        dispatch(getTeacherPending());
+
+        let url = apiUrl + "/users/detail";
+        axios.get(url, {
+            params: {
+                userId
+            }
+        })
+            .then(res => {
+                let teacher = res.data.teacher;
+                if (teacher) {
+                    console.log(teacher);
+                    dispatch(getTeacherSuccess(teacher));
+                }
+                else
+                    dispatch(getTeacherFail(res.data.message));
+            })
+            .catch(err => {
+                dispatch(getTeacherFail(err));
             })
     }
 }

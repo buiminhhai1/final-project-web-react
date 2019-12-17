@@ -8,15 +8,19 @@ function Logo(props) {
   const [redirect, setRedirect] = useState(false);
   return (
     redirect === true ?
-      (<div className={classes.Logo} style={{ height: props.height }} onClick={() => setRedirect(true)}>
+      (<div className={classes.Logo}
+        style={{ height: props.height }}
+        onClick={() => setRedirect(true)}>
         <Redirect to="/" />
-        <img src={workLogo} alt="MyBurger" />
+        <img src={workLogo} alt="LOGO" />
       </div>
       )
       :
       (
-        <div className={classes.Logo} style={{ height: props.height }} onClick={() => setRedirect(true)}>
-          <img src={workLogo} alt="MyBurger" />
+        <div className={classes.Logo}
+          style={{ height: props.height }}
+          onClick={() => setRedirect(true)}>
+          <img src={workLogo} alt="LOGO" />
         </div>
       )
   )

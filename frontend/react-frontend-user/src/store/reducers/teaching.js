@@ -4,6 +4,7 @@ const initialState = {
     subjects: [],
     level: [],
     teachers: [],
+    teacher: {},
     pending: false,
     error: null,
 }
@@ -66,7 +67,7 @@ export default function teachingReducer(state = initialState, action) {
                 pending: true
             }
         case actionTypes.GET_TEACHERS_SUCCESS:
-            let teachers = action.teachers.map(teacher => {
+            const teachers = action.teachers.map(teacher => {
                 return teacher
             })
             return {
@@ -75,6 +76,23 @@ export default function teachingReducer(state = initialState, action) {
                 pending: false,
             }
         case actionTypes.GET_TEACHERS_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            }
+        case actionTypes.GET_TEACHER_PENDING:
+            return {
+                ...state,
+                pending: true
+            }
+        case actionTypes.GET_TEACHER_SUCCESS:
+            return {
+                ...state,
+                teacher: action.teacher,
+                pending: false,
+            }
+        case actionTypes.GET_TEACHER_ERROR:
             return {
                 ...state,
                 pending: false,

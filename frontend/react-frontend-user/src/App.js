@@ -32,15 +32,19 @@ const asyncLogOut = AsyncComponent(() => {
   return import('./containers/logOut/logOut');
 })
 
-const asyncUpdateProfie = AsyncComponent(() => {
+const asyncUpdateProfile = AsyncComponent(() => {
   return import('./containers/updateProfile/updateProfile');
+})
+
+const asyncUserProfile = AsyncComponent(() => {
+  return import('./containers/userProfile/userProfile');
 })
 
 class App extends React.Component {
   componentDidMount() {
     this.props.reLogin();
   }
-  
+
   render() {
     const routes = (
       <Switch>
@@ -48,7 +52,8 @@ class App extends React.Component {
         <Route path="/signIn" component={asyncSignIn}></Route>
         <Route path="/signUp" component={asyncSignUp}></Route>
         <Route path="/logout" component={asyncLogOut}></Route>
-        <Route path="/profile" component={asyncUpdateProfie}></Route>
+        <Route path="/profile" component={asyncUpdateProfile}></Route>
+        <Route path="/user-profile" component={asyncUserProfile}></Route>
         <Route path="/teacher-profile" component={asyncTeacherProfile}></Route>
       </Switch>
     )

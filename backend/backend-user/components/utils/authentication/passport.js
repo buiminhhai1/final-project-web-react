@@ -27,11 +27,11 @@ const jwt = new JWTStrategy({
   secretOrKey: constant.JWT_SECRET
 },
   (jwtPayload, cb) => {
-    return UserModel.findOne({ 'local.email': jwtPayload.email })
+    return UserModel.findById(jwtPayload._id)
       .then(user => {
         return cb(null, {
           message: 'success',
-          user: user
+          user
         });
       })
       .catch(err => {
