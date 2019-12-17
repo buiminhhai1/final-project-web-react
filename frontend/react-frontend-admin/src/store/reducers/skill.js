@@ -87,19 +87,22 @@ const getListSkillStart = state =>
   });
 
 const getListSkillSuccess = (state, action) => {
-  const data = action.skills.map((item, index) => {
-    const result = {
-      ...item
-    };
-    result.key = index + 1 + '';
-    return result;
-  });
-  return updateObject(state, {
-    loading: false,
-    error: null,
-    message: action.message,
-    skillData: data
-  });
+  if (action.skills.length > 0) {
+    const data = action.skills.map((item, index) => {
+      const result = {
+        ...item
+      };
+      result.key = index + 1 + '';
+      return result;
+    });
+    return updateObject(state, {
+      loading: false,
+      error: null,
+      message: action.message,
+      skillData: data
+    });
+  }
+  return state;
 };
 
 const getListSkillFail = (state, action) =>

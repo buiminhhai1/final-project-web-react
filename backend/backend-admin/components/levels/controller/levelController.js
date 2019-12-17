@@ -59,7 +59,7 @@ exports.updateLevel = async (req, res, next) => {
     title
   } = req.body;
   try {
-    const updateLevel = await LevelModel.findOne({
+    const updateLevel = await LevelModel.findById({
       _id,
     });
     if (!!updateLevel) {
