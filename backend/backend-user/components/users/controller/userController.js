@@ -62,7 +62,7 @@ exports.register = async (req, res) => {
           return res.json({
             user: newUser,
             token,
-            expiresIn: 15 * 60
+            expiresIn: 15 * 60*10
           });
         }
       }
@@ -89,7 +89,7 @@ exports.login = (req, res, next) => {
       user: newUser,
       profile,
       token,
-      expiresIn: 15 * 60
+      expiresIn: 15 * 60*10
     });
   })(req, res, next);
 };
@@ -243,7 +243,7 @@ exports.facebookLogin = (req, res, next) => {
     return res.json({
       user: newUser,
       token,
-      expiresIn: 15 * 60
+      expiresIn: 15 * 60*10
     });
   })(req, res, next);
 };

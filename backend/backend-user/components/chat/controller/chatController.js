@@ -2,18 +2,21 @@
 const GroupChatModel = require('../model/groupChatModel').GroupChatModel;
 const MessageModel = require('../model/groupChatModel').MessageModel;
 const UserModdel = require('../../users/model/userModel');
+
 exports.getListGroupChat = async (req, res, next) => {
     const { id } = req.params;
     try {
-        const results = await GroupChatModel.find({'groupInfo.active':true,$or:[
-            {'groupInfo.idUser1' : id},
-            {'groupInfo.idUser2': id}]});
+        const results = await GroupChatModel.find({
+            'groupInfo.active': true, $or: [
+                { 'groupInfo.idUser1': id },
+                { 'groupInfo.idUser2': id }]
+        });
         if (!!results) {
-            results.forEach(e=>{
-                // if(!!e.lastMessage){
-                //     // e['name'] = UserModdel.findOne
-                // }
-            })
+            // results.forEach(e=>{
+            // if(!!e.lastMessage){
+            //     // e['name'] = UserModdel.findOne
+            // }
+            // })
             return res.json(results);
         } else return res.json({ message: "something wrong" });
 
@@ -26,10 +29,12 @@ exports.getListGroupChat = async (req, res, next) => {
 exports.newGroupChat = async (req, res, next) => {
     const { idUser1, idUser2 } = req.body;
     try {
-        const results = await GroupChatModel.findOne({$or:[
-            {'groupInfo.idUser1' : idUser1,'groupInfo.idUser2': idUser2},
-            {'groupInfo.idUser1' : idUser2,'groupInfo.idUser2': idUser1}]});
-        
+        const results = await GroupChatModel.findOne({
+            $or: [
+                { 'groupInfo.idUser1': idUser1, 'groupInfo.idUser2': idUser2 },
+                { 'groupInfo.idUser1': idUser2, 'groupInfo.idUser2': idUser1 }]
+        });
+
         if (!!results) {
             res.json({ message: 'Something wrong' });
         } else {
@@ -45,7 +50,7 @@ exports.newGroupChat = async (req, res, next) => {
             })
         }
     } catch (error) {
-        json({ message: 'Something wrong' });
+        res.json({ message: 'Something wrong' });
     }
 }
 
@@ -53,32 +58,60 @@ exports.newGroupChat = async (req, res, next) => {
 exports.newMessage = async (req, res, next) => {
     const { idGroup, idUser, message } = req.body;
     try {
-        const group = await GroupChatModel.findOne({_id : idGroup});
-        if(!!group) {
+        const group = await GroupChatModel.findOne({ _id: idGroup });
+        if (!!group) {
             const newMessage = new MessageModel({
-                idGroup,idUser,message
+                idGroup, idUser, message
             });
             newMessage.save().then(async result => {
                 if (!!result) {
-                    if(!group.groupInfo.active) group.groupInfo.active = true;
+                    if (!group.groupInfo.active) group.groupInfo.active = true;
                     group.lastMessage = {
-                        message:newMessage,
-                        seen : {
-                            isSeen : false,
+                        message: newMessage,
+                        seen: {
+                            isSeen: false,
                         }
                     }
                     await group.save();
                     res.json(result);
                 } else json({ message: 'Something wrong' });
             })
-        }      
-        else{
+        }
+        else {
             res.json({ message: 'Something wrong' });
-    } 
-}catch (error) {
-    
-    res.json({ message: 'Something wrong' });
+        }
+    } catch (error) {
+
+        res.json({ message: 'Something wrong' });
+    }
 }
+
+exports.saveNewMessage = async (idGroup, idUser, message) => {
+    try {
+        const group = await GroupChatModel.findOne({ _id: idGroup });
+        if (!!group) {
+            const newMessage = new MessageModel({
+                idGroup, idUser, message
+            });
+            newMessage.save().then(async result => {
+                if (!!result) {
+                    if (!group.groupInfo.active) group.groupInfo.active = true;
+                    group.lastMessage = {
+                        message: newMessage,
+                        seen: {
+                            isSeen: false,
+                        }
+                    }
+                    await group.save();
+                } else console.log('cannot save message');
+            })
+        }
+        else {
+            console.log('cannot save message');
+        }
+    } catch (error) {
+        console.log('cannot save message');
+    }
 }
 
 
@@ -86,7 +119,7 @@ exports.newMessage = async (req, res, next) => {
 exports.getListMessages = async (req, res, next) => {
     const { id } = req.params;
     try {
-        const results = await MessageModel.find({idGroup:id});
+        const results = await MessageModel.find({ idGroup: id });
         console.log(results);
         if (!!results) {
             return res.json(results);
