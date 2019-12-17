@@ -121,21 +121,24 @@ export const getListSkill = searchString => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-
-  const url = `http://localhost:4200/skill/get-list?searchString=${searchString}`;
+  const resultSearch = searchString ? `?searchString=${searchString}` : '';
+  const url = `http://localhost:4200/skill/get-list${resultSearch}`;
   axios
     .get(url, {
       headers
     })
     .then(res => {
-      if (!!res.data.skills) {
+      if (res.data.skills) {
+        console.log('list skill');
+        console.log(res.data.skills);
         dispatch(getListSkillSuccess(res.data.skills));
       } else {
         dispatch(getListSkillFail(`Empty list Skills`));
       }
     })
     .catch(err => {
-      dispatch(getListSkillFail(err));
+      console.log(err);
+      dispatch(getListSkillFail(`something wrong`));
     });
 };
 
@@ -170,7 +173,9 @@ export const deleteSkill = _id => dispatch => {
       if (!!res.data.skill) {
         console.log(res.data);
         dispatch(deleteSkillSuccess(_id, res.data.message));
-      } else dispatch(deleteSkillFail('delete has failled!'));
+      } else {
+        dispatch(deleteSkillFail('delete has failled!'));
+      }
     })
     .catch(err => {
       dispatch(deleteSkillFail(err));

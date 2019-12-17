@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import authReducer from './store/reducers/auth';
 import skillReducer from './store/reducers/skill';
+import userReducer from './store/reducers/user';
 
 import './index.css';
 import App from './App';
@@ -15,7 +16,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  skill: skillReducer
+  skill: skillReducer,
+  user: userReducer
 });
 
 const store = createStore(

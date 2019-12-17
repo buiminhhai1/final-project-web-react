@@ -19,3 +19,8 @@ export {
   refreshMessageCRUD
 }
 from './skill';
+
+export {
+  getListUser
+}
+from './user';

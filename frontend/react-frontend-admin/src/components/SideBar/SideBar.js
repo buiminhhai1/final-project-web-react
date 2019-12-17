@@ -26,10 +26,10 @@ class SideBar extends Component {
             }
           >
             <Menu.Item key="1">
-              <NavLink to="/users/students">Students</NavLink>
+              <NavLink to="/students">Students</NavLink>
             </Menu.Item>
             <Menu.Item key="2">
-              <NavLink to="/user/teachers">Teachers</NavLink>
+              <NavLink to="/teachers">Teachers</NavLink>
             </Menu.Item>
           </SubMenu>
           <SubMenu
