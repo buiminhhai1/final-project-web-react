@@ -58,14 +58,10 @@ const userSchema = mongoose.Schema({
       type: String,
       require: false
     },
-    district: {
+    district: [{
       type: String,
       require: false
-    },
-    ward: {
-      type: String,
-      require: false
-    }
+    }]
   },
   experience: {
     introduction: {

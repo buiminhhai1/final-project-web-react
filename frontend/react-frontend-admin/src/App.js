@@ -7,6 +7,7 @@ import AsyncComponent from './hoc/AsyncComponent/AsyncComponent';
 import HeaderLayout from './components/HeaderLayout/HeaderLayout';
 import BreadcrumbLayout from './components/BreadcrumbLayout/BreadcrumbLayout';
 import SideBar from './components/SideBar/SideBar';
+import HomePage from './containers/HomePage/HomePage';
 import * as actions from './store/actions/index';
 import './App.css';
 
@@ -46,8 +47,10 @@ class App extends Component {
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
-          <Route path="/" exact component={asyncHomePage} />
-          <Route path="/skill" component={asyncSkill} />
+          <Route path="/" exact component={HomePage} />
+          <Route path="/skills" component={asyncSkill} />
+          <Route path="/students" component={asyncHomePage} />
+          <Route path="/teachers" component={HomePage} />
           <Route path="/admin/logout" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>

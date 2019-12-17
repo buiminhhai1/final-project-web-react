@@ -9,7 +9,7 @@ import {
   Avatar,
   Modal,
   Input,
-  message,
+  // message,
   Col,
   Row,
   Button
@@ -21,11 +21,21 @@ import './HomePage.css';
 
 const { Text } = Typography;
 const { Search } = Input;
+const TypeDefine = {
+  All: 0,
+  Teacher: 1,
+  Student: 2,
+  TeacherNonBlock: 3,
+  StudentNonBlock: 4,
+  TeacherBlock: 5,
+  StudentBlock: 6
+};
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPath: '',
       _id: '',
       title: '',
       modalName: '',
@@ -35,26 +45,41 @@ class HomePage extends Component {
           title: 'Employee',
           dataIndex: 'employee',
           key: 'employee',
-          render: text => (
-            <div>
-              <Avatar shape="square" size="large" src={text.imageUrl} />
-              <NavLink>{text.name}</NavLink>
-              <Icon
-                style={{ visibility: text.verify }}
-                type="check-circle"
-                theme="twoTone"
-                twoToneColor="#52c41a"
-              />
-            </div>
-          )
+          render: (text, record) => {
+            return (
+              <div>
+                <Avatar
+                  shape="square"
+                  size="large"
+                  src={record.imageUrl ? record.imageUrl : null}
+                />
+                <div
+                  style={{
+                    display: 'inline-block',
+                    margin: '5px 5px 5px 10px'
+                  }}
+                >
+                  <NavLink to="/" sytle={{ paddingRight: '5px' }}>
+                    {record.name}
+                  </NavLink>
+                  <Icon
+                    style={{ visibility: record.verify ? 'visible' : 'hidden' }}
+                    type="check-circle"
+                    theme="twoTone"
+                    twoToneColor="#52c41a"
+                  />
+                </div>
+              </div>
+            );
+          }
         },
         {
           title: 'Email',
           dataIndex: 'email',
           key: 'email',
-          render: text => (
+          render: (text, record) => (
             <div>
-              <Text>{text.email}</Text>
+              <Text>{record.email}</Text>
             </div>
           )
         },
@@ -62,31 +87,37 @@ class HomePage extends Component {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
-          render: text => (
-            <div>
-              <Tag visible={text.isTeacher} color="#87d068">
-                Teacher
-              </Tag>
-              <Tag color="red" visible={text.isBlocking}>
-                Blocked
-              </Tag>
-            </div>
-          )
+          render: (text, record) => {
+            return (
+              <div>
+                <Tag visible={record.isTeacher} color="#87d068">
+                  Teacher
+                </Tag>
+                <Tag color="red" visible={record.isBlocking}>
+                  Blocked
+                </Tag>
+              </div>
+            );
+          }
         },
         {
           title: 'Action',
           dataIndex: 'action',
           key: 'action',
-          render: text => (
-            <div>
-              <Button visible={text.isBlocking} type="primary">
-                Unblock
-              </Button>
-              <Button visible={!text.isBlocking} type="danger">
-                Block
-              </Button>
-            </div>
-          )
+          render: (text, record) => {
+            const btnBlock = record.isBlocking ? (
+              <Button type="danger">Block</Button>
+            ) : null;
+            const btnUnBlock = !record.isBlocking ? (
+              <Button type="primary">Unblock</Button>
+            ) : null;
+            return (
+              <div>
+                {btnUnBlock}
+                {btnBlock}
+              </div>
+            );
+          }
         }
       ],
       visible: false,
@@ -96,10 +127,27 @@ class HomePage extends Component {
   }
 
   componentDidMount() {
-    // this.props.onGetListSkill('');
+    switch (this.props.location.pathname + '') {
+      case '/':
+        this.props.onGetListUser(TypeDefine.All);
+        break;
+      case '/students':
+        this.props.onGetListUser(TypeDefine.Student);
+        break;
+      case '/teachers':
+        this.props.onGetListUser(TypeDefine.Teacher);
+        break;
+      default:
+        this.props.onGetListUser(TypeDefine.All);
+        break;
+    }
   }
 
   componentDidUpdate() {
+    if (this.props.userData.length > 0) {
+      // console.log('user data');
+      // console.log(this.props.userData);
+    }
     // this.props.onRefreshMessage();
     // if (this.props.error) {
     //   this.render.actionMessage = message.error(this.props.message);
@@ -118,23 +166,23 @@ class HomePage extends Component {
   };
 
   handleSubmitUpdateForm = async () => {
-    this.setState({
-      confirmLoading: true
-    });
-    const { _id, title } = this.state;
-    if (_id) {
-      await this.props.onUpdateSkill(_id, title);
-      this.setState({
-        visible: false,
-        confirmLoading: false
-      });
-    } else {
-      await this.props.onCreateSkill(title);
-      this.setState({
-        visible: false,
-        confirmLoading: false
-      });
-    }
+    // this.setState({
+    //   confirmLoading: true
+    // });
+    // const { _id, title } = this.state;
+    // if (_id) {
+    //   await this.props.onUpdateSkill(_id, title);
+    //   this.setState({
+    //     visible: false,
+    //     confirmLoading: false
+    //   });
+    // } else {
+    //   await this.props.onCreateSkill(title);
+    //   this.setState({
+    //     visible: false,
+    //     confirmLoading: false
+    //   });
+    // }
   };
 
   handleCancel = () => {
@@ -149,12 +197,12 @@ class HomePage extends Component {
   };
 
   addNewSkill = async () => {
-    this.setState({
-      visible: true,
-      _id: '',
-      title: '',
-      modalName: 'Add skill'
-    });
+    // this.setState({
+    //   visible: true,
+    //   _id: '',
+    //   title: '',
+    //   modalName: 'Add skill'
+    // });
   };
 
   render() {
@@ -167,9 +215,9 @@ class HomePage extends Component {
           <Col span={6} offset={0}>
             <Search
               placeholder="input search text"
-              onSearch={value => {
-                // this.props.onGetListSkill(value);
-              }}
+              // onSearch={value => {
+              //   // this.props.onGetListSkill(value);
+              // }}
               enterButton
             />
           </Col>
@@ -181,11 +229,15 @@ class HomePage extends Component {
         </Row>
         <Spin spinning={this.props.loading}>
           <div style={{ background: 'white' }}>
-            <Table
-              columns={this.state.userColumns}
-              dataSource={this.props.userData}
-              size="middle"
-            />
+            {
+              <Table
+                columns={this.state.userColumns}
+                dataSource={
+                  this.props.userData.length > 0 ? this.props.userData : []
+                }
+                size="middle"
+              />
+            }
             {actionMessage}
             {this.props.userData ? (
               <div>
