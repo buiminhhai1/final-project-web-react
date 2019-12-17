@@ -92,7 +92,7 @@ class UpdateProfile extends React.Component {
 
     const selectAddress = (
       <div>
-        <Select defaultValue="District/ Ward" style={{ width: 150, paddingLeft: 5 }}>
+        <Select defaultValue="District/ Ward" style={{ width: 125 }}>
           <OptGroup label="District">
             <Option value="1">District 1</Option>
             <Option value="2">District 2</Option>
@@ -106,23 +106,23 @@ class UpdateProfile extends React.Component {
             <Option value="10">District 10</Option>
             <Option value="11">District 11</Option>
             <Option value="12">District 12</Option>
-            <Option value="Binh Tan">District Binh Tan</Option>
-            <Option value="Binh Thanh">District Binh Thanh</Option>
-            <Option value="Go Vap">District Go Vap</Option>
-            <Option value="Phu Nhuan">District Phu Nhuan</Option>
-            <Option value="Tan Binh">District Tan Binh</Option>
-            <Option value="Tan Phu">District Tan Phu</Option>
-            <Option value="Thu Duc">District Thu Duc</Option>
+            <Option value="Binh Tan">Binh Tan</Option>
+            <Option value="Binh Thanh">Binh Thanh</Option>
+            <Option value="Go Vap">Go Vap</Option>
+            <Option value="Phu Nhuan">Phu Nhuan</Option>
+            <Option value="Tan Binh">Tan Binh</Option>
+            <Option value="Tan Phu">Tan Phu</Option>
+            <Option value="Thu Duc">Thu Duc</Option>
           </OptGroup>
           <OptGroup label="Ward">
-            <Option value="Binh Chanh">Ward Binh Chanh</Option>
-            <Option value="Can Gio">Ward Can Gio</Option>
-            <Option value="Cu Chi">Ward Cu Chi</Option>
-            <Option value="Hoc Mon">Ward Hoc Mon</Option>
-            <Option value="Nha Be">Ward Nha Be</Option>
+            <Option value="Binh Chanh">Binh Chanh</Option>
+            <Option value="Can Gio">Can Gio</Option>
+            <Option value="Cu Chi">Cu Chi</Option>
+            <Option value="Hoc Mon">Hoc Mon</Option>
+            <Option value="Nha Be">Nha Be</Option>
           </OptGroup>
         </Select>
-        <Select defaultValue="City" style={{ width: 90 }}>
+        <Select defaultValue="City" style={{ width: 120, marginLeft: 5 }}>
           <Option value="Ho Chi Minh">Ho Chi Minh</Option>
           <Option value="Ha Noi">Ha Noi</Option>
           <Option value="Da Nang">Da Nang</Option>
@@ -161,7 +161,7 @@ class UpdateProfile extends React.Component {
               })(
                 <AutoComplete
                   dataSource={[this.props.user.name]}
-                  placeholder={this.props.user.name}
+                  placeholder={"Ex: " + this.props.user.name}
                 >
                   <Input />
                 </AutoComplete>
@@ -170,13 +170,7 @@ class UpdateProfile extends React.Component {
             <Form.Item label="Address">
               {getFieldDecorator('address', {
                 rules: [{ required: false, message: 'Please input address!' }],
-              })(
-                <AutoComplete
-                  placeholder="address"
-                >
-                  <Input addonAfter={selectAddress} />
-                </AutoComplete>,
-              )}
+              })(<Input placeholder="Enter address" addonAfter={selectAddress} />)}
             </Form.Item>
             <Form.Item label="Phone Number">
               {getFieldDecorator('phone', {

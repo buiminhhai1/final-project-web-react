@@ -26,16 +26,27 @@ function NavigationItems(props) {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item>
-          <NavLink to="/settings" > Settings</NavLink>
+          <NavLink className="d-flex align-items-center" to="/settings" >
+            <Icon className="mr-2" type="setting" />
+            Settings
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/profile" > Profile</NavLink>
+          <NavLink className="d-flex align-items-center" to="/profile" >
+            <Icon className="mr-2" type="profile" />
+            Profile
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/teacher-profile" > Teacher Profile</NavLink>
+          <NavLink className="d-flex align-items-center" to="/teacher-profile" >
+          <Icon className="mr-2" type="read" />
+            Teacher Profile
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/logout" > Log out</NavLink>
+          <NavLink className="d-flex align-items-center" to="/logout" >
+            <Icon className="mr-2" type="logout" /> Log out
+          </NavLink>
         </Menu.Item>
       </Menu>)
   };
@@ -44,35 +55,7 @@ function NavigationItems(props) {
     <ul className={classes.NavigationItems} >
       <NavigationItem link="/">HOME</NavigationItem>
       {props.token ?
-        // <Dropdown>
-        //   <Dropdown.Toggle
-        //     className={classes.avatarDropdown}
-        //     style={avatarDropdownStyle}
-        //     drop="left">
-        //     <Avatar src={props.user.imageUrl} />
-        //   </Dropdown.Toggle>
-        //   <Dropdown.Menu>
-        //     <Dropdown.Item disabled>
-        //       <i style={{ fontSize: 13 }}>Signed in as</i>
-        //       <br />
-        //       <b>{props.user.name}</b>
-        //     </Dropdown.Item>
-        //     <Dropdown.Divider />
-        //     <Dropdown.Item>
-        //       <NavLink to="/settings" > Settings</NavLink>
-        //     </Dropdown.Item>
-        //     <Dropdown.Item to="/profile">
-        //       <NavLink to="/profile" > Profile</NavLink>
-        //     </Dropdown.Item>
-        //     <Dropdown.Item to="/teacher-profile">
-        //       <NavLink to="/teacher-profile" > Teacher Profile</NavLink>
-        //     </Dropdown.Item>
-        //     <Dropdown.Item to="/logout">
-        //       <NavLink to="/logout" > Log out</NavLink>
-        //     </Dropdown.Item>
-        //   </Dropdown.Menu>
-        // </Dropdown>
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu} className="mx-4">
           <Avatar src={props.user.imageUrl} />
         </Dropdown>
         : null}

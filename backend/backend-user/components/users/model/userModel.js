@@ -72,6 +72,10 @@ const userSchema = mongoose.Schema({
     ward: {
       type: String,
       require: false
+    },
+    phone: {
+      type: String,
+      require: false
     }
   },
   experience: {
