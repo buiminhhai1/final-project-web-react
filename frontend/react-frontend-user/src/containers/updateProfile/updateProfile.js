@@ -3,6 +3,7 @@ import {
   Form,
   Input,
   Select,
+  Cascader,
   Button,
   AutoComplete,
   message
@@ -40,8 +41,6 @@ const tailFormItemLayout = {
   },
 };
 
-
-
 class UpdateProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +55,7 @@ class UpdateProfile extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const phone = values.prefix + values.phone;
+        console.log(values);
 
       }
     });
@@ -78,7 +78,6 @@ class UpdateProfile extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    // const { autoCompleteResult } = this.state;
 
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: '84',
@@ -90,102 +89,103 @@ class UpdateProfile extends React.Component {
       </Select>,
     );
 
-    const selectAddress = (
-      <div>
-        <Select defaultValue="District/ Ward" style={{ width: 125 }}>
-          <OptGroup label="District">
-            <Option value="1">District 1</Option>
-            <Option value="2">District 2</Option>
-            <Option value="3">District 3</Option>
-            <Option value="4">District 4</Option>
-            <Option value="5">District 5</Option>
-            <Option value="6">District 6</Option>
-            <Option value="7">District 7</Option>
-            <Option value="8">District 8</Option>
-            <Option value="9">District 9</Option>
-            <Option value="10">District 10</Option>
-            <Option value="11">District 11</Option>
-            <Option value="12">District 12</Option>
-            <Option value="Binh Tan">Binh Tan</Option>
-            <Option value="Binh Thanh">Binh Thanh</Option>
-            <Option value="Go Vap">Go Vap</Option>
-            <Option value="Phu Nhuan">Phu Nhuan</Option>
-            <Option value="Tan Binh">Tan Binh</Option>
-            <Option value="Tan Phu">Tan Phu</Option>
-            <Option value="Thu Duc">Thu Duc</Option>
-          </OptGroup>
-          <OptGroup label="Ward">
-            <Option value="Binh Chanh">Binh Chanh</Option>
-            <Option value="Can Gio">Can Gio</Option>
-            <Option value="Cu Chi">Cu Chi</Option>
-            <Option value="Hoc Mon">Hoc Mon</Option>
-            <Option value="Nha Be">Nha Be</Option>
-          </OptGroup>
-        </Select>
-        <Select defaultValue="City" style={{ width: 120, marginLeft: 5 }}>
-          <Option value="Ho Chi Minh">Ho Chi Minh</Option>
-          <Option value="Ha Noi">Ha Noi</Option>
-          <Option value="Da Nang">Da Nang</Option>
-          <Option value="Khanh Hoa">Khanh Hoa</Option>
-        </Select>
-      </div>
+    const addressOptions = [
+      {
+        value: 'Ho Chi Minh',
+        label: 'Ho Chi Minh',
+        children: [
+          {
+            value: 'District 1',
+            label: 'District 1',
+          },
+          {
+            value: 'District 2',
+            label: 'District 2',
+          },
+          {
+            value: 'District 3',
+            label: 'District 3',
+          },
+        ],
+      },
+      {
+        value: 'Ha Noi',
+        label: 'Ha Noi',
+        children: [
+          {
+            value: 'Hoan Kiem',
+            label: 'Hoan Kiem',
+          },
+          {
+            value: 'Đống Đa',
+            label: 'Đống Đa',
+          },
+          {
+            value: 'Ba Đình',
+            label: 'Ba Đình',
+          },
+        ],
+      },
+    ];
+
+    function handleAddressChange(value) {
+      console.log(value);
+    }
+
+    const addressSelector = (
+      <Cascader options={addressOptions} onChange={handleAddressChange} placeholder="Please select" />
     );
 
-    if (this.props.user === null) {
-      return <Redirect to='/signIn' />
-    }
-    else {
-      return (
-        <div>
-          <UpdateAvatar />
-          <Form className="updateProfile" {...formItemLayout} onSubmit={this.handleSubmit}>
-            <Form.Item label="E-mail">
-              {
-                getFieldDecorator('email', {
-                  rules: [
-                    {
-                      type: 'email',
-                      message: 'The input is not valid E-mail!',
-                    },
-                    {
-                      required: false,
-                      message: 'Please input your E-mail!',
-                    },
-                  ],
-                })(<Input placeholder={this.props.user.email} disabled></Input>)
-              }
-            </Form.Item>
-            <Form.Item label="Name">
-              {getFieldDecorator('name', {
-                rules: [{ required: true, message: 'Please input name!' }],
-              })(
-                <AutoComplete
-                  dataSource={[this.props.user.name]}
-                  placeholder={"Ex: " + this.props.user.name}
-                >
-                  <Input />
-                </AutoComplete>
-              )}
-            </Form.Item>
-            <Form.Item label="Address">
-              {getFieldDecorator('address', {
-                rules: [{ required: false, message: 'Please input address!' }],
-              })(<Input placeholder="Enter address" addonAfter={selectAddress} />)}
-            </Form.Item>
-            <Form.Item label="Phone Number">
-              {getFieldDecorator('phone', {
-                rules: [{ required: false, message: 'Please input your phone number!' }],
-              })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
-            </Form.Item>
-            <Form.Item {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">
-                Update
+    return (
+      <div>
+        <UpdateAvatar />
+        <Form className="updateProfile" {...formItemLayout} onSubmit={this.handleSubmit}>
+          <Form.Item label="E-mail">
+            {
+              getFieldDecorator('email', {
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
+                  },
+                  {
+                    required: false,
+                    message: 'Please input your E-mail!',
+                  },
+                ],
+              })(<Input placeholder={this.props.user.email} disabled></Input>)
+            }
+          </Form.Item>
+          <Form.Item label="Name">
+            {getFieldDecorator('name', {
+              rules: [{ required: true, message: 'Please input name!' }],
+            })(
+              <AutoComplete
+                dataSource={[this.props.user.name]}
+                placeholder={"Ex: " + this.props.user.name}
+              >
+                <Input />
+              </AutoComplete>
+            )}
+          </Form.Item>
+          <Form.Item label="Address">
+            {getFieldDecorator('address', {
+              rules: [{ required: false, message: 'Please input address!' }],
+            })(<Input placeholder="Enter address" addonAfter={addressSelector} />)}
+          </Form.Item>
+          <Form.Item label="Phone Number">
+            {getFieldDecorator('phone', {
+              rules: [{ required: false, message: 'Please input your phone number!' }],
+            })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit">
+              Update
               </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      );
-    }
+          </Form.Item>
+        </Form>
+      </div>
+    );
   }
 }
 

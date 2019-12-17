@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import {
   Switch,
-  Route
+  Route,
+  Redirect
 } from "react-router-dom";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -46,16 +47,39 @@ class App extends React.Component {
   }
 
   render() {
+    function NoMatch(props) {
+      if (!props.user)
+        return (
+          <Redirect to='/signIn' />
+        );
+      else {
+        return (
+          <Redirect to='/' />
+        );
+      }
+    }
+
     const routes = (
-      <Switch>
-        <Route exact path="/" component={asyncHomepage}></Route>
-        <Route path="/signIn" component={asyncSignIn}></Route>
-        <Route path="/signUp" component={asyncSignUp}></Route>
-        <Route path="/logout" component={asyncLogOut}></Route>
-        <Route path="/profile" component={asyncUpdateProfile}></Route>
-        <Route path="/user-profile" component={asyncUserProfile}></Route>
-        <Route path="/teacher-profile" component={asyncTeacherProfile}></Route>
-      </Switch>
+      this.props.user === null ?
+        <Switch>
+          <Route exact path="/" component={asyncHomepage}></Route>
+          <Route path="/signIn" component={asyncSignIn}></Route>
+          <Route path="/signUp" component={asyncSignUp}></Route>
+          <Route path="*">
+            <NoMatch user={this.props.user} />
+          </Route>
+        </Switch>
+        :
+        <Switch>
+          <Route exact path="/" component={asyncHomepage}></Route>
+          <Route path="/logout" component={asyncLogOut}></Route>
+          <Route path="/profile" component={asyncUpdateProfile}></Route>
+          <Route path="/user-profile" component={asyncUserProfile}></Route>
+          <Route path="/teacher-profile" component={asyncTeacherProfile}></Route>
+          <Route path="*">
+            <NoMatch user={this.props.user} />
+          </Route>
+        </Switch>
     )
     return (
       <div>
