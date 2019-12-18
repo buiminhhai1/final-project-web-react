@@ -11,6 +11,12 @@ const initialState = {
 
 export default function authReducer(state = initialState, action) {
     switch (action.type) {
+        case actionTypes.RESET_ERROR_MESSAGE:
+            return {
+                ...state,
+                error: null,
+                message: null,
+            }
         case actionTypes.SIGNIN_PENDING:
             return {
                 ...state,
@@ -100,6 +106,27 @@ export default function authReducer(state = initialState, action) {
                 message: 'Upload image success'
             }
         case actionTypes.UPDATE_IMAGE_URL_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error,
+                message: null
+            }
+        case actionTypes.UPDATE_USER_PROFILE_PENDING:
+            return {
+                ...state,
+                pending: true,
+                message: null,
+            }
+        case actionTypes.UPDATE_USER_PROFILE_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                user: action.user,
+                token: action.token,
+                message: 'Update user success'
+            }
+        case actionTypes.UPDATE_USER_PROFILE_ERROR:
             return {
                 ...state,
                 pending: false,

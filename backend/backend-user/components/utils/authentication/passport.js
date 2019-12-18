@@ -78,8 +78,6 @@ const facebook = new facebookStrategy({
         method: 'facebook',
         facebook: {
           id: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value,
         },
         name: profile.displayName,
         email: profile.emails[0].value,

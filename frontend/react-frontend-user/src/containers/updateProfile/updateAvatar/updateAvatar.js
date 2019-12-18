@@ -8,6 +8,7 @@ import { message, Spin } from 'antd';
 import "./updateAvatar.css";
 import { getAuthToken, getAuthUser, getAuthPending, getAuthError } from "../../../store/reducers/auth";
 import { clearUserImageUrl, updateImageUrl, setUserImageUrl } from '../../../store/actions/profile';
+import { resetErrorMessage } from '../../../store/actions/auth';
 
 const avatarFileType = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
 const avatarFileTypeArray = avatarFileType.split(',').map(item => { return item.trim() });
@@ -77,6 +78,8 @@ function UpdateAvatar(props) {
     let successMessage = null;
     if (props.message) {
         successMessage = message.success(props.message);
+        props.resetErrorMessage();
+
     }
 
     return (
@@ -123,7 +126,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    clearUserImageUrl, updateImageUrl, setUserImageUrl
+    clearUserImageUrl, updateImageUrl, setUserImageUrl, resetErrorMessage
 }, dispatch)
 
 export default connect(

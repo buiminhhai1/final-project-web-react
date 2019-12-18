@@ -27,11 +27,6 @@ const userSchema = mongoose.Schema({
     require: true,
   },
   local: {
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
-    },
     password: {
       type: String,
     }
@@ -40,21 +35,11 @@ const userSchema = mongoose.Schema({
     id: {
       type: String
     },
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
-    }
   },
   facebook: {
     id: {
       type: String
     },
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
-    }
   },
   location: {
     _id: {
@@ -65,18 +50,12 @@ const userSchema = mongoose.Schema({
       type: String,
       require: false
     },
-    district: {
-      type: String,
-      require: false
-    },
-    ward: {
-      type: String,
-      require: false
-    },
-    phone: {
-      type: String,
-      require: false
-    }
+    district: [{
+      name: {
+        type: String,
+        require: false
+      }
+    }]
   },
   experience: {
     introduction: {
@@ -190,6 +169,26 @@ const userSchema = mongoose.Schema({
   isBlocking: {
     type: Boolean,
     require: true
+  },
+  contact: {
+    phone: {
+      type: String,
+      require: false
+    },
+    address: {
+      street: {
+        type: String,
+        require: false
+      },
+      city: {
+        type: String,
+        require: false
+      },
+      district: {
+        type: String,
+        require: false
+      }
+    }
   }
 });
 

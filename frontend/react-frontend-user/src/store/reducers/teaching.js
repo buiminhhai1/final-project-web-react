@@ -3,14 +3,22 @@ import * as actionTypes from '../actionTypes';
 const initialState = {
     subjects: [],
     level: [],
+    locations: [],
     teachers: [],
     teacher: {},
     pending: false,
     error: null,
+    message: null,
 }
 
 export default function teachingReducer(state = initialState, action) {
     switch (action.type) {
+        case actionTypes.RESET_ERROR_MESSAGE:
+            return {
+                ...state,
+                error: null,
+                message: null,
+            }
         case actionTypes.GET_SUBJECTS_PENDING:
             return {
                 ...state,
@@ -93,6 +101,23 @@ export default function teachingReducer(state = initialState, action) {
                 pending: false,
             }
         case actionTypes.GET_TEACHER_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            }
+        case actionTypes.GET_LOCATIONS_PENDING:
+            return {
+                ...state,
+                pending: true
+            }
+        case actionTypes.GET_LOCATIONS_SUCCESS:
+            return {
+                ...state,
+                locations: action.locations,
+                pending: false,
+            }
+        case actionTypes.GET_LOCATIONS_ERROR:
             return {
                 ...state,
                 pending: false,

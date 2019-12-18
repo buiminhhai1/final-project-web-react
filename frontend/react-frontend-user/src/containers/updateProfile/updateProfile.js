@@ -10,22 +10,24 @@ import {
 } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import { Redirect } from 'react-router-dom';
 
 import './updateProfile.css';
-import { getAuthToken, getAuthUser } from "../../store/reducers/auth";
+import { getAuthToken, getAuthUser, getAuthError } from "../../store/reducers/auth";
+import { getLocations } from "../../store/actions/teaching";
+import { resetErrorMessage } from "../../store/actions/auth";
+import { updateUserProfile } from "../../store/actions/profile";
 import UpdateAvatar from './updateAvatar/updateAvatar';
 
-const { Option, OptGroup } = Select;
+const { Option } = Select;
 // const AutoCompleteOption = AutoComplete.Option;
 const formItemLayout = {
   labelCol: {
-    xs: { span: 7 },
-    sm: { span: 7 },
+    xs: { span: 9 },
+    sm: { span: 9 },
   },
   wrapperCol: {
-    xs: { span: 10 },
-    sm: { span: 10 },
+    xs: { span: 7 },
+    sm: { span: 7 },
   },
 };
 const tailFormItemLayout = {
@@ -47,6 +49,19 @@ class UpdateProfile extends React.Component {
     this.state = {
       confirmDirty: false,
       autoCompleteResult: [],
+      city: 0,
+      district: 0,
+    }
+  }
+
+  componentDidMount() {
+    this.props.getLocations();
+  }
+
+  componentDidUpdate() {
+    if (this.props.error) {
+      this.render.errorMessage = message.error(this.props.error);
+      this.props.resetErrorMessage();
     }
   }
 
@@ -54,27 +69,27 @@ class UpdateProfile extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const phone = values.prefix + values.phone;
-        console.log(values);
-
+        const token = "Bearer " + this.props.token;
+        const phone = values.prefix + '-' + values.phone;
+        const location = {
+          city: this.props.locations[this.state.city].city,
+          district: this.props.locations[this.state.city].district[this.state.district],
+        }
+        const name = values.name;
+        const address = values.address;
+        this.props.updateUserProfile(token, {
+          phone, location, name, address
+        })
       }
     });
   };
 
-  handleConfirmBlur = e => {
-    const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  };
-
-  handleWebsiteChange = value => {
-    let autoCompleteResult;
-    if (!value) {
-      autoCompleteResult = [];
-    } else {
-      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    }
-    this.setState({ autoCompleteResult });
-  };
+  handleAddressChange = value => {
+    this.setState({
+      city: value[0],
+      district: value[1]
+    })
+  }
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -90,54 +105,27 @@ class UpdateProfile extends React.Component {
     );
 
     const addressOptions = [
-      {
-        value: 'Ho Chi Minh',
-        label: 'Ho Chi Minh',
-        children: [
-          {
-            value: 'District 1',
-            label: 'District 1',
-          },
-          {
-            value: 'District 2',
-            label: 'District 2',
-          },
-          {
-            value: 'District 3',
-            label: 'District 3',
-          },
-        ],
-      },
-      {
-        value: 'Ha Noi',
-        label: 'Ha Noi',
-        children: [
-          {
-            value: 'Hoan Kiem',
-            label: 'Hoan Kiem',
-          },
-          {
-            value: 'Đống Đa',
-            label: 'Đống Đa',
-          },
-          {
-            value: 'Ba Đình',
-            label: 'Ba Đình',
-          },
-        ],
-      },
+      ...this.props.locations.map((location, index) => {
+        return {
+          value: index,
+          label: location.city,
+          key: location.city,
+          children: location.district.map((district, index) => {
+            return {
+              value: index,
+              label: district.name,
+              key: district.name,
+            }
+          })
+        }
+      })
     ];
 
-    function handleAddressChange(value) {
-      console.log(value);
-    }
-
-    const addressSelector = (
-      <Cascader options={addressOptions} onChange={handleAddressChange} placeholder="Please select" />
-    );
+    const errorMessage = null;
 
     return (
       <div>
+        {errorMessage}
         <UpdateAvatar />
         <Form className="updateProfile" {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="E-mail">
@@ -162,20 +150,31 @@ class UpdateProfile extends React.Component {
             })(
               <AutoComplete
                 dataSource={[this.props.user.name]}
-                placeholder={"Ex: " + this.props.user.name}
               >
-                <Input />
+                <Input placeholder={"Ex: " + this.props.user.name} />
               </AutoComplete>
             )}
           </Form.Item>
           <Form.Item label="Address">
             {getFieldDecorator('address', {
-              rules: [{ required: false, message: 'Please input address!' }],
-            })(<Input placeholder="Enter address" addonAfter={addressSelector} />)}
+              rules: [{ required: true, message: 'Please input address!' }],
+            })(<Input placeholder="Enter address" />)}
+          </Form.Item>
+          <Form.Item label="City">
+            {getFieldDecorator('city', {
+              rules: [{ required: true, message: 'Please choose city!' }],
+            })(
+              <Cascader
+                style={{ textAlign: "left" }}
+                options={addressOptions}
+                onChange={this.handleAddressChange}
+                placeholder="Please select city" />
+            )}
+
           </Form.Item>
           <Form.Item label="Phone Number">
             {getFieldDecorator('phone', {
-              rules: [{ required: false, message: 'Please input your phone number!' }],
+              rules: [{ required: true, message: 'Please input your phone number!' }],
             })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
@@ -192,9 +191,12 @@ class UpdateProfile extends React.Component {
 const mapStateToProps = state => ({
   token: getAuthToken(state),
   user: getAuthUser(state),
+  error: getAuthError(state),
+  locations: state.teachingReducer.locations,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  getLocations, updateUserProfile, resetErrorMessage
 }, dispatch)
 
 export default compose(

@@ -150,7 +150,6 @@ export function getTeacher(userId) {
             .then(res => {
                 let teacher = res.data.teacher;
                 if (teacher) {
-                    console.log(teacher);
                     dispatch(getTeacherSuccess(teacher));
                 }
                 else
@@ -158,6 +157,47 @@ export function getTeacher(userId) {
             })
             .catch(err => {
                 dispatch(getTeacherFail(err));
+            })
+    }
+}
+
+export const getLocationsPending = () => {
+    return {
+        type: actionTypes.GET_LOCATIONS_PENDING
+    };
+};
+
+export const getLocationsSuccess = (locations) => {
+    return {
+        type: actionTypes.GET_LOCATIONS_SUCCESS,
+        locations
+    };
+};
+
+export const getLocationsFail = (error) => {
+    return {
+        type: actionTypes.GET_LOCATIONS_ERROR,
+        error
+    };
+};
+
+export function getLocations() {
+    return (dispatch) => {
+        dispatch(getLocationsPending());
+
+        let url = apiUtilUrl + "/location/get-list-location";
+        axios.get(url)
+            .then(res => {
+                let locations = res.data.locations;
+                if (locations) {
+                    dispatch(getLocationsSuccess(locations));
+                }
+                else
+                    dispatch(getLocationsFail(res.data.message));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getLocationsFail(err));
             })
     }
 }

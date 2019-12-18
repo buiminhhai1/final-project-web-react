@@ -25,7 +25,7 @@ exports.register = async (req, res) => {
 
   try {
     const user = await UserModel.findOne({
-      "local.email": email
+      "email": email
     });
     if (!!user) {
       return res.json({
@@ -38,8 +38,6 @@ exports.register = async (req, res) => {
       if (!error) {
         const newUser = new UserModel({
           local: {
-            email,
-            name,
             password: hash,
           },
           email,
@@ -62,7 +60,7 @@ exports.register = async (req, res) => {
           return res.json({
             user: newUser,
             token,
-            expiresIn: 15 * 60
+            expiresIn: 150 * 60
           });
         }
       }
@@ -89,7 +87,7 @@ exports.login = (req, res, next) => {
       user: newUser,
       profile,
       token,
-      expiresIn: 15 * 60
+      expiresIn: 150 * 60
     });
   })(req, res, next);
 };
@@ -123,7 +121,7 @@ exports.googleLogin = (req, res, next) => {
             profile: newProfile,
             user: newUser,
             token,
-            expiresIn: 15 * 60
+            expiresIn: 150 * 60
           });
         }
       }
@@ -152,8 +150,6 @@ registerForGoogleAccount = async (user) => {
     const newUser = new UserModel({
       google: {
         id: user.id,
-        email: user.email,
-        name: user.name,
       },
       email: user.email,
       name: user.name,
@@ -172,7 +168,7 @@ registerForGoogleAccount = async (user) => {
 
 getTokenAndUser = (user) => {
   const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-    expiresIn: '15m'
+    expiresIn: '150m'
   });
 
   let newUser = {
@@ -218,8 +214,27 @@ exports.getUser = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   const { user } = req.user;
-  console.log(req);
-  
+  if (!!user) {
+    user.contact.address.city = req.body.location.city;
+    user.contact.address.district = req.body.location.district.name;
+    user.contact.address.street = req.body.address;
+    user.contact.phone = req.body.phone;
+    user.name = req.body.name;
+    // Update user
+    user.save()
+      .then(updatedUser => {
+        const { token, newUser } = getTokenAndUser(updatedUser);
+        return res.json({
+          user: newUser,
+          token,
+          expiresIn: 150 * 60
+        });
+      })
+      .catch(err => {
+        return res.json({ message: "Something wrong happened" })
+      })
+  }
+
   // if (!!user) {
   //   user.save()
   //     .then(item => {
@@ -229,7 +244,6 @@ exports.updateUser = async (req, res, next) => {
   //       res.send("unable to save to database");
   //     });
   // } else return res.json({ message: "User cannot find" });
-  return res.status(500);
 };
 
 exports.facebookLogin = (req, res, next) => {
@@ -243,7 +257,7 @@ exports.facebookLogin = (req, res, next) => {
     return res.json({
       user: newUser,
       token,
-      expiresIn: 15 * 60
+      expiresIn: 150 * 60
     });
   })(req, res, next);
 };
@@ -329,7 +343,7 @@ exports.resetPassword = async (req, res, next) => {
     });
 
     if (!!user) {
-      
+
       const saltValue = await bcrypt.genSalt(10);
       bcrypt.hash(newPassword, saltValue, async (error, hash) => {
         if (!error) {
@@ -350,25 +364,23 @@ exports.resetPassword = async (req, res, next) => {
 
 }
 
-
-
 exports.sendEmailResetPassword = async (req, res, next) => {
   const { email } = req.body;
   try {
     const user = await UserModel.findOne({
       'local.email': email
     });
-    if(!!user){
+    if (!!user) {
       const message = {
         to: email,
         subject: 'Reset password',
         html: `<h2>Click a link below to reset your password</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:3000/resetpassword?id=${user._id}">Reset password</a>`
       }
       sendEmail(message);
-      res.json({result:true,message:'send email success'});
-    }else 
-    res.json({result:false,message:'send email error'});
-  }catch(error){
-    res.json({result:false,message:'send email error'});
+      res.json({ result: true, message: 'send email success' });
+    } else
+      res.json({ result: false, message: 'send email error' });
+  } catch (error) {
+    res.json({ result: false, message: 'send email error' });
   }
 }

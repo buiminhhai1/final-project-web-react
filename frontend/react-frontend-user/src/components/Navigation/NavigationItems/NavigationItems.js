@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Dropdown, DropdownMenu } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { Avatar, Menu, Dropdown, Icon } from 'antd';
 import NavigationItem from './NavigationItem/NavigationItem';
@@ -10,11 +9,6 @@ import classes from './NavigationItems.module.css';
 import { getAuthToken, getAuthUser } from "../../../store/reducers/auth";
 
 function NavigationItems(props) {
-  const avatarDropdownStyle = {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-  };
-
   const menu = () => {
     return (
       props.token &&

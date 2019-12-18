@@ -65,6 +65,7 @@ class App extends React.Component {
           <Route exact path="/" component={asyncHomepage}></Route>
           <Route path="/signIn" component={asyncSignIn}></Route>
           <Route path="/signUp" component={asyncSignUp}></Route>
+          <Route path="/user-profile" component={asyncUserProfile}></Route>
           <Route path="*">
             <NoMatch user={this.props.user} />
           </Route>

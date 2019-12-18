@@ -74,7 +74,7 @@ const userSchema = mongoose.Schema({
         require: false
       },
     },
-    level: [{
+    level: {
       _id: {
         type: mongoose.Schema.Types.ObjectId,
         require: false
@@ -83,7 +83,7 @@ const userSchema = mongoose.Schema({
         type: String,
         require: false
       }
-    }],
+    },
     skill: [{
       _id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -94,7 +94,7 @@ const userSchema = mongoose.Schema({
         require: false
       }
     }],
-    grating: [{
+    educationLevel: [{
       _id: {
         type: mongoose.Schema.Types.ObjectId
       },

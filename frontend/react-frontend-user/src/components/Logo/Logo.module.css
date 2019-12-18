@@ -1,11 +1,4 @@
-.Logo {
-  background-color: white;
-  padding: 8px;
-  height: 100%;
-  box-sizing: border-box;
-  border-radius: 5px;
-}
-
 .Logo img {
-  height: 100%; /*the image does take this height at a maximum   */
+  height: 40px; /*the image does take this height at a maximum   */
+  border-radius: 5px;
 }
