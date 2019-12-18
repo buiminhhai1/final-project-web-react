@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const adminRouter = require('./components/admins/router/adminRouter');
 const skillRouter = require('./components/skills/router/skillRouter');
 const levelRouter = require('./components/levels/router/levelRouter');
+const levelEducationRouter = require('./components/level-education/router/levelEducationRouter');
 const userRouter = require('./components/users/router/userRouter');
 const locationRouter = require('./components/locations/router/locationRouter');
 
@@ -57,6 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 app.use('/level', levelRouter);
+app.use('/level-education', levelEducationRouter);
 app.use('/location', locationRouter);
 app.use('/skill', skillRouter);
 app.use('/users', userRouter);
