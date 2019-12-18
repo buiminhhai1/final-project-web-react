@@ -8,6 +8,7 @@ import {
   Tag,
   Modal,
   Input,
+  Select,
   message,
   Col,
   Row,
@@ -16,6 +17,7 @@ import {
 import 'antd/dist/antd.css';
 import * as actions from '../../store/actions/index';
 
+const { Option } = Select;
 const { Search } = Input;
 
 class Location extends Component {
@@ -23,7 +25,9 @@ class Location extends Component {
     super(props);
     this.state = {
       _id: '',
-      title: '',
+      city: '',
+      district: [],
+      defaultValue: [],
       modalName: '',
       confirmName: 'Delete skill',
       locationColumns: [
@@ -61,10 +65,21 @@ class Location extends Component {
                 type="edit"
                 title="edit location"
                 onClick={async () => {
+                  let defaultSelect = [];
+                  let data = [];
+                  record.district.forEach(item => {
+                    defaultSelect = [...defaultSelect, item.name];
+                    data = [
+                      ...data,
+                      <Option key={item.name}>{item.name}</Option>
+                    ];
+                  });
                   await this.setState({
                     visible: true,
                     _id: record._id,
-                    title: record.title,
+                    city: record.city,
+                    district: data,
+                    defaultValue: defaultSelect,
                     modalName: 'Edit location'
                   });
                 }}
@@ -77,7 +92,7 @@ class Location extends Component {
                   await this.setState({
                     visibleConfirm: true,
                     _id: record._id,
-                    title: record.title
+                    city: record.city
                   });
                 }}
               />
@@ -105,54 +120,66 @@ class Location extends Component {
   }
 
   handleDeleteForm = async () => {
-    // const { _id } = this.state;
-    // await this.props.onDeleteSkill(_id);
-    // this.setState({
-    //   visibleConfirm: false,
-    //   confirmLoading: false
-    // });
+    const { _id } = this.state;
+    await this.props.onDeleteLocation(_id);
+    this.setState({
+      visibleConfirm: false,
+      confirmLoading: false
+    });
   };
 
   handleSubmitUpdateForm = async () => {
-    // this.setState({
-    //   confirmLoading: true
-    // });
-    // const { _id, title } = this.state;
-    // if (_id) {
-    //   await this.props.onUpdateSkill(_id, title);
-    //   this.setState({
-    //     visible: false,
-    //     confirmLoading: false
-    //   });
-    // } else {
-    //   await this.props.onCreateSkill(title);
-    //   this.setState({
-    //     visible: false,
-    //     confirmLoading: false
-    //   });
-    // }
+    await this.setState({
+      confirmLoading: true
+    });
+    const { _id, city } = this.state;
+    const district = this.state.defaultValue.map(item => {
+      return { name: item };
+    });
+    if (_id) {
+      await this.props.onUpdateLocation(_id, city, district);
+      this.setState({
+        visible: false,
+        confirmLoading: false
+      });
+    } else {
+      await this.props.onCreateLocation(city, district);
+      this.setState({
+        visible: false,
+        confirmLoading: false
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
+  handleCancel = async () => {
+    await this.setState({
       visible: false,
       visibleConfirm: false
     });
   };
 
-  onTitleChange = ({ target: { value } }) => {
-    // this.setState({
-    //   title: value
-    // });
+  onCityChange = ({ target: { value } }) => {
+    this.setState({
+      city: value
+    });
   };
 
-  addNewSkill = async () => {
-    // this.setState({
-    //   visible: true,
-    //   _id: '',
-    //   title: '',
-    //   modalName: 'Add skill'
-    // });
+  onAddNewLocation = async () => {
+    await this.setState({
+      visible: true,
+      _id: '',
+      city: '',
+      district: [],
+      defaultValue: [],
+      modalName: 'Add new location'
+    });
+  };
+
+  handleChange = async value => {
+    const newarr = value.toString().split(',');
+    await this.setState({
+      defaultValue: newarr
+    });
   };
 
   render() {
@@ -170,15 +197,13 @@ class Location extends Component {
             <Search
               placeholder="input search text"
               onSearch={value => {
-                console.log('search value');
-                console.log(value);
                 this.props.onGetListSkill(value);
               }}
               enterButton
             />
           </Col>
           <Col span={1} offset={16}>
-            <Button type="primary" onClick={this.addNewSkill}>
+            <Button type="primary" onClick={this.onAddNewLocation}>
               Add
             </Button>
           </Col>
@@ -205,8 +230,8 @@ class Location extends Component {
                   onCancel={this.handleCancel}
                 >
                   <div>
-                    <div>
-                      Title
+                    <div style={{ marginBottom: '5px' }}>
+                      City
                       <span
                         style={{
                           color: 'red',
@@ -218,9 +243,31 @@ class Location extends Component {
                     </div>
                     <Input
                       placeholder="Title"
-                      value={this.state.title}
-                      onChange={this.onTitleChange}
+                      value={this.state.city}
+                      onChange={this.onCityChange}
                     />
+                  </div>
+                  <div style={{ marginTop: '10px' }}>
+                    <div style={{ marginBottom: '5px' }}>
+                      District
+                      <span
+                        style={{
+                          color: 'red',
+                          marginBottom: '5px'
+                        }}
+                      >
+                        *
+                      </span>
+                    </div>
+                    <Select
+                      mode="tags"
+                      style={{ width: '100%' }}
+                      placeholder="Tags Mode"
+                      onChange={this.handleChange}
+                      value={this.state.defaultValue}
+                    >
+                      {this.state.district}
+                    </Select>
                   </div>
                 </Modal>
                 <Modal
@@ -230,7 +277,10 @@ class Location extends Component {
                   confirmLoading={confirmLoading}
                   onCancel={this.handleCancel}
                 >
-                  <span>Do you want to delete {this.state.title} </span>
+                  <span>
+                    Do you want delete
+                    <strong>{this.state.city}</strong>
+                  </span>
                 </Modal>
               </div>
             ) : null}

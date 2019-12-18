@@ -52,12 +52,14 @@ module.exports.addLocation = async (req, res, next) => {
 module.exports.updateLocation = async (req, res, next) => {
   const {
     _id,
-    city
+    city,
+    district
   } = req.body;
   try {
     const location = await LocationModel.findById(_id);
     if (location) {
       location.city = city;
+      location.district = district;
       await location.save();
       return res.json({
         location,

@@ -1,5 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../shared/utility';
+import {
+  updateObject
+} from '../../shared/utility';
 
 const initialState = {
   locationData: [],
@@ -85,7 +87,9 @@ const getListLocationStart = state =>
 const getListLocationSuccess = (state, action) => {
   if (action.locations.length > 0) {
     const data = action.locations.map((item, index) => {
-      const result = { ...item };
+      const result = {
+        ...item
+      };
       result.key = index + 1 + '';
       return result;
     });
@@ -109,9 +113,11 @@ const getListLocationFail = (state, action) =>
 const deleteLocationStart = state =>
   updateObject(state, {
     loading: true,
-    error: null, message: null
+    error: null,
+    message: null
   });
 const deleteLocationSuccess = (state, action) => {
+  // eslint-disable-next-line
   const data = state.locationData.filter(item => {
     if (item._id !== action._id) {
       return item;
@@ -165,8 +171,9 @@ const reducer = (state = initialState, action) => {
       return deleteLocationFail(state, action);
     case actionTypes.REFRESH_MESSAGE_CRUD:
       return refreshMessage(state);
-    default: return state;
-  };
+    default:
+      return state;
+  }
 };
 
 export default reducer;

@@ -57,11 +57,12 @@ export const updateLocationStart = () => ({
   type: actionTypes.UPDATE_LOCATION_START
 });
 
-export const updateLocationSuccess = (_id, city, district) => ({
+export const updateLocationSuccess = (_id, city, district, message) => ({
   type: actionTypes.UPDATE_LOCATION_SUCCESS,
   _id,
   city,
-  district
+  district,
+  message
 });
 
 export const updateLocationFail = error => ({
@@ -81,7 +82,7 @@ export const updateLocation = (_id, city, district) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/location/update-location/${_id}`;
+  const url = `http://localhost:4200/location/update-location/`;
   axios
     .put(url, updated, {
       headers
@@ -134,8 +135,6 @@ export const getListLocation = searchString => dispatch => {
     })
     .then(res => {
       if (res.data.locations) {
-        console.log('list location');
-        console.log(res.data.locations);
         dispatch(getListLocationSuccess(res.data.locations));
       } else {
         dispatch(getListLocationFail('Something went wrong here'));
@@ -163,19 +162,24 @@ export const deleteLocationFail = error => ({
 
 export const deleteLocation = _id => dispatch => {
   dispatch(deleteLocationStart());
+  const dataDelete = { _id };
   const authToken = localStorage.getItem('token');
+  console.log('delete auth token');
+  console.log(authToken);
   const headers = {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/location/delete-location/${_id}`;
+  const url = `http://localhost:4200/location/delete-location`;
   axios
-    .delete(url, {
-      headers
-    })
+    .delete(
+      url,
+      {
+        headers
+      },
+      dataDelete
+    )
     .then(res => {
-      console.log('test delete location with _id');
-      console.log(res);
       if (res.data.location) {
         dispatch(deleteLocationSuccess(_id, res.data.message));
       } else {
