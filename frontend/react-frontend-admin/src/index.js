@@ -7,6 +7,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import authReducer from './store/reducers/auth';
 import skillReducer from './store/reducers/skill';
 import userReducer from './store/reducers/user';
+import locationReducer from './store/reducers/location';
 
 import './index.css';
 import App from './App';
@@ -17,7 +18,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
   auth: authReducer,
   skill: skillReducer,
-  user: userReducer
+  user: userReducer,
+  location: locationReducer
 });
 
 const store = createStore(

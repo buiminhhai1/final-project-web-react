@@ -41,6 +41,10 @@ const asyncUserProfile = AsyncComponent(() => {
   return import('./containers/userProfile/userProfile');
 })
 
+const asyncChat = AsyncComponent(() => {
+  return import('./components/Chat/Chat/Chat');
+})
+
 class App extends React.Component {
   componentDidMount() {
     this.props.reLogin();
@@ -77,6 +81,7 @@ class App extends React.Component {
           <Route path="/profile" component={asyncUpdateProfile}></Route>
           <Route path="/user-profile" component={asyncUserProfile}></Route>
           <Route path="/teacher-profile" component={asyncTeacherProfile}></Route>
+          <Route path="/chat" component={asyncChat}></Route>
           <Route path="*">
             <NoMatch user={this.props.user} />
           </Route>

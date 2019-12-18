@@ -1,17 +1,18 @@
 const users = [];
 
-const addUser = ({ id, idGroup, idUser }) => {
-  const user = { id, idGroup, idUser };
+const addUser = ({ idSocket,idUser }) => {
+  const user = { idSocket,idUser };
   users.push(user);
   return { user };
 }
 
-const removeUser = (id) => {
-  const index = users.findIndex((user) => user.id === id);
+const removeUserBySocketId = (id) => {
+  const index = users.findIndex((user) => user.idSocket === id);
 
   if(index !== -1) return users.splice(index, 1)[0];
 }
 
-const getUser = (id) => users.find((user) => user.id === id);
+const getUserBySocketId = (id) => users.find((user) => user.idSocket === id);
+const getUserById = (id) => users.find((user) => user.idUser === id);
 
-module.exports = { addUser, removeUser, getUser};
+module.exports = { addUser, removeUserBySocketId, getUserById,getUserBySocketId};
