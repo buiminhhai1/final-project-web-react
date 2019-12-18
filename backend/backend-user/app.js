@@ -9,6 +9,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 const teachersRouter = require('./components/teachers/routers/routers');
 const chatRouter = require('./components/chat/router/chatRouter');
+const paymentRouter = require('./components/payments/router/paymentRouter');
+
 
 const app = express();
 var mongoose = require('mongoose');
@@ -55,6 +57,7 @@ app.use('/', indexRouter);
 app.use('/chat', chatRouter);
 app.use('/users', usersRouter);
 app.use('/teachers', teachersRouter);
+app.use('/payment', paymentRouter);
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({ 'info': req.user.user });
 })
