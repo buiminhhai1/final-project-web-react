@@ -12,7 +12,7 @@ export const clearUserImageUrl = () => {
   };
 };
 
-export const setUserImageUrl = (image) => {
+export const setUserImageUrl = image => {
   return {
     type: actionTypes.SET_USER_IMAGE_URL,
     image
@@ -25,14 +25,14 @@ export const updateImageUrlPending = () => {
   };
 };
 
-export const updateImageUrlSuccess = (imageUrl) => {
+export const updateImageUrlSuccess = imageUrl => {
   return {
     type: actionTypes.UPDATE_IMAGE_URL_SUCCESS,
-    imageUrl,
+    imageUrl
   };
 };
 
-export const updateImageUrlFail = (error) => {
+export const updateImageUrlFail = error => {
   return {
     type: actionTypes.UPDATE_IMAGE_URL_ERROR,
     error
@@ -40,9 +40,9 @@ export const updateImageUrlFail = (error) => {
 };
 
 export function updateImageUrl(data) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(updateImageUrlPending());
-    const updateUrl = apiUrl + "/users/image-upload";
+    const updateUrl = apiUrl + '/users/image-upload';
 
     axios({
       method: 'post',
@@ -60,15 +60,13 @@ export function updateImageUrl(data) {
         if (res.data.imageUrl) {
           localStorage.setItem('imageUrl', imageUrl);
           dispatch(updateImageUrlSuccess(imageUrl));
-        }
-        else
-          dispatch(updateImageUrlFail({ error: "Cannot upload avatar" }));
+        } else dispatch(updateImageUrlFail({ error: 'Cannot upload avatar' }));
       })
       .catch(err => {
         console.log(err);
         dispatch(updateImageUrlFail(err));
-      })
-  }
+      });
+  };
 }
 
 export const updateTeacherProfilePending = () => {
@@ -77,72 +75,25 @@ export const updateTeacherProfilePending = () => {
   };
 };
 
-export const updateTeacherProfileSuccess = (user) => {
+export const updateTeacherProfileSuccess = (token, user) => {
   return {
     type: actionTypes.UPDATE_TEACHER_PROFILE_SUCCESS,
     user,
+    token
   };
 };
 
-export const updateTeacherProfileFail = (error) => {
+export const updateTeacherProfileFail = error => {
   return {
     type: actionTypes.UPDATE_TEACHER_PROFILE_ERROR,
     error
   };
 };
 
-export function updateTeacherProfile(data) {
-  return (dispatch) => {
+export function updateTeacherProfile(token, data) {
+  return dispatch => {
     dispatch(updateTeacherProfilePending());
-    const updateUrl = apiUrl + "/";
-
-    axios({
-      method: 'post',
-      url: updateUrl,
-      headers: {
-        Authorization: data.token
-      },
-      data
-    })
-      .then(res => {
-        // console.log(res.data);
-        if (res.data.avatar) {
-          dispatch(updateTeacherProfileSuccess(res.data));
-        }
-        else
-          dispatch(updateTeacherProfileFail({ error: "Cannot upload avatar" }));
-      })
-      .catch(err => {
-        console.log(err);
-        dispatch(updateTeacherProfileFail(err));
-      })
-  }
-}
-
-export const updateUserProfilePending = () => {
-  return {
-    type: actionTypes.UPDATE_USER_PROFILE_PENDING
-  };
-};
-
-export const updateUserProfileSuccess = (token, user) => {
-  return {
-    type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
-    user, token
-  };
-};
-
-export const updateUserProfileFail = (error) => {
-  return {
-    type: actionTypes.UPDATE_USER_PROFILE_ERROR,
-    error
-  };
-};
-
-export function updateUserProfile(token, data) {
-  return (dispatch) => {
-    dispatch(updateUserProfilePending());
-    const updateUrl = apiUrl + "/users/user-profile";
+    const updateUrl = apiUrl + '/users/teacher-profile';
 
     axios({
       method: 'post',
@@ -155,22 +106,80 @@ export function updateUserProfile(token, data) {
       .then(res => {
         const user = res.data.user;
         if (user) {
-          const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
+          const expirationDate = new Date(
+            new Date().getTime() + res.data.expiresIn * 1000
+          );
 
           // Save user's token in local storage
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("userName", res.data.user.name);
-          localStorage.setItem("userId", res.data.user.userId);
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('userName', res.data.user.name);
+          localStorage.setItem('userId', res.data.user.userId);
+          localStorage.setItem('expirationDate', expirationDate);
+
+          dispatch(checkAuthTimeout(res.data.expiresIn));
+          dispatch(updateTeacherProfileSuccess(res.data.token, res.data.user));
+        } else dispatch(updateUserProfileFail('Cannot update!'));
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch(updateTeacherProfileFail({ error: 'Cannot update! ' }));
+      });
+  };
+}
+
+export const updateUserProfilePending = () => {
+  return {
+    type: actionTypes.UPDATE_USER_PROFILE_PENDING
+  };
+};
+
+export const updateUserProfileSuccess = (token, user) => {
+  return {
+    type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
+    user,
+    token
+  };
+};
+
+export const updateUserProfileFail = error => {
+  return {
+    type: actionTypes.UPDATE_USER_PROFILE_ERROR,
+    error
+  };
+};
+
+export function updateUserProfile(token, data) {
+  return dispatch => {
+    dispatch(updateUserProfilePending());
+    const updateUrl = apiUrl + '/users/user-profile';
+
+    axios({
+      method: 'post',
+      url: updateUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
+      .then(res => {
+        const user = res.data.user;
+        if (user) {
+          const expirationDate = new Date(
+            new Date().getTime() + res.data.expiresIn * 1000
+          );
+
+          // Save user's token in local storage
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('userName', res.data.user.name);
+          localStorage.setItem('userId', res.data.user.userId);
           localStorage.setItem('expirationDate', expirationDate);
 
           dispatch(checkAuthTimeout(res.data.expiresIn));
           dispatch(updateUserProfileSuccess(res.data.token, res.data.user));
-        }
-        else
-          dispatch(updateUserProfileFail("Cannot update user"));
+        } else dispatch(updateUserProfileFail('Cannot update user'));
       })
       .catch(err => {
-        dispatch(updateUserProfileFail("Something wrong happened"));
-      })
-  }
+        dispatch(updateUserProfileFail('Something wrong happened'));
+      });
+  };
 }

@@ -133,6 +133,27 @@ export default function authReducer(state = initialState, action) {
                 error: action.error,
                 message: null
             }
+        case actionTypes.UPDATE_TEACHER_PROFILE_PENDING:
+            return {
+                ...state,
+                pending: true,
+                message: null,
+            }
+        case actionTypes.UPDATE_TEACHER_PROFILE_SUCCESS:
+            return {
+                ...state,
+                pending: false,
+                user: action.user,
+                token: action.token,
+                message: 'Update user success'
+            }
+        case actionTypes.UPDATE_TEACHER_PROFILE_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error,
+                message: null
+            }
         default:
             return state;
     }

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-
-import Input from '../Input/Input';
-
 import './Chat.css';
 import { connect } from 'react-redux';
 
@@ -65,7 +62,7 @@ const Chat = (props) => {
       if (currentGroup) {
         currentGroup.lastMessage.message.message = message;
       }
-      if (currentGroup._id == group)
+      if (currentGroup._id === group)
         setMessages([...messages, { idUser: user, message }]);
     });
 
@@ -77,7 +74,7 @@ const Chat = (props) => {
         setCurrentGroup(data.group);
         setGroupName(data.user.name);
         // let toUser = data.group.groupInfo.idUser1;
-        // if (toUser == props.user.userId) toUser = data.group.groupInfo.idUser2;
+        // if (toUser === props.user.userId) toUser = data.group.groupInfo.idUser2;
         setToUser(data.user);
       }
       setGroupList(groupList);
@@ -137,9 +134,9 @@ const Chat = (props) => {
           <div style={{ height: 450, padding: 0, margin: 0 }}>
             <MessageList>
               {messages.map((message, i) =>
-                <MessageGroup key={i} avatar={message.idUser == user.userId ? '' : toUser.imageUrl}>
-                  <Message  authorName={message.idUser == user.userId ? user.name : toUser.name} 
-                  date={message.time} isOwn={message.idUser == user.userId}>
+                <MessageGroup key={i} avatar={message.idUser === user.userId ? '' : toUser.imageUrl}>
+                  <Message authorName={message.idUser === user.userId ? user.name : toUser.name}
+                    date={message.time} isOwn={message.idUser === user.userId}>
                     <MessageText>{message.message}</MessageText>
                   </Message>
                 </MessageGroup>

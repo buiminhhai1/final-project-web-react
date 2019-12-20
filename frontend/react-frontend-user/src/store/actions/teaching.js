@@ -43,6 +43,43 @@ export function getSubjects() {
     }
 }
 
+export const getEducationLevelPending = () => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_PENDING
+    };
+};
+
+export const getEducationLevelSuccess = (level) => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_SUCCESS,
+        level
+    };
+};
+
+export const getEducationLevelFail = (error) => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_ERROR,
+        error
+    };
+};
+
+export function getEducationLevel() {
+    return (dispatch) => {
+        dispatch(getEducationLevelPending());
+
+        let url = apiUtilUrl + "/level-education/get-list-enable-level-education";
+        axios.get(url)
+            .then(res => {
+                let level = res.data.levelEducations;
+                dispatch(getEducationLevelSuccess(level));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getEducationLevelFail(err));
+            })
+    }
+}
+
 export const getLevelPending = () => {
     return {
         type: actionTypes.GET_LEVEL_PENDING

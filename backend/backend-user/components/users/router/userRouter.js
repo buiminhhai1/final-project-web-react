@@ -15,6 +15,9 @@ router.get('/detail', userController.getUser);
 router.post('/user-profile', passport.authenticate('jwt', {
     session: false
 }), userController.updateUser);
+router.post('/teacher-profile', passport.authenticate('jwt', {
+    session: false
+}), userController.updateTeacher);
 router.post('/image-upload', userController.uploadImage);
 
 router.get('/verify',userController.verifyUser);

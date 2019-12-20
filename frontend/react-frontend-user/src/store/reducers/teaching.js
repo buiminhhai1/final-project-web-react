@@ -3,6 +3,7 @@ import * as actionTypes from '../actionTypes';
 const initialState = {
     subjects: [],
     level: [],
+    educationLevel: [],
     locations: [],
     teachers: [],
     teacher: {},
@@ -44,15 +45,15 @@ export default function teachingReducer(state = initialState, action) {
                 pending: false,
                 error: action.error
             }
-        case actionTypes.GET_LEVEL_PENDING:
+        case actionTypes.GET_EDUCATION_LEVEL_PENDING:
             return {
                 ...state,
                 pending: true
             }
-        case actionTypes.GET_LEVEL_SUCCESS:
-            let levels = [];
+        case actionTypes.GET_EDUCATION_LEVEL_SUCCESS:
+            let educationLevels = [];
             action.level.map(level => {
-                return levels.push({
+                return educationLevels.push({
                     value: level._id,
                     label: level.title,
                     data: level
@@ -60,7 +61,31 @@ export default function teachingReducer(state = initialState, action) {
             })
             return {
                 ...state,
-                level: levels,
+                educationLevel: educationLevels,
+                pending: false,
+            }
+        case actionTypes.GET_EDUCATION_LEVEL_ERROR:
+            return {
+                ...state,
+                pending: false,
+                error: action.error
+            }
+        case actionTypes.GET_LEVEL_PENDING:
+            return {
+                ...state,
+                pending: true
+            }
+        case actionTypes.GET_LEVEL_SUCCESS:
+            const level = action.level.map(level => {
+                return ({
+                    value: level._id,
+                    label: level.title,
+                    data: level
+                })
+            })
+            return {
+                ...state,
+                level,
                 pending: false,
             }
         case actionTypes.GET_LEVEL_ERROR:
@@ -130,4 +155,4 @@ export default function teachingReducer(state = initialState, action) {
 
 export const getTeachingPending = state => state.teachingReducer.pending;
 export const getTeachingSubjects = state => state.teachingReducer.subjects;
-export const getTeachingLevel = state => state.teachingReducer.level;
+export const getEducationLevel = state => state.teachingReducer.educationLevel;
