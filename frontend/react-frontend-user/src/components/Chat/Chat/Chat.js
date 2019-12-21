@@ -103,7 +103,7 @@ const Chat = (props) => {
 
   return (
     <div className="outerContainer">
-      <div className="list-group">
+      <div className="mchat-list-group">
         {
           groupList.map((data, i) => (
             <ChatItem
@@ -121,7 +121,7 @@ const Chat = (props) => {
           ))
         }
       </div>
-      <div className="container">
+      <div className="mchat-container">
         <ThemeProvider theme={themes}>
           <TitleBar
             title={groupName}

@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
 const UserModel = require("../model/userModel");
-const ProfileModel = require("../model/profileModel");
 const constant = require("../../utils/const/constant");
 
 // Use for google login
@@ -47,14 +46,12 @@ exports.register = async (req, res) => {
         });
         const result = await newUser.save();
         if (!!result) {
-          const newProfile = new ProfileModel({ idUser: result._id });
-          newProfile.save();
           const { token, newUser } = getTokenAndUser(result);
           const message = {
             to: email,
             subject: "Verify account",
             html:
-              '<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=5deebf4572d93b0d8c1f2df2&successRedirectUrl=http://localhost:3000/&failureRedirectUrl=http://localhost:3000/">Verify Email</a>'
+              `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
           };
           sendEmail(message);
           return res.json({
@@ -83,12 +80,9 @@ exports.login = (req, res, next) => {
         });
       }
       const { token, newUser } = getTokenAndUser(user);
-      const profile = await ProfileModel.findOne({
-        idUser: user._id
-      });
+      
       return res.json({
         user: newUser,
-        profile,
         token,
         expiresIn: 150 * 60
       });
@@ -114,15 +108,8 @@ exports.googleLogin = (req, res, next) => {
       // If success
       const user = await registerForGoogleAccount(response.data);
       if (user) {
-        const newProfile = new ProfileModel({
-          idUser: user._id,
-          avatar: user.imageUrl,
-          name: user.google.name
-        });
-        newProfile.save();
         const { token, newUser } = getTokenAndUser(user);
         return res.json({
-          profile: newProfile,
           user: newUser,
           token,
           expiresIn: 150 * 60
