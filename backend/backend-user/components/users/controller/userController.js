@@ -158,7 +158,8 @@ registerForGoogleAccount = async user => {
       name: user.name,
       imageUrl: user.picture,
       method: "google",
-      isTeacher: false
+      isTeacher: false,
+      verify: true
     });
     const result = await newUser.save();
     if (!!result) {

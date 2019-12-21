@@ -13,6 +13,10 @@ const asyncHomepage = AsyncComponent(() => {
   return import('./containers/homepage/homepage');
 });
 
+const asyncVerifyRequest = AsyncComponent(() => {
+  return import('./components/verifyRequestPage/verifyRequest');
+});
+
 const asyncSignIn = AsyncComponent(() => {
   return import('./containers/signInPage/signIn');
 });
@@ -47,7 +51,7 @@ class App extends React.Component {
     this.props.reLogin();
   }
 
-  compocomnentDidMount() {}
+  componentDidMount() {}
 
   render() {
     function NoMatch(props) {
@@ -58,7 +62,13 @@ class App extends React.Component {
     }
 
     const routes =
-      localStorage.getItem('token') === null ? (
+      localStorage.getItem('verify') === 'false' ? (
+        <Switch>
+          <Route exact path="/" component={asyncVerifyRequest}></Route>
+          <Route path="/logout" component={asyncLogOut}></Route>
+          <Route path="*" component={asyncVerifyRequest}></Route>
+        </Switch>
+      ) : localStorage.getItem('token') === null ? (
         <Switch>
           <Route exact path="/" component={asyncHomepage}></Route>
           <Route path="/signIn" component={asyncSignIn}></Route>

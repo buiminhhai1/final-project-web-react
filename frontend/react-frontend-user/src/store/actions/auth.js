@@ -62,6 +62,7 @@ export function signIn(email, password) {
         localStorage.setItem("isTeacher", res.data.user.isTeacher);
         localStorage.setItem("method", "local");
         localStorage.setItem("userId", res.data.user.userId);
+        localStorage.setItem("verify", res.data.user.verify);
         localStorage.setItem('expirationDate', expirationDate);
 
         dispatch(signInSuccess(res.data.token, res.data.user));
@@ -90,6 +91,7 @@ export function signInGoogle(accessToken) {
         localStorage.setItem("imageUrl", res.data.user.imageUrl);
         localStorage.setItem("method", "google");
         localStorage.setItem("userId", res.data.user.userId);
+        localStorage.setItem("verify", res.data.user.verify);
         localStorage.setItem('expirationDate', expirationDate);
 
         dispatch(signInSuccess(res.data.token, res.data.user));
@@ -119,6 +121,7 @@ export function signInFacebook(accessToken) {
         localStorage.setItem("imageUrl", res.data.user.imageUrl);
         localStorage.setItem("method", "facebook");
         localStorage.setItem("userId", res.data.user.userId);
+        localStorage.setItem("verify", res.data.user.verify);
         localStorage.setItem('expirationDate', expirationDate);
 
         dispatch(signInSuccess(res.data.token, res.data.user));
@@ -147,6 +150,7 @@ export function reLogin() {
           imageUrl: localStorage.getItem('imageUrl'),
           isTeacher: localStorage.getItem('isTeacher'),
           userId: localStorage.getItem('userId'),
+          verify: localStorage.getItem('verify'),
         }
         dispatch(signInSuccess(token, user));
         dispatch(
