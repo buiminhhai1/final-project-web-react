@@ -88,11 +88,14 @@ class HomePage extends Component {
           dataIndex: 'status',
           key: 'status',
           render: (text, record) => {
+            const tagTeacher = record.isTeacher ? (
+              <Tag color="#87d068">Teacher</Tag>
+            ) : (
+              <Tag color="#87d068">Student</Tag>
+            );
             return (
               <div>
-                <Tag visible={record.isTeacher} color="#87d068">
-                  Teacher
-                </Tag>
+                {tagTeacher}
                 <Tag color="red" visible={record.isBlocking}>
                   Blocked
                 </Tag>
