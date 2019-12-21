@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 
 import './teacherInfoRegister.css';
 import { updateTeacherProfile } from '../../store/actions/profile';
+import { resetErrorMessage } from '../../store/actions/auth';
 import {
   getSubjects,
   getEducationLevel,
@@ -36,6 +37,17 @@ class TeacherProfile extends Component {
     this.props.getLevel();
     this.props.getLocations();
   };
+
+  componentDidUpdate() {
+    if (this.props.message) {
+      this.render.successMessage = message.success(this.props.message);
+      this.props.resetErrorMessage();
+    }
+    if (this.props.authError || this.props.teachingError) {
+      this.render.errorMessage = message.error('Something wrong happened! Please try again later');
+      this.props.resetErrorMessage();
+    }
+  }
 
   handleSubmit = event => {
     if (!this.checkFields()) {
@@ -127,9 +139,12 @@ class TeacherProfile extends Component {
   render() {
     const { selectedSubject, selectedEducationLevel } = this.state;
     const { educationLevel, level, subjects, locations } = this.props;
-
+    const successMessage = null;
+    const errorMessage = null;
     return (
       <form className="tutorInfoForm" onSubmit={this.handleSubmit}>
+        {successMessage}
+        {errorMessage}
         <Spin tip="Loading..." spinning={this.props.pending}>
           <div className="shadow bg-white rounded px-3">
             <Container className="text-center pt-3">
@@ -176,7 +191,11 @@ class TeacherProfile extends Component {
                 >
                   {level.map(level => {
                     return (
-                      <Radio className="teachingLevel" value={level.data} key={level.value}>
+                      <Radio
+                        className="teachingLevel"
+                        value={level.data}
+                        key={level.value}
+                      >
                         {level.label}
                       </Radio>
                     );
@@ -242,12 +261,14 @@ class TeacherProfile extends Component {
 
 const mapStateToProps = state => ({
   pending: state.teachingReducer.pending,
-  error: state.teachingReducer.error,
+  teachingError: state.teachingReducer.error,
   subjects: state.teachingReducer.subjects,
   locations: state.teachingReducer.locations,
   educationLevel: state.teachingReducer.educationLevel,
   level: state.teachingReducer.level,
-  token: state.authReducer.token
+  token: state.authReducer.token,
+  message: state.authReducer.message,
+  authError: state.authReducer.error
 });
 
 const mapDispatchToProps = dispatch =>
@@ -257,7 +278,8 @@ const mapDispatchToProps = dispatch =>
       getSubjects,
       getEducationLevel,
       getLevel,
-      getLocations
+      getLocations,
+      resetErrorMessage
     },
     dispatch
   );
