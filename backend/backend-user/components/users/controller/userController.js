@@ -51,7 +51,7 @@ exports.register = async (req, res) => {
             to: email,
             subject: "Verify account",
             html:
-              `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
+              `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/logout&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
           };
           sendEmail(message);
           return res.json({
