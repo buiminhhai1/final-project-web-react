@@ -79,14 +79,12 @@ exports.updateLevel = async (req, res, next) => {
 };
 
 exports.deleteLevel = async (req, res, next) => {
-  console.log(req.params);
   const {
-    id
-  } = req.params;
-  console.log(id);
+    _id
+  } = req.body.dataDelete;
   try {
     const result = await LevelModel.deleteOne({
-      _id: id
+      _id
     });
     if (!!result) {
       return res.json({

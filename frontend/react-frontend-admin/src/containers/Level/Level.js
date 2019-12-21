@@ -18,17 +18,17 @@ import * as actions from '../../store/actions/index';
 
 const { Search } = Input;
 
-class Skill extends Component {
+class Level extends Component {
   constructor(props) {
     super(props);
     this.state = {
       _id: '',
       title: '',
       modalName: '',
-      confirmName: 'Delete skill',
-      skillColumns: [
+      confirmName: 'Delete level',
+      levelColumns: [
         {
-          title: 'Title',
+          title: 'Level',
           dataIndex: 'title',
           key: 'title',
           render: text => (
@@ -44,20 +44,20 @@ class Skill extends Component {
             <span>
               <Icon
                 type="edit"
-                title="edit skill"
+                title="edit level"
                 onClick={async () => {
                   await this.setState({
                     visible: true,
                     _id: record._id,
                     title: record.title,
-                    modalName: 'Edit skill'
+                    modalName: 'Edit level'
                   });
                 }}
               />
               <Divider type="vertical" />
               <Icon
                 type="delete"
-                title="delete skill"
+                title="delete level"
                 onClick={async () => {
                   await this.setState({
                     visibleConfirm: true,
@@ -77,7 +77,7 @@ class Skill extends Component {
   }
 
   componentDidMount() {
-    this.props.onGetListSkill('');
+    this.props.onGetListLevel('');
   }
 
   componentDidUpdate() {
@@ -91,7 +91,7 @@ class Skill extends Component {
 
   handleDeleteForm = async () => {
     const { _id } = this.state;
-    await this.props.onDeleteSkill(_id);
+    await this.props.onDeleteLevel(_id);
     this.setState({
       visibleConfirm: false,
       confirmLoading: false
@@ -104,13 +104,13 @@ class Skill extends Component {
     });
     const { _id, title } = this.state;
     if (_id) {
-      await this.props.onUpdateSkill(_id, title);
+      await this.props.onUpdateLevel(_id, title);
       this.setState({
         visible: false,
         confirmLoading: false
       });
     } else {
-      await this.props.onCreateSkill(title);
+      await this.props.onCreateLevel(title);
       this.setState({
         visible: false,
         confirmLoading: false
@@ -129,7 +129,7 @@ class Skill extends Component {
     this.setState({ title: value });
   };
 
-  addNewSkill = async () => {
+  addNewLevel = async () => {
     this.setState({
       visible: true,
       _id: '',
@@ -151,13 +151,13 @@ class Skill extends Component {
               onSearch={value => {
                 console.log('search value');
                 console.log(value);
-                this.props.onGetListSkill(value);
+                this.props.onGetListLevel(value);
               }}
               enterButton
             />
           </Col>
           <Col span={1} offset={16}>
-            <Button type="primary" onClick={this.addNewSkill}>
+            <Button type="primary" onClick={this.addNewLevel}>
               Add
             </Button>
           </Col>
@@ -165,12 +165,12 @@ class Skill extends Component {
         <Spin spinning={this.props.loading}>
           <div style={{ background: 'white' }}>
             <Table
-              columns={this.state.skillColumns}
-              dataSource={this.props.skillData}
+              columns={this.state.levelColumns}
+              dataSource={this.props.levelData}
               size="middle"
             />
             {actionMessage}
-            {this.props.skillData ? (
+            {this.props.levelData ? (
               <div>
                 <Modal
                   title={this.state.modalName}
@@ -181,13 +181,13 @@ class Skill extends Component {
                 >
                   <div>
                     <div>
-                      Skill
+                      Level
                       <span style={{ color: 'red', marginBottom: '5px' }}>
                         *
                       </span>
                     </div>
                     <Input
-                      placeholder="Skill"
+                      placeholder="Level"
                       value={this.state.title}
                       onChange={this.onTitleChange}
                     />
@@ -215,18 +215,18 @@ class Skill extends Component {
 }
 
 const mapStateToProps = state => ({
-  skillData: state.skill.skillData,
-  message: state.skill.message,
-  error: state.skill.error,
-  loading: state.skill.loading
+  levelData: state.level.levelData,
+  message: state.level.message,
+  error: state.level.error,
+  loading: state.level.loading
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCreateSkill: title => dispatch(actions.createSkill(title)),
-  onUpdateSkill: (_id, title) => dispatch(actions.updateSkill(_id, title)),
-  onDeleteSkill: _id => dispatch(actions.deleteSkill(_id)),
-  onGetListSkill: searchString => dispatch(actions.getListSkill(searchString)),
+  onCreateLevel: title => dispatch(actions.createLevel(title)),
+  onUpdateLevel: (_id, title) => dispatch(actions.updateLevel(_id, title)),
+  onDeleteLevel: _id => dispatch(actions.deleteLevel(_id)),
+  onGetListLevel: searchString => dispatch(actions.getListLevel(searchString)),
   onRefreshMessage: () => dispatch(actions.refreshMessageCRUD())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Skill);
+export default connect(mapStateToProps, mapDispatchToProps)(Level);

@@ -16,7 +16,6 @@ class Facebook extends Component {
   }
 
   responseFacebook = response => {
-    console.log(response);
     const fbData = {
       idFacebook: response.id,
       name: response.name,

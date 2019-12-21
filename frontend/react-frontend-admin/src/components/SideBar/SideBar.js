@@ -47,6 +47,12 @@ class SideBar extends Component {
             <Menu.Item key="6">
               <NavLink to="/locations">List Locations</NavLink>
             </Menu.Item>
+            <Menu.Item key="7">
+              <NavLink to="/levels">List Level</NavLink>
+            </Menu.Item>
+            <Menu.Item key="8">
+              <NavLink to="/levelEducations">List Level Education</NavLink>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub3"

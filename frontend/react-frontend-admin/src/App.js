@@ -41,6 +41,14 @@ const asyncLocation = AsyncComponent(() => {
   return import('./containers/Location/Location');
 });
 
+const asyncLevel = AsyncComponent(() => {
+  return import('./containers/Level/Level');
+});
+
+const asyncLevelEducation = AsyncComponent(() => {
+  return import('./containers/LevelEducation/LevelEducation');
+});
+
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
@@ -62,6 +70,8 @@ class App extends Component {
           <Route path="/students" component={asyncStudent} />
           <Route path="/teachers" component={asyncTeacher} />
           <Route path="/locations" component={asyncLocation} />
+          <Route path="/levels" component={asyncLevel} />
+          <Route path="/levelEducations" component={asyncLevelEducation} />
           <Route path="/admin/logout" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>
