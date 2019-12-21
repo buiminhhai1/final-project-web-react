@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Button, FormGroup, FormControl, FormLabel, Alert } from "react-bootstrap";
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { message } from 'antd';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -44,12 +45,15 @@ function Login(props) {
         return <Redirect to={props.redirectPage} />
     }
 
+    let errorMeassage = null;
+    if (props.error) {
+        errorMeassage = message.error(props.error);
+    }
+
     return (
         <div className="Login">
             <form onSubmit={handleSubmit}>
-                {props.error && <Alert variant='danger'>
-                    The account is not correct!!!
-                </Alert>}
+                {errorMeassage}
                 <FormGroup controlId="email">
                     <FormLabel>Email</FormLabel>
                     <FormControl
@@ -94,12 +98,12 @@ function Login(props) {
                     icon={<i className="fab fa-facebook-f mr-2"></i>}
                     cssClass="btn facebook-btn btn-primary btn-block my-2"
                 />
-                <Link
+                <NavLink
                     className="signUpLink"
                     to='/signUp'
                     exact>
                     Don't have account? Sign up now
-                </Link>
+                </NavLink>
             </form>
         </div>
     );

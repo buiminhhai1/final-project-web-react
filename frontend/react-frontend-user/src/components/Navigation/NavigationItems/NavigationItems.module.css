@@ -13,11 +13,3 @@
         flex-flow: row;
     }
 }
-
-.avatarDropdown::after {
-    content: none !important;
-}
-
-.dropdown button {
-    background-color: transparent !important;
-}

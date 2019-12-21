@@ -27,11 +27,11 @@ const jwt = new JWTStrategy({
   secretOrKey: constant.JWT_SECRET
 },
   (jwtPayload, cb) => {
-    return UserModel.findOne({ 'local.email': jwtPayload.email })
+    return UserModel.findById(jwtPayload._id)
       .then(user => {
         return cb(null, {
           message: 'success',
-          user: user
+          user
         });
       })
       .catch(err => {
@@ -45,7 +45,7 @@ const local = new LocalStrategy({
   passwordField: 'password'
 },
   (email, password, cb) => {
-    return UserModel.findOne({ "local.email": email })
+    return UserModel.findOne({ "email": email })
       .then(user => {
         if (!user) {
           return cb(null, false, { message: 'Incorrect email or password.' });
@@ -78,8 +78,6 @@ const facebook = new facebookStrategy({
         method: 'facebook',
         facebook: {
           id: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value,
         },
         name: profile.displayName,
         email: profile.emails[0].value,

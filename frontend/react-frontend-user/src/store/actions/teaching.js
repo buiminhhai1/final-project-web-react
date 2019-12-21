@@ -3,7 +3,7 @@ import axios from 'axios';
 
 //reads in configuration from a .env file
 require('dotenv').config();
-// const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL;
 const apiUtilUrl = process.env.REACT_APP_API_UTILITY;
 
 export const getSubjectsPending = () => {
@@ -39,6 +39,43 @@ export function getSubjects() {
             .catch(err => {
                 console.log(err);
                 dispatch(getSubjectsFail(err));
+            })
+    }
+}
+
+export const getEducationLevelPending = () => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_PENDING
+    };
+};
+
+export const getEducationLevelSuccess = (level) => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_SUCCESS,
+        level
+    };
+};
+
+export const getEducationLevelFail = (error) => {
+    return {
+        type: actionTypes.GET_EDUCATION_LEVEL_ERROR,
+        error
+    };
+};
+
+export function getEducationLevel() {
+    return (dispatch) => {
+        dispatch(getEducationLevelPending());
+
+        let url = apiUtilUrl + "/level-education/get-list-enable-level-education";
+        axios.get(url)
+            .then(res => {
+                let level = res.data.levelEducations;
+                dispatch(getEducationLevelSuccess(level));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getEducationLevelFail(err));
             })
     }
 }
@@ -102,17 +139,102 @@ export const getTeachersFail = (error) => {
 
 export function getTeachers() {
     return (dispatch) => {
-        dispatch(getLevelPending());
+        dispatch(getTeachersPending());
 
-        let url = apiUtilUrl + "users/get-list-user?type=1";
+        let url = apiUtilUrl + "/users/get-list-user?type=2";
         axios.get(url)
             .then(res => {
                 let teachers = res.data.users;
-                dispatch(getLevelSuccess(teachers));
+                dispatch(getTeachersSuccess(teachers));
             })
             .catch(err => {
                 console.log(err);
-                dispatch(getLevelFail(err));
+                dispatch(getTeachersFail(err));
+            })
+    }
+}
+
+export const getTeacherPending = () => {
+    return {
+        type: actionTypes.GET_TEACHER_PENDING
+    };
+};
+
+export const getTeacherSuccess = (teacher) => {
+    return {
+        type: actionTypes.GET_TEACHER_SUCCESS,
+        teacher
+    };
+};
+
+export const getTeacherFail = (error) => {
+    return {
+        type: actionTypes.GET_TEACHER_ERROR,
+        error
+    };
+};
+
+export function getTeacher(userId) {
+    return (dispatch) => {
+        dispatch(getTeacherPending());
+
+        let url = apiUrl + "/users/detail";
+        axios.get(url, {
+            params: {
+                userId
+            }
+        })
+            .then(res => {
+                let teacher = res.data.teacher;
+                if (teacher) {
+                    dispatch(getTeacherSuccess(teacher));
+                }
+                else
+                    dispatch(getTeacherFail(res.data.message));
+            })
+            .catch(err => {
+                dispatch(getTeacherFail(err));
+            })
+    }
+}
+
+export const getLocationsPending = () => {
+    return {
+        type: actionTypes.GET_LOCATIONS_PENDING
+    };
+};
+
+export const getLocationsSuccess = (locations) => {
+    return {
+        type: actionTypes.GET_LOCATIONS_SUCCESS,
+        locations
+    };
+};
+
+export const getLocationsFail = (error) => {
+    return {
+        type: actionTypes.GET_LOCATIONS_ERROR,
+        error
+    };
+};
+
+export function getLocations() {
+    return (dispatch) => {
+        dispatch(getLocationsPending());
+
+        let url = apiUtilUrl + "/location/get-list-location";
+        axios.get(url)
+            .then(res => {
+                let locations = res.data.locations;
+                if (locations) {
+                    dispatch(getLocationsSuccess(locations));
+                }
+                else
+                    dispatch(getLocationsFail(res.data.message));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getLocationsFail(err));
             })
     }
 }

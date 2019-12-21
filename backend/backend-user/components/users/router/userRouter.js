@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const router = express.Router();
 const userController = require('../controller/userController');
@@ -11,10 +12,16 @@ router.post('/login/facebookOauth', userController.facebookLogin);
 
 
 router.get('/detail', userController.getUser);
-router.post('/detail', userController.updateUser);
-router.post('/image-upload', userController.upimage);
+router.post('/user-profile', passport.authenticate('jwt', {
+    session: false
+}), userController.updateUser);
+router.post('/teacher-profile', passport.authenticate('jwt', {
+    session: false
+}), userController.updateTeacher);
+router.post('/image-upload', userController.uploadImage);
 
 router.get('/verify',userController.verifyUser);
 router.post('/changePassword',userController.changePassword);
-router.post('/forgetPassword',userController.forgetPassword);
+router.post('/resetPassword',userController.resetPassword);
+router.post('/sendEmailResetPassword',userController.sendEmailResetPassword);
 module.exports = router;

@@ -1,4 +1,28 @@
 .updateProfile {
     padding: 25px;
     text-align: center;
+    padding-left: 300px;
+    padding-right: 300px;
+    background-image: url("../../assets/Images/bg-02.webp");
+    background-size: auto 100%;
+}
+
+@media only screen and (max-width: 1100px) {
+    .updateProfile {
+        padding-left: 200px;
+        padding-right: 200px;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .updateProfile {
+        padding-left: 150px;
+        padding-right: 150px;
+    }
+}
+
+@media only screen and (max-width: 660px) {
+    .updateProfile {
+        padding-left: 100px;
+        padding-right: 100px;
+    }
 }
