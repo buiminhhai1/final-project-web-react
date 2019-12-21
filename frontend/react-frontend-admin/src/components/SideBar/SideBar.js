@@ -80,7 +80,7 @@ class SideBar extends Component {
             }
           >
             <Menu.Item key="9">
-              <NavLink to="/historyContract">History Contract</NavLink>
+              <NavLink to="/user">History User Contract</NavLink>
             </Menu.Item>
             <Menu.Item key="10">
               <NavLink to="/historyComplain">History Complain</NavLink>

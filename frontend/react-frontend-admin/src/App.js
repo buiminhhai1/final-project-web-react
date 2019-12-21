@@ -49,6 +49,9 @@ const asyncLevelEducation = AsyncComponent(() => {
   return import('./containers/LevelEducation/LevelEducation');
 });
 
+const asyncUserDetail = AsyncComponent(() => {
+  return import('./containers/DetailUser/DetailUser');
+});
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
@@ -63,17 +66,18 @@ class App extends Component {
         <Redirect to="/admin/login" />
       </Switch>
     );
-    if (this.props.isAuthenticated) {
+    if (localStorage.getItem('token')) {
       routes = (
         <Switch>
           <Route path="/" exact component={asyncHomePage} />
-          <Route path="/skills" component={asyncSkill} />
-          <Route path="/students" component={asyncStudent} />
-          <Route path="/teachers" component={asyncTeacher} />
-          <Route path="/locations" component={asyncLocation} />
-          <Route path="/levels" component={asyncLevel} />
-          <Route path="/levelEducations" component={asyncLevelEducation} />
-          <Route path="/admin/logout" component={asyncLogout} />
+          <Route path="/skills*" component={asyncSkill} />
+          <Route path="/students*" component={asyncStudent} />
+          <Route path="/teachers*" component={asyncTeacher} />
+          <Route path="/locations*" component={asyncLocation} />
+          <Route path="/levels*" component={asyncLevel} />
+          <Route path="/levelEducations*" component={asyncLevelEducation} />
+          <Route path="/userdetail" component={asyncUserDetail} />
+          <Route path="/admin/logout*" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>
       );
