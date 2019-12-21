@@ -25,7 +25,7 @@
   /* background-color: #1A1A1D; */
 }
 
-.container {
+.mchat-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -37,7 +37,7 @@
   width: 70%;
 }
 
-.list-group{
+.mchat-list-group{
   display: flex;
   flex-direction: column;
   width: 20%;

@@ -27,7 +27,7 @@ exports.getListGroupChat = async (req, res, next) => {
 }
 
 exports.newGroupChat = async (req, res, next) => {
-    const { idUser1, idUser2 } = req.body;
+    const { idUser1, idUser2, idUser, message } = req.body;
     try {
         const results = await GroupChatModel.findOne({
             $or: [
@@ -43,11 +43,17 @@ exports.newGroupChat = async (req, res, next) => {
                     idUser1, idUser2
                 }
             })
-            newGroupChat.save().then(result => {
-                if (!!result) {
-                    res.json(result);
-                } else json({ message: 'Something wrong' });
-            })
+            await newGroupChat.save();
+            const newMessage = new MessageModel({ idGroup: newGroupChat._id, idUser, message });
+            await newMessage.save();
+            newGroupChat.lastMessage = {
+                message: newMessage,
+                seen:{
+                    isSeen: false
+                }
+            };
+            await newGroupChat.save();
+            res.json(newGroupChat);
         }
     } catch (error) {
         res.json({ message: 'Something wrong' });
