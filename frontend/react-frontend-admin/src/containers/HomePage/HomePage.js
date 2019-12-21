@@ -60,7 +60,7 @@ class HomePage extends Component {
                   }}
                 >
                   <NavLink to="/" sytle={{ paddingRight: '5px' }}>
-                    {record.name}
+                    {' ' + record.name + ' '}
                   </NavLink>
                   <Icon
                     style={{ visibility: record.verify ? 'visible' : 'hidden' }}

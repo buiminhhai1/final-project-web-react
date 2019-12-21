@@ -149,8 +149,6 @@ class Level extends Component {
             <Search
               placeholder="input search text"
               onSearch={value => {
-                console.log('search value');
-                console.log(value);
                 this.props.onGetListLevel(value);
               }}
               enterButton

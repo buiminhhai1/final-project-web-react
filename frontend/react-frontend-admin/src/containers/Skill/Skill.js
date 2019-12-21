@@ -149,8 +149,6 @@ class Skill extends Component {
             <Search
               placeholder="input search text"
               onSearch={value => {
-                console.log('search value');
-                console.log(value);
                 this.props.onGetListSkill(value);
               }}
               enterButton

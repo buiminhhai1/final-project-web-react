@@ -55,6 +55,7 @@ class App extends Component {
   }
 
   render() {
+    const path = this.props.location.pathname;
     let routes = (
       <Switch>
         <Route path="/admin/login" component={asyncLogin} />
@@ -79,7 +80,7 @@ class App extends Component {
     } // fix chỗ HeaderLayout
     const sideBar = this.props.isAuthenticated ? <SideBar /> : null;
     const breadcrumbLayout = this.props.isAuthenticated ? (
-      <BreadcrumbLayout />
+      <BreadcrumbLayout path={path} />
     ) : null;
     return (
       <div>

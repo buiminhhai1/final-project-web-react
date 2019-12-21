@@ -9,15 +9,9 @@ import UserInfo from '../UI/UserInfo/UserInfo';
 const { Header } = Layout;
 
 class HeaderLayout extends Component {
-  componentDidMount() {
-    console.log('didmount');
-    console.log(this.props);
-  }
+  componentDidMount() {}
 
-  componentDidUpdate() {
-    console.log('hello props');
-    console.log(this.props);
-  }
+  componentDidUpdate() {}
 
   render() {
     let menuH = (

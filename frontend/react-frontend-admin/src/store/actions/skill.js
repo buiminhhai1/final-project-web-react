@@ -129,15 +129,12 @@ export const getListSkill = searchString => dispatch => {
     })
     .then(res => {
       if (res.data.skills) {
-        console.log('list skill');
-        console.log(res.data.skills);
         dispatch(getListSkillSuccess(res.data.skills));
       } else {
         dispatch(getListSkillFail(`Empty list Skills`));
       }
     })
-    .catch(err => {
-      console.log(err);
+    .catch(() => {
       dispatch(getListSkillFail(`something wrong`));
     });
 };
@@ -171,7 +168,6 @@ export const deleteSkill = _id => dispatch => {
     })
     .then(res => {
       if (!!res.data.skill) {
-        console.log(res.data);
         dispatch(deleteSkillSuccess(_id, res.data.message));
       } else {
         dispatch(deleteSkillFail('delete has failled!'));
