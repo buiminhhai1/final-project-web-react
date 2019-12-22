@@ -7,9 +7,8 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
-const teachersRouter = require('./components/teachers/routers/routers');
 const chatRouter = require('./components/chat/router/chatRouter');
-const paymentRouter = require('./components/payments/router/paymentRouter');
+const transactionRouter = require('./components/transactions/router/transactionRouter');
 
 
 const app = express();
@@ -56,8 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/chat', chatRouter);
 app.use('/users', usersRouter);
-app.use('/teachers', teachersRouter);
-app.use('/payment', paymentRouter);
+app.use('/transaction', transactionRouter);
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({ 'info': req.user.user });
 })

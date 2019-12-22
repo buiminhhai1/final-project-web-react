@@ -1,6 +1,8 @@
-const PaymentModel = require('../model/paymentModel');
+const TransactionModel = require('../model/transactionModel');
 const paypal = require('paypal-rest-sdk');
-const {paypalTransferMoney, paypalConfigure, create_payment_json, create_web_profile_json, execute_payment_json } = require('../utils/utils');
+require('dotenv').config();
+const { BACKEND_USER_URL } = process.env;
+const { paypalConfigure, create_payment_json, create_web_profile_json, execute_payment_json } = require('../utils/utils');
 paypal.configure(paypalConfigure);
 
 exports.checkout = (req, res) => {
@@ -11,8 +13,8 @@ exports.checkout = (req, res) => {
       throw error;
     } else {
       const payment_json = create_payment_json(1,
-        `http://localhost:4000/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
-        'http://localhost:4000/payment/cancel');
+        `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
+        `${BACKEND_USER_URL}/transaction/payment/cancel`);
       //Set the id of the created payment experience in payment json
       var experience_profile_id = web_profile.id;
       payment_json.experience_profile_id = experience_profile_id;
@@ -34,7 +36,7 @@ exports.checkout = (req, res) => {
 
 
 exports.successCheckout = (req, res) => {
-  const { PayerID, paymentId, successUrl, failedUrl, contractId } = req.query;
+  const { idUser, PayerID, paymentId, successUrl, failedUrl, contractId } = req.query;
   try {
     paypal.payment.execute(paymentId, execute_payment_json(PayerID, 1),
       async function (error, payment) {
@@ -42,20 +44,35 @@ exports.successCheckout = (req, res) => {
           console.log(error.message);
           res.redirect(failedUrl);
         } else {
-          const existPayment = await PaymentModel.findOne({ $or: [
-            {paymentId},{contractId}
-          ] });
+          const existPayment = await TransactionModel.findOne({
+            $or: [
+              { 'detail.payment.paymentId': paymentId }, { 'detail.payment.contractId': contractId }
+            ]
+          });
           if (existPayment) {
             console.log('Something wrong');
             res.redirect(failedUrl);
           } else {
-            const payment = new PaymentModel({ contractId, paymentId, payerId: PayerID });
-            payment.save().then(result => {
-              if (result)
-                res.redirect(successUrl);
-              else res.redirect(failedUrl);
-            })
+            const contract = await ContractModel.findOne({ _id: idContract });
+            if (contract) {
+              const transaction = new TransactionModel({
+                
+                method: "PAYMENT",
+                detail: {
+                  payment: {
+                    contractId, paymentId, payerId: PayerID
+                  }
+                }
+
+              });
+              transaction.save().then(result => {
+                if (result)
+                  res.redirect(successUrl);
+                else res.redirect(failedUrl);
+              })
+            }
           }
+
 
         }
       });
@@ -63,13 +80,6 @@ exports.successCheckout = (req, res) => {
     console.log('cant check out for contractId ' + contractId);
     res.redirect(failedUrl);
   }
-}
-
-exports.transfer = async(req,res) => {
-  const {idUser, email} = req.body;
-  const result = await paypalTransferMoney();
-  if(result.status<300)
-    res.json({result:true, message:'send money success'})
 }
 
 exports.cancelCheckout = (req, res) => res.send('Cancelled');

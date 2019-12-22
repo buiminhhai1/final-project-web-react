@@ -55,7 +55,7 @@ const Chat = (props) => {
         alert(error);
       }
     });
-  }, [ENDPOINT, window.location.search]);
+  },[props]);
 
   useEffect(() => {
     socket.on('message', ({ user, group, message }) => {
@@ -89,7 +89,7 @@ const Chat = (props) => {
 
       socket.off();
     }
-  }, [messages])
+  }, [messages,currentGroup])
 
   const sendMessage = (message) => {
     if (message) {
@@ -146,10 +146,10 @@ const Chat = (props) => {
           </div>
           <TextComposer onSend={(value) => {
             sendMessage(value);
-            value = '';
+            value = message;
           }}>
             <Row align="center">
-              <TextInput fill />
+              <TextInput  />
               <SendButton fit />
             </Row>
 
