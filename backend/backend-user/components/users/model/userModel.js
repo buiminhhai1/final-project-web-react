@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
   method: {
     type: String,
-    enum: ["local", "google", "facebook"],
+    enum: ['local', 'google', 'facebook'],
     required: true
   },
   email: {
@@ -63,42 +63,36 @@ const userSchema = mongoose.Schema({
         require: false
       }
     },
-    skill: [
-      {
-        _id: {
-          type: mongoose.Schema.Types.ObjectId,
-          require: false
-        },
-        title: {
-          type: String,
-          require: false
-        }
+    skill: [{
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: false
+      },
+      title: {
+        type: String,
+        require: false
       }
-    ],
-    educationLevel: [
-      {
-        _id: {
-          type: mongoose.Schema.Types.ObjectId
-        },
-        title: {
-          type: String,
-          require: false
-        }
+    }],
+    educationLevel: [{
+      _id: {
+        type: mongoose.Schema.Types.ObjectId
+      },
+      title: {
+        type: String,
+        require: false
       }
-    ],
+    }],
     location: {
       _id: {
         type: mongoose.Schema.Types.ObjectId,
         require: false
       },
-      district: [
-        {
-          name: {
-            type: String,
-            require: false
-          }
+      district: [{
+        name: {
+          type: String,
+          require: false
         }
-      ],
+      }],
       city: {
         type: String,
         require: false
@@ -123,54 +117,52 @@ const userSchema = mongoose.Schema({
       require: false
     }
   },
-  contracts: [
-    {
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: false
-      },
-      studentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: false
-      },
-      emailStudent: {
-        type: String,
-        require: false
-      },
-      nameStudent: {
-        type: String,
-        require: false
-      },
-      from: {
-        type: String,
-        require: false
-      },
-      to: {
-        type: String,
-        require: false
-      },
-      hourRate: {
-        type: String,
-        require: false
-      },
-      totalHourCommit: {
-        type: String,
-        require: false
-      },
-      review: {
-        type: String,
-        require: false
-      },
-      status: {
-        type: Number,
-        require: false
-      },
-      score: {
-        type: Number,
-        require: false
-      }
+  contracts: [{
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: false
+    },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: false
+    },
+    emailStudent: {
+      type: String,
+      require: false
+    },
+    nameStudent: {
+      type: String,
+      require: false
+    },
+    from: {
+      type: String,
+      require: false
+    },
+    to: {
+      type: String,
+      require: false
+    },
+    hourRate: {
+      type: String,
+      require: false
+    },
+    totalHourCommit: {
+      type: String,
+      require: false
+    },
+    review: {
+      type: String,
+      require: false
+    },
+    status: {
+      type: Number,
+      require: false
+    },
+    score: {
+      type: Number,
+      require: false
     }
-  ],
+  }],
   totalScore: {
     type: Number,
     require: false
@@ -201,4 +193,4 @@ const userSchema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);
