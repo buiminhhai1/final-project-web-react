@@ -55,16 +55,14 @@ function Login(props) {
     return <Redirect to={props.redirectPage} />;
   }
 
-  let errorMeassage = null;
   if (props.error) {
-    errorMeassage = message.error(props.error);
+    message.error(props.error);
     props.resetErrorMessage();
   }
 
   return (
     <div className="Login">
       <form onSubmit={handleSubmit}>
-        {errorMeassage}
         <FormGroup controlId="email">
           <FormLabel>Email</FormLabel>
           <FormControl
@@ -115,6 +113,12 @@ function Login(props) {
         />
         <NavLink className="signUpLink" to="/signUp" exact>
           Don't have account? Sign up now
+        </NavLink>
+        <h6 className="d-flex justify-content-center m-0">
+          <b>OR</b>
+        </h6>
+        <NavLink className="signUpLink" to="/forgotPassword" exact>
+          Forgot password?
         </NavLink>
       </form>
     </div>

@@ -50,8 +50,7 @@ exports.register = async (req, res) => {
           const message = {
             to: email,
             subject: "Verify account",
-            html:
-              `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/logout&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
+            html: `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/logout&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
           };
           sendEmail(message);
           return res.json({
@@ -80,7 +79,7 @@ exports.login = (req, res, next) => {
         });
       }
       const { token, newUser } = getTokenAndUser(user);
-      
+
       return res.json({
         user: newUser,
         token,
@@ -236,10 +235,15 @@ exports.updateTeacher = async (req, res, next) => {
     user.experience.level = req.body.submitLevel;
     user.experience.skill = req.body.submitSubjects;
     user.experience.educationLevel = req.body.submitEducationLevel;
-    user.experience.location= req.body.submitLocation;
+    user.experience.location = req.body.submitLocation;
+    user.status.hourRate = req.body.submitHourPay;
+    user.status.timeCommit = req.body.submitHourWork;
+    user.status.availability = true;
+    user.status.isVisibility = true;
 
     // Update user
-    user.save()
+    user
+      .save()
       .then(updatedUser => {
         const { token, newUser } = getTokenAndUser(updatedUser);
         return res.json({
@@ -249,9 +253,8 @@ exports.updateTeacher = async (req, res, next) => {
         });
       })
       .catch(err => {
-        return res.json({ message: "Something wrong happened" })
-      })
-    
+        return res.json({ message: "Something wrong happened" });
+      });
   } else res.status(400).json({ message: "Something wrong happened" });
 };
 
@@ -335,15 +338,24 @@ exports.changePassword = async (req, res, next) => {
               if (!error) {
                 user.local.password = hash;
                 user.save().then(user => {
-                  if (!!user) res.json({ message: "change password success" });
-                  else res.json({ message: "cannot change password" });
+                  if (!!user) {
+                    res.json({
+                      result: true,
+                      message: "change password success"
+                    });
+                  } else
+                    res.json({
+                      result: false,
+                      message: "cannot change password"
+                    });
                 });
-              } else res.json({ message: "cannot change password" });
+              } else
+                res.json({ result: false, message: "cannot change password" });
             });
-          } else res.json({ message: "cannot change password" });
+          } else res.json({ result: false, message: "cannot change password" });
         }
       );
-    } else res.json({ message: "cannot change password" });
+    } else res.json({ result: false, message: "cannot change password" });
   } catch (err) {
     res.json({ message: "cannot change password" });
   }
@@ -363,22 +375,24 @@ exports.resetPassword = async (req, res, next) => {
           user.local.password = hash;
           user.save().then(user => {
             if (!!user) {
-              res.json({ message: "Reset password success" });
-            } else res.json({ message: "Reset password error" });
+              res.json({ result: true, message: "Reset password success" });
+            } else res.json({ result: false, message: "Reset password error" });
           });
-        } else res.json({ message: "Reset password error" });
+        } else res.json({ result: false, message: "Reset password error" });
       });
-    } else res.json({ message: "Reset password error" });
+    } else res.json({ result: false, message: "Reset password error" });
   } catch (error) {
-    res.json({ message: "Reset password error" });
+    res.json({ result: false, message: "Reset password error" });
   }
 };
 
 exports.sendEmailResetPassword = async (req, res, next) => {
   const { email } = req.body;
+  console.log(email);
+
   try {
     const user = await UserModel.findOne({
-      "local.email": email
+      email: email
     });
     if (!!user) {
       const message = {

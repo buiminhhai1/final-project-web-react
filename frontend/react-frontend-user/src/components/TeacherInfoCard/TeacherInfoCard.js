@@ -1,53 +1,64 @@
 import React from 'react';
-import { Card, Avatar, Tag, Button, Divider } from 'antd';
+import { Card, Avatar, Tag, Divider } from 'antd';
+import { Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
-import './TeacherInfoCard.css'
+import './TeacherInfoCard.css';
 
 const { Meta } = Card;
 
 export default function TeacherInfoCard(props) {
-    return (
-        <div>
-            <Card className="shadow"
-                style={{ width: 250, margin: 8, borderRadius: 5 }}
-                bodyStyle={{ paddingTop: 0 }}
-                loading={props.loading}
-                cover={
-                    <Meta
-                        style={{ paddingLeft: 16, paddingTop: 16, borderRadius: 5 }}
-                        avatar={
-                            <Avatar size="large"
-                                src={props.imageUrl} />
-                        }
-                        title={props.name}
-                        description={
-                            <div>
-                                <p><b>$100</b> /hr</p>
-                                <p>District 8, Ho Chi Minh City</p>
-                            </div>
-                        }
-                    />
-                }>
-                <Meta
-                    description={
-                        <div>
-                            <Divider />
-                            <div style={{ marginBottom: 10 }}>
-                                <Tag color="#f50">Math</Tag>
-                                <Tag color="#2db7f5">Literature</Tag>
-                                <Tag color="#87d068">Physics</Tag>
-                                <Tag color="#108ee9">Chemistry</Tag>
-                            </div>
-                            <NavLink to={`/user-profile?userId=${props.userId}`} exact>
-                                <Button type="primary">
-                                    <b>View profile</b>
-                                </Button>
-                            </NavLink>
-                        </div>
-                    }
-                />
-            </Card>
-        </div>
-    )
+  return (
+    <div>
+      <Card
+        className="shadow"
+        style={{ width: 220, margin: 8, borderRadius: 5 }}
+        bodyStyle={{ paddingTop: 0 }}
+        loading={props.loading}
+        cover={
+          <Meta
+            style={{ paddingLeft: 16, paddingTop: 16, borderRadius: 5 }}
+            avatar={<Avatar className="mr-2" size={64} src={props.imageUrl} />}
+            title={props.name}
+            description={
+              <div>
+                <p className="m-0">
+                  <b style={{ color: '#85bb65' }}>${props.hourPay}</b> /hour
+                </p>
+                <p className="m-0">
+                  <b style={{ color: '#ffbf00' }}>{props.hourWork}</b> hours
+                </p>
+                <p className="m-0">{props.city}</p>
+              </div>
+            }
+          />
+        }
+      >
+        <Meta
+          description={
+            <div>
+              <Divider />
+              <div style={{ marginBottom: 10 }}>
+                {props.subjects.map(subject => (
+                  <Tag key={subject._id} color="#20232A">
+                    {subject.title}
+                  </Tag>
+                ))}
+              </div>
+              <div className="d-flex justify-content-center">
+                <NavLink to={`/user-profile?userId=${props.userId}`} exact>
+                  <Button
+                    variant="outline-primary"
+                    style={{ color: '#20232A', fontSize: 15 }}
+                  >
+                    <b>View profile</b>
+                  </Button>
+                </NavLink>
+              </div>
+            </div>
+          }
+        />
+      </Card>
+    </div>
+  );
 }

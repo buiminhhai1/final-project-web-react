@@ -15,7 +15,7 @@ class homepage extends Component {
     super(props);
     this.state = {
       itemsPerPage: 4
-    }
+    };
   }
 
   componentDidMount() {
@@ -26,15 +26,12 @@ class homepage extends Component {
 
   resposiveItemPerPage() {
     if (window.innerWidth < 992) {
-      this.setState({ itemsPerPage: 2 })
+      this.setState({ itemsPerPage: 2 });
+    } else if (window.innerWidth < 1200) {
+      this.setState({ itemsPerPage: 3 });
+    } else {
+      this.setState({ itemsPerPage: 4 });
     }
-    else
-      if (window.innerWidth < 1200) {
-        this.setState({ itemsPerPage: 3 })
-      }
-      else {
-        this.setState({ itemsPerPage: 4 })
-      }
   }
 
   render() {
@@ -44,7 +41,11 @@ class homepage extends Component {
     let pages = [];
     for (let i = 0; i < pageNumber; i++) {
       let page = [];
-      for (let j = i * itemsPerPage; j < i * itemsPerPage + itemsPerPage && j < this.props.teachers.length; j++) {
+      for (
+        let j = i * itemsPerPage;
+        j < i * itemsPerPage + itemsPerPage && j < this.props.teachers.length;
+        j++
+      ) {
         page.push(this.props.teachers[j]);
       }
       pages.push(page);
@@ -63,30 +64,36 @@ class homepage extends Component {
                         loading={this.props.pending}
                         imageUrl={teacher.imageUrl}
                         name={teacher.name}
-                        userId={teacher._id} />
-                    )
+                        city={teacher.experience.location.city}
+                        subjects={teacher.experience.skill}
+                        userId={teacher._id}
+                        hourWork={teacher.status.timeCommit}
+                        hourPay={teacher.status.hourRate}
+                      />
+                    );
                   })}
                 </Container>
               </TabPane>
-            )
+            );
           })}
         </Tabs>
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
   error: state.teachingReducer.error,
   pending: state.teachingReducer.pending,
-  teachers: state.teachingReducer.teachers,
-})
+  teachers: state.teachingReducer.teachers
+});
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  getTeachers
-}, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getTeachers
+    },
+    dispatch
+  );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(homepage);
+export default connect(mapStateToProps, mapDispatchToProps)(homepage);
