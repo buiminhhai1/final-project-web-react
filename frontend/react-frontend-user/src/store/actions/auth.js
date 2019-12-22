@@ -158,6 +158,10 @@ export function signIn(email, password) {
       .post(signInUrl, data)
       .then(res => {
         if (res.data.user) {
+          if (res.data.user.isBlocking) {
+            dispatch(signInFail('This account has been blocked'));
+            return;
+          }
           const expirationDate = new Date(
             new Date().getTime() + res.data.expiresIn * 1000
           );

@@ -167,7 +167,8 @@ getTokenAndUser = user => {
     isTeacher: user.isTeacher,
     name: user.name,
     email: user.email,
-    verify: user.verify
+    verify: user.verify,
+    isBlocking: user.isBlocking
   };
 
   return { token, newUser };
@@ -175,11 +176,8 @@ getTokenAndUser = user => {
 
 exports.getUser = async (req, res, next) => {
   const { userId } = req.query;
-
   try {
-    const user = await UserModel.findOne({
-      _id: userId
-    });
+    const user = await UserModel.findById(userId);
     if (!!user) {
       const teacher = {
         name: user.name,
@@ -240,6 +238,7 @@ exports.updateTeacher = async (req, res, next) => {
     user.status.timeCommit = req.body.submitHourWork;
     user.status.availability = true;
     user.status.isVisibility = true;
+    user.totalScore = 0;
 
     // Update user
     user

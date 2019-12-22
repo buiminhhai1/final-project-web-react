@@ -194,7 +194,7 @@ export function getTeacher(userId) {
       .then(res => {
         let teacher = res.data.teacher;
         console.log(teacher);
-        
+
         if (teacher) {
           dispatch(getTeacherSuccess(teacher));
         } else dispatch(getTeacherFail(res.data.message));
@@ -241,6 +241,99 @@ export function getLocations() {
       .catch(err => {
         console.log(err);
         dispatch(getLocationsFail(err));
+      });
+  };
+}
+
+export const sendFirstMessagePending = () => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_PENDING
+  };
+};
+
+export const sendFirstMessageSuccess = () => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_SUCCESS
+  };
+};
+
+export const sendFirstMessageFail = error => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_ERROR,
+    error
+  };
+};
+
+export function sendFirstMessage(token, data) {
+  return dispatch => {
+    dispatch(sendFirstMessagePending());
+    const chatUrl = apiUrl + '/chat/groups';
+
+    axios({
+      method: 'post',
+      url: chatUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(sendFirstMessageSuccess());
+        } else {
+          dispatch(sendFirstMessageFail('You have sent your first messages'));
+        }
+      })
+      .catch(err => {
+        dispatch(sendFirstMessageFail('Something wrong happened'));
+      });
+  };
+}
+
+export const createContractPending = () => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_PENDING
+  };
+};
+
+export const createContractSuccess = () => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_SUCCESS
+  };
+};
+
+export const createContractFail = error => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_ERROR,
+    error
+  };
+};
+
+export function createContract(token, data) {
+  return dispatch => {
+    dispatch(createContractPending());
+    const chatUrl = apiUrl + '/createContract';
+    console.log(data);
+    
+    axios({
+      method: 'post',
+      url: chatUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(createContractSuccess());
+        } else {
+          dispatch(createContractFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(createContractFail('Something wrong happened'));
       });
   };
 }
