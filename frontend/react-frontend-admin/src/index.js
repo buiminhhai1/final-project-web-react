@@ -8,6 +8,8 @@ import authReducer from './store/reducers/auth';
 import skillReducer from './store/reducers/skill';
 import userReducer from './store/reducers/user';
 import locationReducer from './store/reducers/location';
+import levelReducer from './store/reducers/level';
+import levelEducationReducer from './store/reducers/levelEducation';
 
 import './index.css';
 import App from './App';
@@ -19,7 +21,9 @@ const rootReducer = combineReducers({
   auth: authReducer,
   skill: skillReducer,
   user: userReducer,
-  location: locationReducer
+  location: locationReducer,
+  level: levelReducer,
+  levelEducation: levelEducationReducer
 });
 
 const store = createStore(

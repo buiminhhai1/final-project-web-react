@@ -27,7 +27,8 @@
     "prefer-template": "off",
     "react/prefer-stateless-function": "off",
     "array-callback-return": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "react/jsx-one-expression-per-line": "off"
 
   },
   "globals": {

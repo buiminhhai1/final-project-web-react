@@ -6,6 +6,14 @@ const userSchema = mongoose.Schema({
     enum: ['local', 'google', 'facebook'],
     required: true
   },
+  email: {
+    type: String,
+    require: true
+  },
+  name: {
+    type: String,
+    require: true
+  },
   verify: {
     type: Boolean,
     default: false,
@@ -17,36 +25,21 @@ const userSchema = mongoose.Schema({
   },
   imageUrl: {
     type: String,
-    require: true,
+    require: true
   },
   local: {
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
-    },
     password: {
-      type: String,
+      type: String
     }
   },
   google: {
     id: {
       type: String
-    },
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
     }
   },
   facebook: {
     id: {
       type: String
-    },
-    name: String,
-    email: {
-      type: String,
-      lowercase: true,
     }
   },
   location: {
@@ -59,8 +52,10 @@ const userSchema = mongoose.Schema({
       require: false
     },
     district: [{
-      type: String,
-      require: false
+      name: {
+        type: String,
+        require: false
+      }
     }]
   },
   experience: {
@@ -72,7 +67,7 @@ const userSchema = mongoose.Schema({
       description: {
         type: String,
         require: false
-      },
+      }
     },
     level: {
       _id: {
@@ -101,8 +96,24 @@ const userSchema = mongoose.Schema({
       title: {
         type: String,
         require: false
+      }
+    }],
+    location: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: false
       },
-    }]
+      district: [{
+        name: {
+          type: String,
+          require: false
+        }
+      }],
+      city: {
+        type: String,
+        require: false
+      }
+    }
   },
   status: {
     hourRate: {
@@ -170,11 +181,31 @@ const userSchema = mongoose.Schema({
   }],
   totalScore: {
     type: Number,
-    require: false,
+    require: false
   },
   isBlocking: {
     type: Boolean,
-    requier: false
+    require: true
+  },
+  contact: {
+    phone: {
+      type: String,
+      require: false
+    },
+    address: {
+      street: {
+        type: String,
+        require: false
+      },
+      city: {
+        type: String,
+        require: false
+      },
+      district: {
+        type: String,
+        require: false
+      }
+    }
   }
 });
 

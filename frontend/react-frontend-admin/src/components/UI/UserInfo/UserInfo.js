@@ -14,7 +14,6 @@ const UserInfo = props => {
       </Menu.Item>
     </Menu>
   );
-  console.log(props);
   return (
     <div>
       <Avatar

@@ -8,8 +8,7 @@ export {
   refreshLogin,
   refreshRegister,
   selectedTab
-}
-from './auth';
+} from './auth';
 
 export {
   createSkill,
@@ -17,8 +16,7 @@ export {
   getListSkill,
   deleteSkill,
   refreshMessageCRUD
-}
-from './skill';
+} from './skill';
 
 export {
   createLocation,
@@ -26,10 +24,22 @@ export {
   getListLocation,
   deleteLocation,
   refreshMessageCRUDLocation
-}
-from './location';
+} from './location';
 
 export {
-  getListUser
-}
-from './user';
+  createLevel,
+  updateLevel,
+  getListLevel,
+  deleteLevel,
+  refreshMessageCRUDLevel
+} from './level';
+
+export {
+  createLevelEducation,
+  updateLevelEducation,
+  getListLevelEducation,
+  deleteLevelEducation,
+  refreshMessageCRUDLevelEducation
+} from './levelEducation';
+
+export { getListUser } from './user';

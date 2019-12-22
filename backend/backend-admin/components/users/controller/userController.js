@@ -18,7 +18,10 @@ const typeBlock = {
 };
 
 exports.getListUser = async (req, res, next) => {
-  const { type, blocking } = req.query;
+  const {
+    type,
+    blocking
+  } = req.query;
   try {
     let condition = {};
     switch (+type) {
@@ -74,7 +77,10 @@ exports.getListUser = async (req, res, next) => {
 };
 
 exports.blockingUser = async (req, res, next) => {
-  const { _id, blocking } = req.body;
+  const {
+    _id,
+    blocking
+  } = req.body;
   try {
     const user = await UserSchema.findById({
       _id
@@ -91,6 +97,30 @@ exports.blockingUser = async (req, res, next) => {
     return res.json({
       error: err,
       message: 'Blocked user has failed!'
+    });
+  }
+};
+
+exports.getDetailUser = async (req, res, next) => {
+  const {
+    _id
+  } = req.body;
+  try {
+    const user = await UserSchema.findById(_id);
+    if (user) {
+      return res.json({
+        user,
+        message: 'get user success'
+      });
+    } else {
+      return res.json({
+        message: 'user not found!'
+      });
+    }
+  } catch (err) {
+    return res.json({
+      error: err,
+      message: 'user not found!'
     });
   }
 };

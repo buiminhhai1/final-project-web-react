@@ -47,20 +47,44 @@ class SideBar extends Component {
             <Menu.Item key="6">
               <NavLink to="/locations">List Locations</NavLink>
             </Menu.Item>
+            <Menu.Item key="7">
+              <NavLink to="/levels">List Level</NavLink>
+            </Menu.Item>
+            <Menu.Item key="8">
+              <NavLink to="/levelEducations">List Level Education</NavLink>
+            </Menu.Item>
           </SubMenu>
           <SubMenu
             key="sub3"
             title={
               <span>
                 <Icon type="notification" />
-                subnav 3
+                Notification
               </span>
             }
           >
-            <Menu.Item key="9">option9</Menu.Item>
-            <Menu.Item key="10">option10</Menu.Item>
-            <Menu.Item key="11">option11</Menu.Item>
-            <Menu.Item key="12">option12</Menu.Item>
+            <Menu.Item key="9">
+              <NavLink to="/historyContract">History Contract</NavLink>
+            </Menu.Item>
+            <Menu.Item key="10">
+              <NavLink to="/historyComplain">History Complain</NavLink>
+            </Menu.Item>
+          </SubMenu>
+          <SubMenu
+            key="sub4"
+            title={
+              <span>
+                <Icon type="area-chart" />
+                Notification
+              </span>
+            }
+          >
+            <Menu.Item key="9">
+              <NavLink to="/user">History User Contract</NavLink>
+            </Menu.Item>
+            <Menu.Item key="10">
+              <NavLink to="/historyComplain">History Complain</NavLink>
+            </Menu.Item>
           </SubMenu>
         </Menu>
       </Sider>

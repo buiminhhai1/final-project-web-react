@@ -41,12 +41,24 @@ const asyncLocation = AsyncComponent(() => {
   return import('./containers/Location/Location');
 });
 
+const asyncLevel = AsyncComponent(() => {
+  return import('./containers/Level/Level');
+});
+
+const asyncLevelEducation = AsyncComponent(() => {
+  return import('./containers/LevelEducation/LevelEducation');
+});
+
+const asyncUserDetail = AsyncComponent(() => {
+  return import('./containers/DetailUser/DetailUser');
+});
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
   }
 
   render() {
+    const path = this.props.location.pathname;
     let routes = (
       <Switch>
         <Route path="/admin/login" component={asyncLogin} />
@@ -54,22 +66,25 @@ class App extends Component {
         <Redirect to="/admin/login" />
       </Switch>
     );
-    if (this.props.isAuthenticated) {
+    if (localStorage.getItem('token')) {
       routes = (
         <Switch>
           <Route path="/" exact component={asyncHomePage} />
-          <Route path="/skills" component={asyncSkill} />
-          <Route path="/students" component={asyncStudent} />
-          <Route path="/teachers" component={asyncTeacher} />
-          <Route path="/locations" component={asyncLocation} />
-          <Route path="/admin/logout" component={asyncLogout} />
+          <Route path="/skills*" component={asyncSkill} />
+          <Route path="/students*" component={asyncStudent} />
+          <Route path="/teachers*" component={asyncTeacher} />
+          <Route path="/locations*" component={asyncLocation} />
+          <Route path="/levels*" component={asyncLevel} />
+          <Route path="/levelEducations*" component={asyncLevelEducation} />
+          <Route path="/userdetail" component={asyncUserDetail} />
+          <Route path="/admin/logout*" component={asyncLogout} />
           <Redirect to="/" />
         </Switch>
       );
     } // fix chỗ HeaderLayout
     const sideBar = this.props.isAuthenticated ? <SideBar /> : null;
     const breadcrumbLayout = this.props.isAuthenticated ? (
-      <BreadcrumbLayout />
+      <BreadcrumbLayout path={path} />
     ) : null;
     return (
       <div>
