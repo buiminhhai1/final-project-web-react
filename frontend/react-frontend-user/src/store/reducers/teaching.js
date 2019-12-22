@@ -124,6 +124,7 @@ export default function teachingReducer(state = initialState, action) {
                 ...state,
                 teacher: action.teacher,
                 pending: false,
+                message: `Get teacher's info success`,
             }
         case actionTypes.GET_TEACHER_ERROR:
             return {

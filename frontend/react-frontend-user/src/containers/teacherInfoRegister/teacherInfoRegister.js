@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Form, Container } from 'react-bootstrap';
+import {
+  Button,
+  Form,
+  Container,
+  InputGroup,
+  FormControl
+} from 'react-bootstrap';
 import { Radio, Spin, Divider, TreeSelect, message } from 'antd';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -13,7 +19,8 @@ import {
   getSubjects,
   getEducationLevel,
   getLevel,
-  getLocations
+  getLocations,
+  getTeacher
 } from '../../store/actions/teaching';
 
 const animatedComponents = makeAnimated();
@@ -27,11 +34,15 @@ class TeacherProfile extends Component {
       selectedEducationLevel: [],
       level: null,
       locations: null,
+      hourPay: 0,
+      hourWork: 0,
       description: ''
     };
   }
 
   componentDidMount = () => {
+    if (localStorage.getItem('isTeacher'))
+      this.props.getTeacher(localStorage.getItem('userId'));
     this.props.getSubjects();
     this.props.getEducationLevel();
     this.props.getLevel();
@@ -39,19 +50,27 @@ class TeacherProfile extends Component {
   };
 
   componentDidUpdate() {
-    if (this.props.message) {
-      this.render.successMessage = message.success(this.props.message);
-      this.props.resetErrorMessage();
+    if (this.props.teachingMessage) {
+      this.setState({
+        description: this.props.teacher.experience.introduction.description,
+        hourPay: this.props.teacher.status.hourRate,
+        hourWork: this.props.teacher.status.timeCommit
+      });
+    }
+    if (this.props.authMessage) {
+      this.render.successMessage = message.success(this.props.authMessage);
     }
     if (this.props.authError || this.props.teachingError) {
-      this.render.errorMessage = message.error('Something wrong happened! Please try again later');
-      this.props.resetErrorMessage();
+      this.render.errorMessage = message.error(
+        'Something wrong happened! Please try again later'
+      );
     }
+    this.props.resetErrorMessage();
   }
 
   handleSubmit = event => {
     if (!this.checkFields()) {
-      message.error('Please fill all the fields!', 1);
+      message.error('Please check all the fields!', 1);
       return;
     }
 
@@ -65,6 +84,8 @@ class TeacherProfile extends Component {
     });
     let submitLevel = this.state.level;
     let submitDescription = this.state.description;
+    let submitHourPay = this.state.hourPay;
+    let submitHourWork = this.state.hourWork;
 
     let cityIndex = parseInt(this.state.locations[0].split('-')[0]);
     let submitLocation = {
@@ -85,7 +106,9 @@ class TeacherProfile extends Component {
       submitLevel,
       submitEducationLevel,
       submitDescription,
-      submitLocation
+      submitLocation,
+      submitHourPay,
+      submitHourWork
     });
   };
 
@@ -107,6 +130,23 @@ class TeacherProfile extends Component {
     this.setState({
       level: e.target.value
     });
+  };
+
+  handleHourPay = e => {
+    this.setState({
+      hourPay: e.target.value
+    });
+  };
+
+  handleHourWork = e => {
+    this.setState({
+      hourWork: e.target.value
+    });
+    if (e.target.value > 120) {
+      message.error('Do you to die?', 1);
+    } else if (e.target.value > 84) {
+      message.warning('You have commited more than 12 hours a day', 1);
+    }
   };
 
   handleLocationChange = value => {
@@ -133,6 +173,12 @@ class TeacherProfile extends Component {
     if (this.state.level === null || this.state.locations === null)
       return false;
     if (this.state.description === '') return false;
+    if (this.state.hourPay === 0) {
+      return false;
+    }
+    if (this.state.hourWork === 0 || this.state.hourWork > 168) {
+      return false;
+    }
     return true;
   };
 
@@ -141,6 +187,7 @@ class TeacherProfile extends Component {
     const { educationLevel, level, subjects, locations } = this.props;
     const successMessage = null;
     const errorMessage = null;
+
     return (
       <form className="tutorInfoForm" onSubmit={this.handleSubmit}>
         {successMessage}
@@ -240,11 +287,45 @@ class TeacherProfile extends Component {
                 </TreeSelect>
               </Form.Group>
               <Form.Group>
+                <b>How much do you want to be paid?</b>
+                <br />
+                <InputGroup className="mt-1 description">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>$</InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <FormControl
+                    type="number"
+                    value={this.state.hourPay}
+                    onChange={event => this.handleHourPay(event)}
+                  />
+                  <InputGroup.Append>
+                    <InputGroup.Text>per hour</InputGroup.Text>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Form.Group>
+              <Form.Group>
+                <b>How long can you work?</b>
+                <br />
+                <InputGroup className="mt-1 description">
+                  <FormControl
+                    type="number"
+                    value={this.state.hourWork}
+                    onChange={event => this.handleHourWork(event)}
+                  />
+                  <InputGroup.Append>
+                    <InputGroup.Text id="basic-addon2">
+                      per week
+                    </InputGroup.Text>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Form.Group>
+              <Form.Group>
                 <b>Describe about yourself</b>
                 <Form.Control
                   className="mt-1 description"
                   as="textarea"
                   rows="7"
+                  value={this.state.description}
                   onChange={event => this.handleDescription(event)}
                 />
               </Form.Group>
@@ -267,8 +348,10 @@ const mapStateToProps = state => ({
   educationLevel: state.teachingReducer.educationLevel,
   level: state.teachingReducer.level,
   token: state.authReducer.token,
-  message: state.authReducer.message,
-  authError: state.authReducer.error
+  authMessage: state.authReducer.message,
+  teachingMessage: state.teachingReducer.message,
+  authError: state.authReducer.error,
+  teacher: state.teachingReducer.teacher
 });
 
 const mapDispatchToProps = dispatch =>
@@ -279,7 +362,8 @@ const mapDispatchToProps = dispatch =>
       getEducationLevel,
       getLevel,
       getLocations,
-      resetErrorMessage
+      resetErrorMessage,
+      getTeacher
     },
     dispatch
   );
