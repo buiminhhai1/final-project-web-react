@@ -42,24 +42,6 @@ const userSchema = mongoose.Schema({
       type: String
     }
   },
-  location: {
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: false
-    },
-    city: {
-      type: String,
-      require: false
-    },
-    district: [
-      {
-        name: {
-          type: String,
-          require: false
-        }
-      }
-    ]
-  },
   experience: {
     introduction: {
       title: {
@@ -121,14 +103,14 @@ const userSchema = mongoose.Schema({
         type: String,
         require: false
       }
-    }
+    },
   },
   status: {
     hourRate: {
       type: Number,
       require: false
     },
-    availible: {
+    availability: {
       type: Boolean,
       require: false
     },

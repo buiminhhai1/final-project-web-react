@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Spin, Avatar, Badge, Rate, Tag } from 'antd';
+import { Spin, Avatar, Badge, Rate, Tag, Icon } from 'antd';
 import { Container } from 'react-bootstrap';
 
 import { getTeacher } from '../../store/actions/teaching';
@@ -17,49 +17,83 @@ class userProfile extends Component {
 
   render() {
     const { teacher } = this.props;
+    console.log(teacher);
 
     return (
-      <Spin tip="Loading..." spinning={this.props.pending}>
-        <Container className="shadow p-3">
-          <div className="d-flex justify-content-between mb-3">
-            <div className="d-flex">
-              <Badge status="success" dot>
-                <Avatar shape="square" src={teacher.imageUrl} size={90} />
-              </Badge>
-              <div className="ml-3">
-                <h3>{teacher.name}</h3>
-                <b>District 8, HCM City</b>
+      <div className="pt-4">
+        <Spin tip="Loading..." spinning={this.props.pending}>
+          <Container className="shadow p-3">
+            <div className="d-flex justify-content-between mb-3">
+              <div className="d-flex">
+                <Badge status="success" dot size='large'>
+                  <Avatar
+                    className="border"
+                    shape="square"
+                    src={teacher.imageUrl}
+                    size={90}
+                  />
+                </Badge>
+                <div className="ml-3">
+                  <h3>{teacher.name}</h3>
+                  <p className="mb-2">
+                    {teacher.experience &&
+                      teacher.experience.location.district.map(place => (
+                        <Tag key={place._id} color="#20232A">
+                          {place.name}
+                        </Tag>
+                      ))}
+                  </p>
+                  <h6>
+                    <b>
+                      {teacher.experience && teacher.experience.location.city}
+                    </b>
+                  </h6>
+                </div>
+              </div>
+              <div>
+                <h5>Rating:</h5>
+                <Rate allowHalf defaultValue={4} disabled />
               </div>
             </div>
-            <div>
-              <h5>Rating:</h5>
-              <Rate allowHalf defaultValue={4} disabled />
+            <div className="mb-3">
+              <h5>
+                <b>Subjects:</b>
+              </h5>
+              {teacher.experience &&
+                teacher.experience.skill.map(subject => (
+                  <Tag key={subject._id} color="#20232A">
+                    {subject.title}
+                  </Tag>
+                ))}
             </div>
-          </div>
-          <div className="mb-3">
-            <h4>Subjects: </h4>
-            <Tag color="#f50">Math</Tag>
-            <Tag color="#2db7f5">Math</Tag>
-            <Tag color="#87d068">Math</Tag>
-            <Tag color="#108ee9">Math</Tag>
-          </div>
-        </Container>
-      </Spin>
-    )
+            <div className="mb-3">
+              <h5>
+                <b>Description</b>
+              </h5>
+              <p style={{whiteSpace: 'pre-wrap'}}>
+                {teacher.experience &&
+                  teacher.experience.introduction.description}
+              </p>
+            </div>
+          </Container>
+        </Spin>
+      </div>
+    );
   }
 }
 
 const mapStateToProps = state => ({
   error: state.teachingReducer.error,
   pending: state.teachingReducer.pending,
-  teacher: state.teachingReducer.teacher,
-})
+  teacher: state.teachingReducer.teacher
+});
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  getTeacher
-}, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getTeacher
+    },
+    dispatch
+  );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(userProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(userProfile);

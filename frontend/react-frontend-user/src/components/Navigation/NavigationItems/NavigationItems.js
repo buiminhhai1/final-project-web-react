@@ -20,25 +20,33 @@ function NavigationItems(props) {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item>
-          <NavLink className="d-flex align-items-center" to="/settings" >
+          <NavLink className="d-flex align-items-center btn-outline-primary" to="/settings" >
             <Icon className="mr-2" type="setting" />
             Settings
           </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink className="d-flex align-items-center" to="/profile" >
+          <NavLink className="d-flex align-items-center btn-outline-primary" to="/profile" >
             <Icon className="mr-2" type="profile" />
             Profile
           </NavLink>
         </Menu.Item>
+        {localStorage.getItem('method') === 'local' && (
+          <Menu.Item>
+          <NavLink className="d-flex align-items-center btn-outline-warning" to="/changePassword" >
+            <Icon className="mr-2" type="key" />
+            Change password
+          </NavLink>
+        </Menu.Item>
+        )}
         <Menu.Item>
-          <NavLink className="d-flex align-items-center" to="/teacher-profile" >
+          <NavLink className="d-flex align-items-center btn-outline-success" to="/teacher-profile" >
           <Icon className="mr-2" type="read" />
             Teacher Profile
           </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink className="d-flex align-items-center" to="/logout" >
+          <NavLink className="d-flex align-items-center btn-outline-danger" to="/logout" >
             <Icon className="mr-2" type="logout" /> Log out
           </NavLink>
         </Menu.Item>

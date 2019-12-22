@@ -13,8 +13,24 @@ const asyncHomepage = AsyncComponent(() => {
   return import('./containers/homepage/homepage');
 });
 
+const asyncVerifyRequest = AsyncComponent(() => {
+  return import('./components/verifyRequestPage/verifyRequest');
+});
+
 const asyncSignIn = AsyncComponent(() => {
   return import('./containers/signInPage/signIn');
+});
+
+const asyncForgotPassword = AsyncComponent(() => {
+  return import('./containers/forgotPassword/forgotPassword');
+});
+
+const asyncResetPassword = AsyncComponent(() => {
+  return import('./containers/resetPassword/resetPassword');
+});
+
+const asyncChangePassword = AsyncComponent(() => {
+  return import('./containers/changePassword/changePassword');
 });
 
 const asyncSignUp = AsyncComponent(() => {
@@ -47,7 +63,7 @@ class App extends React.Component {
     this.props.reLogin();
   }
 
-  compocomnentDidMount() {}
+  componentDidMount() {}
 
   render() {
     function NoMatch(props) {
@@ -58,11 +74,19 @@ class App extends React.Component {
     }
 
     const routes =
-      localStorage.getItem('token') === null ? (
+      localStorage.getItem('verify') === 'false' ? (
+        <Switch>
+          <Route exact path="/" component={asyncVerifyRequest}></Route>
+          <Route path="/logout" component={asyncLogOut}></Route>
+          <Route path="*" component={asyncVerifyRequest}></Route>
+        </Switch>
+      ) : localStorage.getItem('token') === null ? (
         <Switch>
           <Route exact path="/" component={asyncHomepage}></Route>
           <Route path="/signIn" component={asyncSignIn}></Route>
           <Route path="/signUp" component={asyncSignUp}></Route>
+          <Route path="/forgotPassword" component={asyncForgotPassword}></Route>
+          <Route path="/resetpassword" component={asyncResetPassword}></Route>
           <Route path="/user-profile" component={asyncUserProfile}></Route>
           <Route path="*">
             <NoMatch user={this.props.user} />
@@ -74,6 +98,7 @@ class App extends React.Component {
           <Route path="/logout" component={asyncLogOut}></Route>
           <Route path="/profile" component={asyncUpdateProfile}></Route>
           <Route path="/user-profile" component={asyncUserProfile}></Route>
+          <Route path="/changePassword" component={asyncChangePassword}></Route>
           <Route
             path="/teacher-profile"
             component={asyncTeacherProfile}

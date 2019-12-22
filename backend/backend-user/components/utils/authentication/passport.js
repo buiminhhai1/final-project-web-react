@@ -83,7 +83,7 @@ const facebook = new facebookStrategy({
         email: profile.emails[0].value,
         imageUrl: profile.photos[0].value,
         isTeacher: false,
-        verify:true,
+        verify: true,
       });
       newUser.save()
         .then(user => {
