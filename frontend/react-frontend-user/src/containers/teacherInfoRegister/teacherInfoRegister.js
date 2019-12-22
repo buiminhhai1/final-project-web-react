@@ -51,7 +51,25 @@ class TeacherProfile extends Component {
 
   componentDidUpdate() {
     if (this.props.teachingMessage) {
+      let selectedSubject = this.props.teacher.experience.skill.map(
+        subject => ({
+          value: subject._id,
+          label: subject.title,
+          data: subject
+        })
+      );
+      let selectedEducationLevel = this.props.teacher.experience.educationLevel.map(
+        level => ({
+          value: level._id,
+          label: level.title,
+          data: level
+        })
+      );
+
       this.setState({
+        selectedSubject,
+        selectedEducationLevel,
+        level: this.props.teacher.experience.level,
         description: this.props.teacher.experience.introduction.description,
         hourPay: this.props.teacher.status.hourRate,
         hourWork: this.props.teacher.status.timeCommit
@@ -117,6 +135,8 @@ class TeacherProfile extends Component {
   };
 
   handleSubjectChange = selectedOption => {
+    console.log(this.state.selectedSubject);
+
     this.setState({ selectedSubject: selectedOption });
   };
 
@@ -242,6 +262,7 @@ class TeacherProfile extends Component {
                         className="teachingLevel"
                         value={level.data}
                         key={level.value}
+                        checked={this.props.teacher.experience.level && true}
                       >
                         {level.label}
                       </Radio>

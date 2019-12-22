@@ -57,6 +57,9 @@ function NavigationItems(props) {
     <ul className={classes.NavigationItems} >
       <NavigationItem link="/">HOME</NavigationItem>
       {props.token ?
+        <NavigationItem link="/chat">CHAT</NavigationItem>
+        : null}
+      {props.token ?
         <Dropdown overlay={menu} className="mx-4">
           <Avatar src={props.user.imageUrl} />
         </Dropdown>

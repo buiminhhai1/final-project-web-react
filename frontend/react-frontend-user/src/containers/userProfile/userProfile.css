@@ -1,1 +1,12 @@
+.ant-tag {
+    margin-bottom: 8px;
+}
 
+.ant-badge-dot {
+    width: 10px;
+    height: 10px;
+}
+
+body {
+    background-color: #F2F2F2;
+}
