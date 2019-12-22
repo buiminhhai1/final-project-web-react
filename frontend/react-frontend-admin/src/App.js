@@ -61,23 +61,23 @@ class App extends Component {
     const path = this.props.location.pathname;
     let routes = (
       <Switch>
-        <Route path="/admin/login" component={asyncLogin} />
-        <Route path="/admin/register" component={asyncRegister} />
+        <Route path="/admin/login" component={asyncLogin} />{' '}
+        <Route path="/admin/register" component={asyncRegister} />{' '}
         <Redirect to="/admin/login" />
       </Switch>
     );
     if (localStorage.getItem('token')) {
       routes = (
         <Switch>
-          <Route path="/" exact component={asyncHomePage} />
-          <Route path="/skills*" component={asyncSkill} />
-          <Route path="/students*" component={asyncStudent} />
-          <Route path="/teachers*" component={asyncTeacher} />
-          <Route path="/locations*" component={asyncLocation} />
-          <Route path="/levels*" component={asyncLevel} />
-          <Route path="/levelEducations*" component={asyncLevelEducation} />
-          <Route path="/userdetail" component={asyncUserDetail} />
-          <Route path="/admin/logout*" component={asyncLogout} />
+          <Route path="/" exact component={asyncHomePage} />{' '}
+          <Route path="/skills*" component={asyncSkill} />{' '}
+          <Route path="/students*" component={asyncStudent} />{' '}
+          <Route path="/teachers*" component={asyncTeacher} />{' '}
+          <Route path="/locations*" component={asyncLocation} />{' '}
+          <Route path="/levels*" component={asyncLevel} />{' '}
+          <Route path="/levelEducations*" component={asyncLevelEducation} />{' '}
+          <Route path="/userdetail" component={asyncUserDetail} />{' '}
+          <Route path="/admin/logout*" component={asyncLogout} />{' '}
           <Redirect to="/" />
         </Switch>
       );
@@ -87,17 +87,26 @@ class App extends Component {
       <BreadcrumbLayout path={path} />
     ) : null;
     return (
-      <div>
+      <div key={'Appjs'}>
         <Layout>
-          <HeaderLayout isAuthenticated={this.props.isAuthenticated} />
-          <Layout style={{ background: 'white' }}>
-            {sideBar}
-            <Layout style={{ padding: '24px' }}>
-              {breadcrumbLayout}
-              {routes}
-            </Layout>
-          </Layout>
-        </Layout>
+          <HeaderLayout isAuthenticated={this.props.isAuthenticated} />{' '}
+          <Layout
+            style={{
+              background: 'white'
+            }}
+          >
+            {' '}
+            {sideBar}{' '}
+            <Layout
+              style={{
+                padding: '24px'
+              }}
+            >
+              {' '}
+              {breadcrumbLayout} {routes}{' '}
+            </Layout>{' '}
+          </Layout>{' '}
+        </Layout>{' '}
       </div>
     );
   }

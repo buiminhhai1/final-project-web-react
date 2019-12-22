@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { PageHeader, Tag, Typography, Divider } from 'antd';
+import {
+  PageHeader,
+  Tag,
+  Typography,
+  Divider,
+  Icon,
+  Popover,
+  Statistic,
+  Rate,
+  Row
+} from 'antd';
 import { Redirect } from 'react-router-dom';
 
 const { Paragraph, Title } = Typography;
@@ -19,38 +29,110 @@ class DetailUser extends Component {
   }
 
   render() {
-    const { email, name, imageUrl, experience, isTeacher } = this.props.location
-      .userDetail
+    const {
+      email,
+      name,
+      imageUrl,
+      experience,
+      isTeacher,
+      verify,
+      status
+    } = this.props.location.userDetail
       ? this.props.location.userDetail
       : {
           email: null,
           name: null,
           imageUrl: null,
           isTeacher: null,
-          experience: null
+          experience: null,
+          verify: null,
+          status: null
         };
+    const extraContent = (
+      <div
+        style={{
+          display: 'flex',
+          width: 'max-content',
+          justifyContent: 'flex-end'
+        }}
+      >
+        <Statistic
+          title="Time commit"
+          value={isTeacher ? status.timeCommit + ' h' : null}
+          style={{
+            marginRight: 32
+          }}
+        />
+        <Statistic
+          title="Hour rate"
+          prefix="$"
+          value={isTeacher ? status.hourRate : null}
+        />
+      </div>
+    );
     const content = (
       <div className="content">
         <Title level={3}>User profiles</Title>
         <Divider />
-        <Title level={4}>
-          {experience
-            ? experience.skill.map(item => {
-                return item.title + ' - ';
-              })
-            : null}
-        </Title>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Title level={4}>
+            {experience
+              ? experience.skill.map((item, index) => {
+                  if (index === experience.skill.length - 1) return item.title;
+                  return item.title + ' - ';
+                })
+              : null}
+          </Title>
+          {isTeacher ? extraContent : null}
+        </div>
         <Paragraph>
           {experience && experience.introduction
             ? experience.introduction.description
             : null}
         </Paragraph>
-        <Paragraph>
-          Ant Design&#x27;s design team preferred to design with the HSB color
-          model, which makes it easier for designers to have a clear
-          psychological expectation of color when adjusting colors, as well as
-          facilitate communication in teams.
-        </Paragraph>
+        {isTeacher ? (
+          <div>
+            <Divider />
+            <Title level={4}>Level</Title>
+            <div>
+              {isTeacher ? (
+                <Tag key={experience.level._id} color="geekblue">
+                  {experience.level.title.toUpperCase()}
+                </Tag>
+              ) : null}
+            </div>
+            <Divider />
+            <Title level={4}>Skill</Title>
+            <div>
+              {experience.skill.map(item => (
+                <Tag key={item._id} color="geekblue">
+                  {item.title.toUpperCase()}
+                </Tag>
+              ))}
+            </div>
+            <Divider />
+            <Title level={4}>Education Level</Title>
+            <div>
+              {experience.educationLevel.map(item => (
+                <Tag key={item._id} color="geekblue">
+                  {item.title.toUpperCase()}
+                </Tag>
+              ))}
+            </div>
+            <Divider />
+            <Title level={4}>Teaching location</Title>
+            <div>
+              <Tag key={experience.location._id} color="geekblue">
+                {experience.location.city.toUpperCase()}
+              </Tag>
+              {experience.location.district.map(item => (
+                <Tag color="green" key={item._id}>
+                  {item.name}
+                </Tag>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     );
 
@@ -74,6 +156,52 @@ class DetailUser extends Component {
           avatar={{
             src: imageUrl
           }}
+          extra={[
+            isTeacher ? (
+              <Popover
+                key={name + 'title'}
+                content={<div>Teacher is free now</div>}
+                trigger="hover"
+              >
+                <Tag color="#2db7f5">Availability</Tag>
+              </Popover>
+            ) : (
+              <Popover
+                key={name}
+                content={<div>Teacher is busy now</div>}
+                trigger="hover"
+              >
+                <Tag color="#f50">Busy</Tag>
+              </Popover>
+            ),
+            verify ? (
+              <Popover
+                key={name}
+                content={<div>Verified user</div>}
+                trigger="hover"
+              >
+                <Icon
+                  type="check-circle"
+                  theme="twoTone"
+                  twoToneColor="#52c41a"
+                />
+              </Popover>
+            ) : null,
+            isTeacher ? (
+              <div key="ratingdiv">
+                <Row key="ratingrow">
+                  <Rate
+                    type=""
+                    key="ratingkey"
+                    allowHalf
+                    defaultValue={0}
+                    style={{ fontSize: '18px', marginLeft: '0px' }}
+                  />
+                </Row>
+                <Row key="valuerating">haha</Row>
+              </div>
+            ) : null
+          ]}
         >
           {content}
         </PageHeader>
