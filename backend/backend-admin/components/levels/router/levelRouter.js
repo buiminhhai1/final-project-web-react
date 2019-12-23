@@ -14,11 +14,11 @@ router.post('/add-level', passport.authenticate('jwt', {
   session: false
 }), levelController.addLevel);
 
-router.put('/update-level/:id', passport.authenticate('jwt', {
+router.put('/update-level', passport.authenticate('jwt', {
   session: false
 }), levelController.updateLevel);
 
-router.delete('/delete-level/:id', passport.authenticate('jwt', {
+router.delete('/delete-level', passport.authenticate('jwt', {
   session: false
 }), levelController.deleteLevel);
 

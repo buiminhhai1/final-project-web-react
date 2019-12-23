@@ -9,6 +9,7 @@ import {
   Avatar,
   Modal,
   Input,
+  Popover,
   // message,
   Col,
   Row,
@@ -59,9 +60,22 @@ class HomePage extends Component {
                     margin: '5px 5px 5px 10px'
                   }}
                 >
-                  <NavLink to="/" sytle={{ paddingRight: '5px' }}>
-                    {record.name}
-                  </NavLink>
+                  <Popover
+                    content={<div>View detail user</div>}
+                    trigger="hover"
+                  >
+                    <NavLink
+                      to={{
+                        pathname: '/userdetail',
+                        userDetail: record
+                      }}
+                      contextMenu="view detail"
+                      sytle={{ paddingRight: '5px' }}
+                    >
+                      {' ' + record.name + ' '}
+                    </NavLink>
+                  </Popover>
+
                   <Icon
                     style={{ visibility: record.verify ? 'visible' : 'hidden' }}
                     type="check-circle"
@@ -88,11 +102,14 @@ class HomePage extends Component {
           dataIndex: 'status',
           key: 'status',
           render: (text, record) => {
+            const tagTeacher = record.isTeacher ? (
+              <Tag color="#87d068">Teacher</Tag>
+            ) : (
+              <Tag color="#2db7f5">Student</Tag>
+            );
             return (
               <div>
-                <Tag visible={record.isTeacher} color="#87d068">
-                  Teacher
-                </Tag>
+                {tagTeacher}
                 <Tag color="red" visible={record.isBlocking}>
                   Blocked
                 </Tag>
@@ -113,6 +130,18 @@ class HomePage extends Component {
             ) : null;
             return (
               <div>
+                <NavLink
+                  to={{
+                    pathname: '/userdetail',
+                    userDetail: record
+                  }}
+                  contextMenu="view detail"
+                  sytle={{ paddingRight: '5px' }}
+                >
+                  <Button type="primary" style={{ marginRight: '5px' }}>
+                    Detail
+                  </Button>
+                </NavLink>
                 {btnUnBlock}
                 {btnBlock}
               </div>

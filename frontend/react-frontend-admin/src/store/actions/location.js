@@ -162,23 +162,22 @@ export const deleteLocationFail = error => ({
 
 export const deleteLocation = _id => dispatch => {
   dispatch(deleteLocationStart());
-  const dataDelete = { _id };
+  const dataDelete = {
+    _id
+  };
   const authToken = localStorage.getItem('token');
-  console.log('delete auth token');
-  console.log(authToken);
   const headers = {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
   const url = `http://localhost:4200/location/delete-location`;
   axios
-    .delete(
-      url,
-      {
-        headers
-      },
-      dataDelete
-    )
+    .delete(url, {
+      headers,
+      data: {
+        dataDelete
+      }
+    })
     .then(res => {
       if (res.data.location) {
         dispatch(deleteLocationSuccess(_id, res.data.message));

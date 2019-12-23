@@ -82,7 +82,7 @@ module.exports.updateLocation = async (req, res, next) => {
 module.exports.deleteLocation = async (req, res, next) => {
   const {
     _id
-  } = req.body;
+  } = req.body.dataDelete;
   try {
     const result = await LocationModel.deleteOne({
       _id

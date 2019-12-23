@@ -1,6 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
-import { getListSkillFail } from './skill';
+import {
+  getListSkillFail
+} from './skill';
 
 export const getListUserStart = () => ({
   type: actionTypes.GET_LIST_USER_START
@@ -22,9 +24,6 @@ export const getListUser = type => dispatch => {
   axios
     .get(url)
     .then(res => {
-      console.log('test response get list user');
-      console.log(res);
-      console.log(res.data.users);
       if (res.data.users) {
         dispatch(getListUserSuccess(res.data.users));
       } else {
@@ -71,8 +70,7 @@ export const updateUser = (_id, blocking) => dispatch => {
         dispatch(updateUserFail(`cannot blocking this user`));
       }
     })
-    .catch(err => {
-      console.log(err);
+    .catch(() => {
       dispatch(updateUserFail(`something went wrong!`));
     });
 };

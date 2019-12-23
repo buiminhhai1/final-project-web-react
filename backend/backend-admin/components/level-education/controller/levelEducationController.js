@@ -41,7 +41,7 @@ exports.addLevelEducation = async (req, res, next) => {
     const result = await newLevel.save();
     if (!!result) {
       return res.json({
-        level: result,
+        levelEducation: result,
         message: 'create level has scucces'
       });
     }
@@ -66,7 +66,7 @@ exports.updateLevelEducation = async (req, res, next) => {
       updateLevel.title = title;
       const result = await updateLevel.save();
       return res.json({
-        level: result,
+        levelEducation: result,
         message: 'level have updated'
       });
     }
@@ -80,16 +80,16 @@ exports.updateLevelEducation = async (req, res, next) => {
 
 exports.deleteLevelEducation = async (req, res, next) => {
   const {
-    id
-  } = req.params;
+    _id
+  } = req.body.dataDelete;
   try {
-    const result = await LevelEducationModel.deleteOne({
-      _id: id
+    const result = await LevelEducationModel.findByIdAndDelete({
+      _id
     });
     if (!!result) {
       return res.json({
-        level: result,
-        message: 'level has deleted'
+        levelEducation: result,
+        message: 'level education has deleted'
       });
     }
   } catch (err) {

@@ -17,7 +17,6 @@ class Google extends Component {
   }
 
   responseGoogle = response => {
-    console.log(response);
     this.props.onSingInGoogle({
       idGoole: response.googleId,
       name: response.profileObj.name,

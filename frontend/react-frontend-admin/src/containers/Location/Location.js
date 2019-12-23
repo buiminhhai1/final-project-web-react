@@ -242,7 +242,7 @@ class Location extends Component {
                       </span>
                     </div>
                     <Input
-                      placeholder="Title"
+                      placeholder="Location"
                       value={this.state.city}
                       onChange={this.onCityChange}
                     />

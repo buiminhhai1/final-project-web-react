@@ -94,7 +94,6 @@ exports.updateSkill = async (req, res, next) => {
 };
 
 exports.deleteSkill = async (req, res, next) => {
-  console.log(req.params);
   const {
     id
   } = req.params;

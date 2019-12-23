@@ -22,7 +22,6 @@ class Register extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         this.setState({ email: values.email });
         this.props.onRegister(values.email, values.password, values.fullname);
       }

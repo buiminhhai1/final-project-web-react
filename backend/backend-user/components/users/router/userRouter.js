@@ -20,10 +20,10 @@ router.post('/teacher-profile', passport.authenticate('jwt', {
 }), userController.updateTeacher);
 router.post('/image-upload', userController.uploadImage);
 
-router.get('/verify',userController.verifyUser);
-router.post('/changePassword',passport.authenticate('jwt', {
+router.get('/verify', userController.verifyUser);
+router.post('/changePassword', passport.authenticate('jwt', {
     session: false
-}),userController.changePassword);
-router.post('/resetPassword',userController.resetPassword);
-router.post('/sendEmailResetPassword',userController.sendEmailResetPassword);
+}), userController.changePassword);
+router.post('/resetPassword', userController.resetPassword);
+router.post('/sendEmailResetPassword', userController.sendEmailResetPassword);
 module.exports = router;
