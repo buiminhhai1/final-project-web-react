@@ -56,7 +56,7 @@ exports.register = async (req, res) => {
           return res.json({
             user: newUser,
             token,
-            expiresIn: 150 * 60
+            expiresIn: 1500 * 60
           });
         }
       }
@@ -83,7 +83,7 @@ exports.login = (req, res, next) => {
       return res.json({
         user: newUser,
         token,
-        expiresIn: 150 * 60
+        expiresIn: 1500 * 60
       });
     }
   )(req, res, next);
@@ -111,7 +111,7 @@ exports.googleLogin = (req, res, next) => {
         return res.json({
           user: newUser,
           token,
-          expiresIn: 150 * 60
+          expiresIn: 1500 * 60
         });
       }
     }
@@ -215,7 +215,7 @@ exports.updateUser = async (req, res, next) => {
         return res.json({
           user: newUser,
           token,
-          expiresIn: 150 * 60
+          expiresIn: 1500 * 60
         });
       })
       .catch(err => {
@@ -248,7 +248,7 @@ exports.updateTeacher = async (req, res, next) => {
         return res.json({
           user: newUser,
           token,
-          expiresIn: 150 * 60
+          expiresIn: 1500 * 60
         });
       })
       .catch(err => {
@@ -271,7 +271,7 @@ exports.facebookLogin = (req, res, next) => {
       return res.json({
         user: newUser,
         token,
-        expiresIn: 150 * 60
+        expiresIn: 1500 * 60
       });
     }
   )(req, res, next);

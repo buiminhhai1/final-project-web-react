@@ -177,7 +177,7 @@ class userProfile extends Component {
                 teacher.contract.map(contract => <p>Contract</p>)}
             </div>
           </Container>
-          {this.props.user.userId !== this.state.teacherId && (
+          {this.props.user && this.props.user.userId !== this.state.teacherId && (
             <FloatButtons
               setChatVisible={() =>
                 this.setState({

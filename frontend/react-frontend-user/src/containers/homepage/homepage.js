@@ -5,6 +5,7 @@ import { Tabs } from 'antd';
 import { Container } from 'react-bootstrap';
 
 import TeacherInfoCard from '../../components/TeacherInfoCard/TeacherInfoCard';
+import Filter from '../filter/filter';
 import { getTeachers } from '../../store/actions/teaching';
 import './homepage.css';
 
@@ -51,7 +52,8 @@ class homepage extends Component {
       pages.push(page);
     }
     return (
-      <div className="container">
+      <Container className="teacher-list">
+        <Filter />
         <Tabs tabPosition="bottom">
           {pages.map((page, index) => {
             return (
@@ -77,7 +79,7 @@ class homepage extends Component {
             );
           })}
         </Tabs>
-      </div>
+      </Container>
     );
   }
 }

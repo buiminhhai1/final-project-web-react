@@ -2,9 +2,34 @@
     margin-top: 50px !important;
 }
 
+body {
+    background-color: #F2F2F2;
+}
+
 /*==================== 
 	Footer 
 ====================== */
+html,
+body,
+#root {
+    height: 100% !important;
+}
+
+body,
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh !important;
+}
+
+main {
+    flex: 1 0 auto;
+    flex-grow: 1;
+}
+
+.footer-1 {
+    flex-shrink: 0;
+}
 
 /* Main Footer */
 footer .main-footer {
