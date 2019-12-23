@@ -2,8 +2,8 @@ const Base64 = require('js-base64').Base64;
 
 const axios = require('axios');
 
-var profile_name = Math.random().toString(36).substring(7);
-const sender_batch_id = () => Math.random().toString(36).substring(7);
+const profile_name =() => Math.random().toString(36).substring(10);
+const sender_batch_id = () => Math.random().toString(36).substring(10);
 const paypalClient = {
     id: 'AUV2xMuQXiRmF0mlpab5xwqKogt6bbK4nQqT9D1EJSETXJpo6OG2L1igLWsPn2jhWBwVnR-4LUzCFLit',
     secret: 'EK5z3wCPsxuyAf3mcDQkJe9R9w7McC8vGcvJ5CSnAkIclXJX0TH68LpOE-j0q9-IlWLBvjGaou7gTDMP'
@@ -18,7 +18,7 @@ const PAYPAL_CHECKOUT_API = 'https://api.sandbox.paypal.com/v1/payments/payouts'
 const basicAuth = Base64.encode(`${paypalClient.id}:${paypalClient.secret}`);
 
 var create_web_profile_json = () => ({
-    "name": profile_name,
+    "name": profile_name(),
     "presentation": {
         "brand_name": "Tutor Recommendation APP",
         "locale_code": "VN"
@@ -73,46 +73,51 @@ const execute_payment_json = (payer_id, price) => ({
 });
 
 
-const paypalTransferMoney = async () => {
-    const auth = await axios({
-        url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
-        method: 'post',
-        headers: {
-            'Content-Type': `application/x-www-form-urlencoded`,
-            Authorization: `Basic ${basicAuth}`
-        },
-        data: `grant_type=client_credentials`
-    });
-    
-    const details = await axios({
-        method: 'post',
-        url: PAYPAL_CHECKOUT_API,
-        data: {
-            "sender_batch_header": {
-                "sender_batch_id": sender_batch_id(),
-                "email_subject": "Withdraw",
-                "email_message": "You have received a withdraw! Thanks for using our service!"
+const paypalTransferMoney = async (email,amount) => {
+    try{
+        const auth = await axios({
+            url: PAYPAL_OAUTH_API,
+            method: 'post',
+            headers: {
+                'Content-Type': `application/x-www-form-urlencoded`,
+                Authorization: `Basic ${basicAuth}`
             },
-            "items": [
-                {
-                    "recipient_type": "EMAIL",
-                    "amount": {
-                        "value": "30",
-                        "currency": "USD"
+            data: `grant_type=client_credentials`
+        });
+        if(auth){
+            const details = await axios({
+                method: 'post',
+                url: PAYPAL_CHECKOUT_API,
+                data: {
+                    "sender_batch_header": {
+                        "sender_batch_id": sender_batch_id(),
+                        "email_subject": "Withdraw",
+                        "email_message": "You have received some money through paypal! Thanks for using our service!"
                     },
-                    "receiver": "receiver@gmail.com"
-
+                    "items": [
+                        {
+                            "recipient_type": "EMAIL",
+                            "amount": {
+                                "value": amount,
+                                "currency": "USD"
+                            },
+                            "receiver": email
+        
+                        }
+                    ]
+                },
+                headers: {
+                    Accept: `application/json`,
+                    Authorization: `Bearer ${auth.data.access_token}`
                 }
-            ]
-        },
-        headers: {
-            Accept: `application/json`,
-            Authorization: `Bearer ${auth.data.access_token}`
-        }
-    },
-    );
-    return details;
-
+            },
+            );
+            return details;
+        }else return {status:400};
+        
+    }catch(error){
+        return {status:400};
+    }
 
 }
 

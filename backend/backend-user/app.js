@@ -9,13 +9,17 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 const chatRouter = require('./components/chat/router/chatRouter');
 const transactionRouter = require('./components/transactions/router/transactionRouter');
+const contractRouter = require('./components/contract/router/contractRouter');
+const paymentRouter = require('./components/payments/router/paymentRouter');
 
 
 const app = express();
 var mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.json({
+  limit: '10mb'
+}));
+app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
   extended: true
 }));
 const formData = require('express-form-data');
@@ -26,12 +30,16 @@ app.use(passport.initialize());
 require('./components/utils/authentication/passport');
 
 var uri = dbInfo.CONNECTION_STRING;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log('database connected');
 });
+
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
   cloud_name: 'dc4rxxjyt',
@@ -56,9 +64,11 @@ app.use('/', indexRouter);
 app.use('/chat', chatRouter);
 app.use('/users', usersRouter);
 app.use('/transaction', transactionRouter);
-app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
-  res.send({ 'info': req.user.user });
-})
+app.use('/contract', contractRouter);
+app.use('/payment', paymentRouter);
+
+
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

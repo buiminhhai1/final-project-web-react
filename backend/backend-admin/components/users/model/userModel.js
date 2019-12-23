@@ -42,22 +42,6 @@ const userSchema = mongoose.Schema({
       type: String
     }
   },
-  location: {
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: false
-    },
-    city: {
-      type: String,
-      require: false
-    },
-    district: [{
-      name: {
-        type: String,
-        require: false
-      }
-    }]
-  },
   experience: {
     introduction: {
       title: {

@@ -6,12 +6,11 @@ const transactionController = require('../controller/transactionController');
 router.get('/payment', transactionController.checkout);
 router.get('/payment/cancel', transactionController.cancelCheckout);
 router.get('/payment/success',transactionController.successCheckout);
-router.get('/payment', transactionController.checkout);
 
-// router.post('/withdraw', transactionController.withdraw);
+router.post('/withdraw', transactionController.withdraw);
 
-// router.post('/transfer', transactionController.withdraw);
-
+router.post('/transfer', transactionController.transfer);
+router.post('/checkBalance',transactionController.checkBalance);
 
 
 module.exports = router;

@@ -27,6 +27,12 @@ const transactionSchema = mongoose.Schema({
                 type: String,
                 require: true
             }
+        },
+        transfer:{
+            contractId: {
+                type: mongoose.Schema.Types.ObjectId,
+                require: true
+            }
         }
     },
     amount: {
