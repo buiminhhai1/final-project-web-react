@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const SubContractModel = require('./subContractModel');
 
 const userSchema = mongoose.Schema({
   method: {
@@ -117,52 +118,7 @@ const userSchema = mongoose.Schema({
       require: false
     }
   },
-  contracts: [{
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: false
-    },
-    studentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: false
-    },
-    emailStudent: {
-      type: String,
-      require: false
-    },
-    nameStudent: {
-      type: String,
-      require: false
-    },
-    from: {
-      type: String,
-      require: false
-    },
-    to: {
-      type: String,
-      require: false
-    },
-    hourRate: {
-      type: String,
-      require: false
-    },
-    totalHourCommit: {
-      type: String,
-      require: false
-    },
-    review: {
-      type: String,
-      require: false
-    },
-    status: {
-      type: Number,
-      require: false
-    },
-    score: {
-      type: Number,
-      require: false
-    }
-  }],
+  contracts: [SubContractModel],
   totalScore: {
     type: Number,
     require: false

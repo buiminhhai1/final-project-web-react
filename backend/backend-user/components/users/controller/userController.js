@@ -1,19 +1,19 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const passport = require("passport");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
-const UserModel = require("../model/userModel");
-const constant = require("../../utils/const/constant");
+const UserModel = require('../model/userModel');
+const constant = require('../../utils/const/constant');
 
 // Use for google login
-const google = require("googleapis").google;
+const google = require('googleapis').google;
 const OAuth2 = google.auth.OAuth2;
 const oauth2Client = new OAuth2();
 
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require('cloudinary').v2;
 const {
   sendEmail
-} = require("../../utils/email/sendEmail");
+} = require('../../utils/email/sendEmail');
 
 exports.register = async (req, res) => {
   const {
@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
   } = req.body;
   if (email.length === 0 || password.length === 0) {
     return res.json({
-      message: "Username or password must not null :))"
+      message: 'Username or password must not null :))'
     });
   }
 
@@ -46,10 +46,9 @@ exports.register = async (req, res) => {
           },
           email,
           name,
-          imageUrl: "https://icon-library.net/images/bot-icon/bot-icon-18.jpg",
-          method: "local",
-          isTeacher: false,
-          verify: true,
+          imageUrl: 'https://icon-library.net/images/bot-icon/bot-icon-18.jpg',
+          method: 'local',
+          isTeacher: false
         });
         const result = await newUser.save();
         if (!!result) {
@@ -59,8 +58,8 @@ exports.register = async (req, res) => {
           } = getTokenAndUser(result);
           const message = {
             to: email,
-            subject: "Verify account",
-            html: `<h2>Click a link below to verify your email</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/logout&failureRedirectUrl=http://localhost:3000/">Verify Email</a>`
+            subject: 'Verify account',
+            html: `<h2>Click a link below to verify your email</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;' href='http://localhost:4000/users/verify?id=${result._id}&successRedirectUrl=http://localhost:3000/logout&failureRedirectUrl=http://localhost:3000/'>Verify Email</a>`
           };
           sendEmail(message);
           return res.json({
@@ -73,14 +72,14 @@ exports.register = async (req, res) => {
     });
   } catch (err) {
     return res.json({
-      message: "something went wrong!"
+      message: 'something went wrong!'
     });
   }
 };
 
 exports.login = (req, res, next) => {
   passport.authenticate(
-    "local", {
+    'local', {
       session: false
     },
     async (err, user, message) => {
@@ -111,13 +110,13 @@ exports.googleLogin = (req, res, next) => {
 
   const oauth2 = google.oauth2({
     auth: oauth2Client,
-    version: "v2"
+    version: 'v2'
   });
 
   oauth2.userinfo.get(async function (err, response) {
     if (err) {
       return res.json({
-        message: "The access token is not correct"
+        message: 'The access token is not correct'
       });
     } else {
       // If success
@@ -149,7 +148,7 @@ registerForGoogleAccount = async user => {
       locale: string
   }*/
   const findUser = await UserModel.findOne({
-    "google.id": user.id
+    'google.id': user.id
   });
   if (!!findUser) {
     return findUser;
@@ -162,7 +161,7 @@ registerForGoogleAccount = async user => {
       email: user.email,
       name: user.name,
       imageUrl: user.picture,
-      method: "google",
+      method: 'google',
       isTeacher: false,
       verify: true
     });
@@ -177,7 +176,7 @@ registerForGoogleAccount = async user => {
 
 getTokenAndUser = user => {
   const token = jwt.sign(user.toJSON(), constant.JWT_SECRET, {
-    expiresIn: "150m"
+    expiresIn: '1500m'
   });
 
   let newUser = {
@@ -219,13 +218,13 @@ exports.getUser = async (req, res, next) => {
       });
     } else {
       return res.json({
-        message: "something wrong"
+        message: 'something wrong'
       });
     }
   } catch (error) {
     console.log(error);
     res.json({
-      message: "something wrong"
+      message: 'something wrong'
     });
   }
 };
@@ -256,7 +255,7 @@ exports.updateUser = async (req, res, next) => {
       })
       .catch(err => {
         return res.json({
-          message: "Something wrong happened"
+          message: 'Something wrong happened'
         });
       });
   }
@@ -267,7 +266,7 @@ exports.updateTeacher = async (req, res, next) => {
     user
   } = req.user;
   if (!!user) {
-    console.log("Body: ", req.body);
+    console.log('Body: ', req.body);
     user.isTeacher = true;
     user.experience.introduction.description = req.body.submitDescription;
     user.experience.level = req.body.submitLevel;
@@ -296,17 +295,17 @@ exports.updateTeacher = async (req, res, next) => {
       })
       .catch(err => {
         return res.json({
-          message: "Something wrong happened"
+          message: 'Something wrong happened'
         });
       });
   } else res.status(400).json({
-    message: "Something wrong happened"
+    message: 'Something wrong happened'
   });
 };
 
 exports.facebookLogin = (req, res, next) => {
   passport.authenticate(
-    "facebook", {
+    'facebook', {
       session: false
     },
     (err, user, message) => {
@@ -344,17 +343,17 @@ exports.uploadImage = (req, res, next) => {
         user.save().then(user => {
           if (!!user) res.json(user);
           else res.json({
-            message: "cannot update image"
+            message: 'cannot update image'
           });
         });
       } else {
         res.json({
-          message: "cannot update"
+          message: 'cannot update'
         });
       }
     } catch (error) {
       res.json({
-        message: "cannot update"
+        message: 'cannot update'
       });
     }
   });
@@ -408,33 +407,33 @@ exports.changePassword = async (req, res, next) => {
                   if (!!user) {
                     res.json({
                       result: true,
-                      message: "change password success"
+                      message: 'change password success'
                     });
                   } else
                     res.json({
                       result: false,
-                      message: "cannot change password"
+                      message: 'cannot change password'
                     });
                 });
               } else
                 res.json({
                   result: false,
-                  message: "cannot change password"
+                  message: 'cannot change password'
                 });
             });
           } else res.json({
             result: false,
-            message: "cannot change password"
+            message: 'cannot change password'
           });
         }
       );
     } else res.json({
       result: false,
-      message: "cannot change password"
+      message: 'cannot change password'
     });
   } catch (err) {
     res.json({
-      message: "cannot change password"
+      message: 'cannot change password'
     });
   }
 };
@@ -458,26 +457,26 @@ exports.resetPassword = async (req, res, next) => {
             if (!!user) {
               res.json({
                 result: true,
-                message: "Reset password success"
+                message: 'Reset password success'
               });
             } else res.json({
               result: false,
-              message: "Reset password error"
+              message: 'Reset password error'
             });
           });
         } else res.json({
           result: false,
-          message: "Reset password error"
+          message: 'Reset password error'
         });
       });
     } else res.json({
       result: false,
-      message: "Reset password error"
+      message: 'Reset password error'
     });
   } catch (error) {
     res.json({
       result: false,
-      message: "Reset password error"
+      message: 'Reset password error'
     });
   }
 };
@@ -495,22 +494,22 @@ exports.sendEmailResetPassword = async (req, res, next) => {
     if (!!user) {
       const message = {
         to: email,
-        subject: "Reset password",
-        html: `<h2>Click a link below to reset your password</h2><a style="background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;" href="http://localhost:3000/resetpassword?id=${user._id}">Reset password</a>`
+        subject: 'Reset password',
+        html: `<h2>Click a link below to reset your password</h2><a style='background-color:green;color:white;font-size:50px;text-decoration: none;padding:0px 50px;' href='http://localhost:3000/resetpassword?id=${user._id}'>Reset password</a>`
       };
       sendEmail(message);
       res.json({
         result: true,
-        message: "send email success"
+        message: 'send email success'
       });
     } else res.json({
       result: false,
-      message: "send email error"
+      message: 'send email error'
     });
   } catch (error) {
     res.json({
       result: false,
-      message: "send email error"
+      message: 'send email error'
     });
   }
 };
