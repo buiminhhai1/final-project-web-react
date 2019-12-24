@@ -1,28 +1,34 @@
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
-const sgTransport = require('nodemailer-sendgrid-transport');
 
-const sgMail = require('@sendgrid/mail');
+const UserSchema = require('../model/userModel');
 
-const SENDGRID_API_KEY = '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'
-sgMail.setApiKey(SENDGRID_API_KEY);
-
-
-const options = {
-  auth: {
-    api_key: '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'
+const config = {
+  mailserver: {
+    host: 'smtp.sendgrid.net',
+    port: 465,
+    secure: false,
+    auth: {
+      user: 'apikey',
+      pass: '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'
+    }
+  },
+  mail: {
+    from: 'ngovietduc20088@gmail.com',
+    to: 'ngovietduc20@gmail.com',
+    subject: 'Hello',
+    text: 'Testing Nodemailer'
   }
 };
 
-const client = nodemailer.createTransport(sgTransport(options));
-
-// const sgMail = require('@sendgrid/mail');
-// const {
-//   sendEmail
-// } = require('../../utils/email/sendEmail');
-const UserSchema = require('../model/userModel');
-
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sendMail = async ({
+  mailserver,
+  mail
+}) => {
+  const transporter = nodemailer.createTransport(mailserver);
+  const info = await transporter.sendMail(mail);
+  console.log(`Preview: ${nodemailer.getTestMessageUrl(info)}`);
+};
 
 const typeGet = {
   teacher: 1,
@@ -112,15 +118,8 @@ exports.blockingUser = async (req, res, next) => {
     if (user) {
       user.isBlocking = block;
       await user.save();
-      const msg = {
-        to: 'ngovietduc20088@gmail.com',
-        from: 'ngovietduc20088@gmail.com',
-        subject: 'Sending with Twilio SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-      };
-      await sgMail.send(msg);
       // await sgMail.send(msg);
+      sendMail(config).catch(console.error);
       return res.json({
         user,
         message: `user ${user.local.email} has blocked!`
