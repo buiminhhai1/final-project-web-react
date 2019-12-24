@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
-import { getListSkillFail } from './skill';
 
 export const getListUserStart = () => ({
   type: actionTypes.GET_LIST_USER_START
@@ -25,11 +24,11 @@ export const getListUser = type => dispatch => {
       if (res.data.users) {
         dispatch(getListUserSuccess(res.data.users));
       } else {
-        dispatch(getListSkillFail(`something went wrong`));
+        dispatch(getListUserFail(`something went wrong`));
       }
     })
     .catch(err => {
-      dispatch(getListSkillFail(err));
+      dispatch(getListUserFail(err));
     });
 };
 
@@ -37,9 +36,10 @@ export const updateUserStart = () => ({
   type: actionTypes.UPDATE_USER_START
 });
 
-export const updateUserSuccess = user => ({
+export const updateUserSuccess = (user, message) => ({
   type: actionTypes.UPDATE_USER_SUCCESS,
-  user
+  user,
+  message
 });
 
 export const updateUserFail = error => ({
@@ -61,10 +61,12 @@ export const updateUser = (_id, block, content) => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   axios
-    .put(url, data, { headers })
+    .put(url, data, {
+      headers
+    })
     .then(res => {
       if (res.data.user) {
-        dispatch(updateUserSuccess(res.data.user));
+        dispatch(updateUserSuccess(res.data.user, res.data.message));
       } else {
         dispatch(updateUserFail(`cannot blocking this user`));
       }
@@ -72,4 +74,12 @@ export const updateUser = (_id, block, content) => dispatch => {
     .catch(() => {
       dispatch(updateUserFail(`something went wrong!`));
     });
+};
+
+export const refreshMessage = () => ({
+  type: actionTypes.REFRESH_MESSAGE_CRUD
+});
+
+export const refreshMessageUUser = () => dispatch => {
+  dispatch(refreshMessage());
 };

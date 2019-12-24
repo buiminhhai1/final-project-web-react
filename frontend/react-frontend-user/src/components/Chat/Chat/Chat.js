@@ -13,9 +13,6 @@ import {
   TextInput,
   Message,
   MessageText,
-  TitleBar,
-  IconButton,
-  CloseIcon,
   MessageList,
   MessageGroup
 } from '@livechat/ui-kit';
@@ -67,15 +64,15 @@ const Chat = props => {
         alert(error);
       }
     });
-  },[props]);
+  }, [props]);
 
   useEffect(() => {
-    socket.on('message', ({ user, group, message }) => {
-      if (currentGroup) {
+    socket.on('message', ({ user, group, message, time }) => {
+      if (currentGroup._id === group) {
         currentGroup.lastMessage.message.message = message;
+        setMessages([...messages, { idUser: user, message, time }]);
       }
-      if (currentGroup._id === group)
-        setMessages([...messages, { idUser: user, message }]);
+
     });
 
     socket.on('groupData', groupList => {
@@ -84,8 +81,6 @@ const Chat = props => {
         socket.emit('joinToGroup', { idGroup: data.group._id });
         setCurrentGroup(data.group);
         setGroupName(data.user.name);
-        // let toUser = data.group.groupInfo.idUser1;
-        // if (toUser === props.user.userId) toUser = data.group.groupInfo.idUser2;
         setToUser(data.user);
       }
       setGroupList(groupList);
@@ -99,21 +94,42 @@ const Chat = props => {
       socket.emit('disconnect');
       socket.off();
     }
-  }, [messages,currentGroup])
+  }, [messages, currentGroup])
 
   const sendMessage = message => {
-    if (message) {
-      setMessages([...messages, { idUser: user.userId, message: message }]);
+    if (currentGroup._id) {
+      setMessages([...messages, { idUser: user.userId, time: Date.now(), message: message }]);
       socket.emit(
         'sendMessage',
         { toIdUser: toUser._id, idGroup: currentGroup._id, message },
         () => setMessage('')
       );
-    }
-    if (currentGroup) {
       currentGroup.lastMessage.message.message = message;
     }
   };
+
+  function dateFormat(getDate) {
+    const date = new Date(getDate);
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    if (month.toString().length === 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length === 1) {
+      day = '0' + day;
+    }
+    if (hour.toString().length === 1) {
+      hour = '0' + hour;
+    }
+    if (minute.toString().length === 1) {
+      minute = '0' + minute;
+    }
+    const dateTime = month + '/' + day + ' ' + hour + ':' + minute;
+    return dateTime;
+  }
+
 
   return (
     <div className="outerContainer">
@@ -135,14 +151,6 @@ const Chat = props => {
       </div>
       <div className="mchat-container">
         <ThemeProvider theme={themes}>
-          <TitleBar
-            title={groupName}
-            rightIcons={[
-              <IconButton key="close">
-                <CloseIcon />
-              </IconButton>
-            ]}
-          />
           <div style={{ height: 450, padding: 0, margin: 0 }}>
             <MessageList>
               {messages.map((message, i) => (
@@ -151,10 +159,11 @@ const Chat = props => {
                   avatar={message.idUser === user.userId ? '' : toUser.imageUrl}
                 >
                   <Message
+
+                    date={dateFormat(message.time)}
                     authorName={
-                      message.idUser === user.userId ? user.name : toUser.name
+                      message.idUser === user.userId ? '' : toUser.name
                     }
-                    date={message.time}
                     isOwn={message.idUser === user.userId}
                   >
                     <MessageText>{message.message}</MessageText>
@@ -168,7 +177,7 @@ const Chat = props => {
             value = message;
           }}>
             <Row align="center">
-              <TextInput  />
+              <TextInput />
               <SendButton fit />
             </Row>
           </TextComposer>

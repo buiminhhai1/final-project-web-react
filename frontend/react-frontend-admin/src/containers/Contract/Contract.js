@@ -7,10 +7,8 @@ import {
   Icon,
   Tag,
   Avatar,
-  Modal,
   Input,
   Popover,
-  message,
   Col,
   Row,
   Button
@@ -21,34 +19,17 @@ import * as actions from '../../store/actions/index';
 import './HomePage.css';
 
 const { Text } = Typography;
-const { Search, TextArea } = Input;
-const TypeDefine = {
-  All: 0,
-  Teacher: 1,
-  Student: 2,
-  TeacherNonBlock: 3,
-  StudentNonBlock: 4,
-  TeacherBlock: 5,
-  StudentBlock: 6
-};
+const { Search } = Input;
 
-class HomePage extends Component {
+class Contract extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPath: '',
-      _id: '',
-      block: '',
-      title: '',
-      content: '',
-      modalName: '',
-
-      confirmName: 'Delete skill',
-      userColumns: [
+      contractColumns: [
         {
-          title: 'Employee',
-          dataIndex: 'employee',
-          key: 'employee',
+          title: 'Teacher Detail',
+          dataIndex: 'teacher',
+          key: 'teacher',
           render: (text, record) => {
             return (
               <div>
@@ -171,82 +152,38 @@ class HomePage extends Component {
             );
           }
         }
-      ],
-      visible: false,
-      visibleConfirm: false,
-      confirmLoading: false
+      ]
     };
   }
 
   componentDidMount() {
-    switch (this.props.location.pathname + '') {
-      case '/':
-        this.props.onGetListUser(TypeDefine.All);
-        break;
-      case '/students':
-        this.props.onGetListUser(TypeDefine.Student);
-        break;
-      case '/teachers':
-        this.props.onGetListUser(TypeDefine.Teacher);
-        break;
-      default:
-        this.props.onGetListUser(TypeDefine.All);
-        break;
-    }
+    this.props.onGetListContract();
+    // switch (this.props.location.pathname + '') {
+    //   case '/':
+    //     this.props.onGetListUser(TypeDefine.All);
+    //     break;
+    //   case '/students':
+    //     this.props.onGetListUser(TypeDefine.Student);
+    //     break;
+    //   case '/teachers':
+    //     this.props.onGetListUser(TypeDefine.Teacher);
+    //     break;
+    //   default:
+    //     this.props.onGetListUser(TypeDefine.All);
+    //     break;
+    // }
   }
 
   componentDidUpdate() {
-    this.props.onRefreshMessage();
-    if (this.props.error) {
-      this.render.actionMessage = message.error(this.props.message);
-    } else if (this.props.message) {
-      this.render.actionMessage = message.success(this.props.message);
-    }
+    // this.props.onRefreshMessage();
+    // if (this.props.error) {
+    //   this.render.actionMessage = message.error(this.props.message);
+    // } else if (this.props.message) {
+    //   this.render.actionMessage = message.success(this.props.message);
+    // }
   }
 
-  showBlockingModal = () => {
-    this.setState({
-      visible: true,
-      content: ''
-    });
-  };
-
-  handleDeleteForm = async () => {
-    const { _id } = this.state;
-    await this.props.onDeleteSkill(_id);
-    this.setState({
-      visibleConfirm: false,
-      confirmLoading: false
-    });
-  };
-
-  handleBlocking = async () => {
-    await this.props.onBlockingUser(
-      this.state._id,
-      !this.state.block,
-      this.state.content
-    );
-    this.setState({
-      content: '',
-      visible: false
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      visibleConfirm: false
-    });
-  };
-
-  onChangeContent = ({ target: { value } }) => {
-    this.setState({ content: value });
-  };
-
   render() {
-    const { visible } = this.state;
-    const actionMessage = null;
-
     return (
       <div>
         <Row style={{ margin: '10px 0 20px 0' }}>
@@ -271,43 +208,6 @@ class HomePage extends Component {
                 size="middle"
               />
             }
-            {actionMessage}
-            {this.props.userData ? (
-              <div>
-                <Modal
-                  visible={visible}
-                  title="ARE SURE BLOCKING THIS USER ???"
-                  onOk={this.handleBlocking}
-                  onCancel={this.handleCancel}
-                  confirmLoading={this.props.loading}
-                  footer={[
-                    <Button key="back" onClick={this.handleCancel}>
-                      Return
-                    </Button>,
-                    <Button
-                      key="Block"
-                      type={!this.state.block ? 'danger' : 'primary'}
-                      onClick={this.handleBlocking}
-                      disabled={!this.state.content}
-                    >
-                      {!this.state.block ? 'Block' : 'Unblock'}
-                    </Button>
-                  ]}
-                >
-                  <div>
-                    <Text style={{ marginBottom: '10px' }}>
-                      Reason <span style={{ color: 'red' }}>*</span>
-                    </Text>
-                    <TextArea
-                      rows={4}
-                      value={this.state.content}
-                      onChange={this.onChangeContent}
-                      placeholder="Reason"
-                    />
-                  </div>
-                </Modal>
-              </div>
-            ) : null}
           </div>
         </Spin>
       </div>
@@ -316,17 +216,14 @@ class HomePage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.user.loading,
-  userData: state.user.userData,
-  error: state.user.error,
-  message: state.user.message
+  loading: state.contract.loading,
+  contractData: state.contract.contractData,
+  error: state.contract.error,
+  message: state.contract.message
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetListUser: type => dispatch(actions.getListUser(type)),
-  onBlockingUser: (_id, block, content) =>
-    dispatch(actions.updateUser(_id, block, content)),
-  onRefreshMessage: () => dispatch(actions.refreshMessageUUser())
+  onGetListContract: () => dispatch(actions.getListContract())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(Contract);
