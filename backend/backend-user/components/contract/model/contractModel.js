@@ -1,29 +1,10 @@
 const mongoose = require('mongoose');
+const SubUserModel = require('./subUserModel');
 
-const contractModel = mongoose.Schema({
+const contractModel = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  student: {
-    _id: mongoose.Schema.Types.ObjectId,
-    name: {
-      type: String,
-      require: true
-    },
-    email: {
-      type: String,
-      require: true
-    }
-  },
-  teacher: {
-    _id: mongoose.Schema.Types.ObjectId,
-    name: {
-      type: String,
-      require: true
-    },
-    email: {
-      type: String,
-      require: true
-    }
-  },
+  student: SubUserModel,
+  teacher: SubUserModel,
   hourRate: {
     type: Number,
     require: true
