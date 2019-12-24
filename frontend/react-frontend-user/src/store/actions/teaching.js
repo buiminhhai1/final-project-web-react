@@ -270,13 +270,13 @@ export function sendFirstMessage(token, data) {
     const chatUrl = apiUrl + '/chat/groups';
 
     axios({
-      method: 'post',
-      url: chatUrl,
-      headers: {
-        Authorization: token
-      },
-      data
-    })
+        method: 'post',
+        url: chatUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
       .then(res => {
         console.log(res.data);
         if (res.data.result) {
@@ -313,17 +313,17 @@ export const createContractFail = error => {
 export function createContract(token, data) {
   return dispatch => {
     dispatch(createContractPending());
-    const chatUrl = apiUrl + '/createContract';
+    const chatUrl = apiUrl + '/contract/createContract';
     console.log(data);
-    
+
     axios({
-      method: 'post',
-      url: chatUrl,
-      headers: {
-        Authorization: token
-      },
-      data
-    })
+        method: 'post',
+        url: chatUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
       .then(res => {
         console.log(res.data);
         if (res.data.result) {
@@ -362,15 +362,15 @@ export function sendRating(token, data) {
     dispatch(sendRatingPending());
     const ratingUrl = apiUrl + '/sendRating';
     console.log(data);
-    
+
     axios({
-      method: 'post',
-      url: ratingUrl,
-      headers: {
-        Authorization: token
-      },
-      data
-    })
+        method: 'post',
+        url: ratingUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
       .then(res => {
         console.log(res.data);
         if (res.data.result) {
@@ -409,15 +409,15 @@ export function sendComplain(token, data) {
     dispatch(sendComplainPending());
     const complainUrl = apiUrl + '/sendComplain';
     console.log(data);
-    
+
     axios({
-      method: 'post',
-      url: complainUrl,
-      headers: {
-        Authorization: token
-      },
-      data
-    })
+        method: 'post',
+        url: complainUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
       .then(res => {
         console.log(res.data);
         if (res.data.result) {
@@ -456,15 +456,15 @@ export function withdrawMoney(token, data) {
     dispatch(withdrawMoneyPending());
     const withdrawUrl = apiUrl + '/withdrawMoney';
     console.log(data);
-    
+
     axios({
-      method: 'post',
-      url: withdrawUrl,
-      headers: {
-        Authorization: token
-      },
-      data
-    })
+        method: 'post',
+        url: withdrawUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
       .then(res => {
         console.log(res.data);
         if (res.data.result) {

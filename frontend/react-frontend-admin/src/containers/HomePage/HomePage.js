@@ -21,7 +21,7 @@ import * as actions from '../../store/actions/index';
 import './HomePage.css';
 
 const { Text } = Typography;
-const { Search } = Input;
+const { Search, TextArea } = Input;
 const TypeDefine = {
   All: 0,
   Teacher: 1,
@@ -38,8 +38,11 @@ class HomePage extends Component {
     this.state = {
       currentPath: '',
       _id: '',
+      block: '',
       title: '',
+      content: '',
       modalName: '',
+
       confirmName: 'Delete skill',
       userColumns: [
         {
@@ -122,12 +125,33 @@ class HomePage extends Component {
           dataIndex: 'action',
           key: 'action',
           render: (text, record) => {
-            const btnBlock = record.isBlocking ? (
-              <Button type="danger">Block</Button>
-            ) : null;
-            const btnUnBlock = !record.isBlocking ? (
-              <Button type="primary">Unblock</Button>
-            ) : null;
+            const btnBlock = !record.isBlocking ? (
+              <Button
+                type="danger"
+                onClick={() => {
+                  this.setState({
+                    visible: true,
+                    _id: record._id,
+                    block: record.isBlocking
+                  });
+                }}
+              >
+                Block
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => {
+                  this.setState({
+                    visible: true,
+                    _id: record._id,
+                    block: record.isBlocking
+                  });
+                }}
+              >
+                Unblock
+              </Button>
+            );
             return (
               <div>
                 <NavLink
@@ -142,7 +166,6 @@ class HomePage extends Component {
                     Detail
                   </Button>
                 </NavLink>
-                {btnUnBlock}
                 {btnBlock}
               </div>
             );
@@ -172,18 +195,13 @@ class HomePage extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.props.userData.length > 0) {
-      // console.log('user data');
-      // console.log(this.props.userData);
-    }
-    // this.props.onRefreshMessage();
-    // if (this.props.error) {
-    //   this.render.actionMessage = message.error(this.props.message);
-    // } else if (this.props.message) {
-    //   this.render.actionMessage = message.success(this.props.message);
-    // }
-  }
+  componentDidUpdate() {}
+
+  showBlockingModal = () => {
+    this.setState({
+      visible: true
+    });
+  };
 
   handleDeleteForm = async () => {
     const { _id } = this.state;
@@ -194,24 +212,12 @@ class HomePage extends Component {
     });
   };
 
-  handleSubmitUpdateForm = async () => {
-    // this.setState({
-    //   confirmLoading: true
-    // });
-    // const { _id, title } = this.state;
-    // if (_id) {
-    //   await this.props.onUpdateSkill(_id, title);
-    //   this.setState({
-    //     visible: false,
-    //     confirmLoading: false
-    //   });
-    // } else {
-    //   await this.props.onCreateSkill(title);
-    //   this.setState({
-    //     visible: false,
-    //     confirmLoading: false
-    //   });
-    // }
+  handleBlocking = () => {
+    this.props.onBlockingUser(
+      this.state._id,
+      !this.state.block,
+      this.state.content
+    );
   };
 
   handleCancel = () => {
@@ -221,21 +227,12 @@ class HomePage extends Component {
     });
   };
 
-  onTitleChange = ({ target: { value } }) => {
-    this.setState({ title: value });
-  };
-
-  addNewSkill = async () => {
-    // this.setState({
-    //   visible: true,
-    //   _id: '',
-    //   title: '',
-    //   modalName: 'Add skill'
-    // });
+  onChangeContent = ({ target: { value } }) => {
+    this.setState({ content: value });
   };
 
   render() {
-    const { visible, confirmLoading, visibleConfirm } = this.state;
+    const { visible } = this.state;
     const actionMessage = null;
 
     return (
@@ -249,11 +246,6 @@ class HomePage extends Component {
               // }}
               enterButton
             />
-          </Col>
-          <Col span={1} offset={16}>
-            <Button type="primary" onClick={this.addNewSkill}>
-              Add
-            </Button>
           </Col>
         </Row>
         <Spin spinning={this.props.loading}>
@@ -271,37 +263,36 @@ class HomePage extends Component {
             {this.props.userData ? (
               <div>
                 <Modal
-                  title={this.state.modalName}
                   visible={visible}
-                  onOk={this.handleSubmitUpdateForm}
-                  confirmLoading={confirmLoading}
+                  title="ARE SURE BLOCKING THIS USER ???"
+                  onOk={this.handleBlocking}
                   onCancel={this.handleCancel}
+                  confirmLoading={this.props.loading}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Return
+                    </Button>,
+                    <Button
+                      key="Block"
+                      type="danger"
+                      onClick={this.handleBlocking}
+                      disabled={!this.state.content}
+                    >
+                      Block
+                    </Button>
+                  ]}
                 >
                   <div>
-                    <div>
-                      Title
-                      <span style={{ color: 'red', marginBottom: '5px' }}>
-                        *
-                      </span>
-                    </div>
-                    <Input
-                      placeholder="Title"
-                      value={this.state.title}
-                      onChange={this.onTitleChange}
+                    <Text style={{ marginBottom: '10px' }}>
+                      Reason <span style={{ color: 'red' }}>*</span>
+                    </Text>
+                    <TextArea
+                      rows={4}
+                      value={this.state.content}
+                      onChange={this.onChangeContent}
+                      placeholder="Reason"
                     />
                   </div>
-                </Modal>
-                <Modal
-                  title={this.state.confirmName}
-                  visible={visibleConfirm}
-                  onOk={this.handleDeleteForm}
-                  confirmLoading={confirmLoading}
-                  onCancel={this.handleCancel}
-                >
-                  <span>
-                    Do you want to delete
-                    {this.state.title}
-                  </span>
                 </Modal>
               </div>
             ) : null}
@@ -320,7 +311,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetListUser: type => dispatch(actions.getListUser(type))
+  onGetListUser: type => dispatch(actions.getListUser(type)),
+  onBlockingUser: (_id, block, content) =>
+    dispatch(actions.updateUser(_id, block, content))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

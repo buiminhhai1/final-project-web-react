@@ -8,7 +8,8 @@ import {
   Popover,
   Statistic,
   Rate,
-  Row
+  Row,
+  Table
 } from 'antd';
 import { Redirect } from 'react-router-dom';
 
@@ -18,7 +19,108 @@ class DetailUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      home: this.props.location.userDetail ? null : <Redirect to="/" />
+      home: this.props.location.userDetail ? null : <Redirect to="/" />,
+      userColumns: [
+        {
+          title: 'Stakeholder info',
+          dataIndex: 'stakeholder',
+          key: 'stakeholder',
+          render: (text, record) => {
+            return (
+              <div key={record._id + 'name'}>
+                <strong>{record.nameUserContract}</strong>
+                <br />
+                <strong>{record.emailUserContract}</strong>
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Time contract',
+          dataIndex: 'timecontract',
+          key: 'timecontract',
+          render: (text, record) => {
+            return (
+              <div key={record._id + 'time'}>
+                from {record.from}
+                <br />
+                to {record.to}
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Hour & price',
+          dataIndex: 'ourRate',
+          key: 'ourRate',
+          render: (text, record) => {
+            return (
+              <div key={record._id + 'price'}>
+                <strong key={record._id + 'price1'}>
+                  {record.totalHourCommit}hrs
+                </strong>
+                <br />
+                <strong key={record._id + 'price2'}>{record.hourRate}$</strong>
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Value',
+          dataIndex: 'valueofcontract',
+          key: 'valueofcontract',
+          render: (text, record) => {
+            return (
+              <div key={record._id + 'value'}>
+                {record.totalHourCommit * record.hourRate} $
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Status',
+          dataIndex: 'status',
+          key: 'status',
+          render: (text, record) => {
+            let color;
+            let mesStatus;
+            switch (record.status) {
+              case 1:
+                color = 'green';
+                mesStatus = 'Successed';
+                break;
+              case 2:
+                color = 'red';
+                mesStatus = 'Failed';
+                break;
+              default:
+                color = 'blue';
+                mesStatus = 'Pending';
+                break;
+            }
+            return (
+              <Tag key={record._id + 'status'} color={color}>
+                {mesStatus}
+              </Tag>
+            );
+          }
+        },
+        {
+          title: 'Rating',
+          dataIndex: 'rating',
+          status: 'rating',
+          render: (text, record) => (
+            <Rate
+              type=""
+              disabled
+              key="ratingkey"
+              allowHalf
+              value={record.score}
+              style={{ fontSize: '15px', marginLeft: '0px' }}
+            />
+          )
+        }
+      ]
     };
   }
 
@@ -36,7 +138,8 @@ class DetailUser extends Component {
       experience,
       isTeacher,
       verify,
-      status
+      status,
+      contracts
     } = this.props.location.userDetail
       ? this.props.location.userDetail
       : {
@@ -46,7 +149,8 @@ class DetailUser extends Component {
           isTeacher: null,
           experience: null,
           verify: null,
-          status: null
+          status: null,
+          contracts: null
         };
     const extraContent = (
       <div
@@ -130,6 +234,16 @@ class DetailUser extends Component {
                   {item.name}
                 </Tag>
               ))}
+              <Divider />
+              <Title level={4}>History Contract</Title>
+              <Table
+                bordered
+                columns={this.state.userColumns}
+                dataSource={contracts}
+                rowKey={record => {
+                  return record._id;
+                }}
+              />
             </div>
           </div>
         ) : null}
@@ -192,6 +306,7 @@ class DetailUser extends Component {
                 <Row key="ratingrow">
                   <Rate
                     type=""
+                    disabled
                     key="ratingkey"
                     allowHalf
                     defaultValue={0}

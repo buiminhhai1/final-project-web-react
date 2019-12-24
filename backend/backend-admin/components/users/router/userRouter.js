@@ -5,6 +5,7 @@ const router = express.Router();
 const userController = require('../controller/userController');
 
 router.get('/get-list-user', userController.getListUser);
+
 router.put('/blocking-user', passport.authenticate('jwt', {
   session: false
 }), userController.blockingUser);

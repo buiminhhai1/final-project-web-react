@@ -4,11 +4,8 @@ const passport = require('passport');
 const router = express.Router();
 const contractController = require('../controller/contractController');
 
-router.post('/createContract', passport.authenticate('jwt', {
+router.get('/get-list-contract', passport.authenticate('jwt', {
   session: false
-}), contractController.createContract);
+}), contractController.getListContract);
 
-router.put('/update-contract', passport.authenticate('jwt', {
-  session: false
-}), contractController.updateContract);
 module.exports = router;
