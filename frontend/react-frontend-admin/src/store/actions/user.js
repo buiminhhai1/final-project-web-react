@@ -1,8 +1,6 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
-import {
-  getListSkillFail
-} from './skill';
+import { getListSkillFail } from './skill';
 
 export const getListUserStart = () => ({
   type: actionTypes.GET_LIST_USER_START
@@ -49,11 +47,12 @@ export const updateUserFail = error => ({
   error
 });
 
-export const updateUser = (_id, blocking) => dispatch => {
+export const updateUser = (_id, block, content) => dispatch => {
   dispatch(updateUserStart());
   const data = {
     _id,
-    blocking
+    block,
+    content
   };
   const url = 'http://localhost:4200/users/blocking-user';
   const authToken = localStorage.getItem('token');
@@ -62,7 +61,7 @@ export const updateUser = (_id, blocking) => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   axios
-    .put(url, data, headers)
+    .put(url, data, { headers })
     .then(res => {
       if (res.data.user) {
         dispatch(updateUserSuccess(res.data.user));

@@ -98,7 +98,7 @@ const userSchema = mongoose.Schema({
         type: String,
         require: false
       }
-    },
+    }
   },
   status: {
     hourRate: {
@@ -125,6 +125,7 @@ const userSchema = mongoose.Schema({
   },
   isBlocking: {
     type: Boolean,
+    default: false,
     require: true
   },
   contact: {

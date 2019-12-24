@@ -4,7 +4,7 @@ const passport = require('passport');
 const router = express.Router();
 const contractController = require('../controller/contractController');
 
-router.post('/contract', passport.authenticate('jwt', {
+router.post('/createContract', passport.authenticate('jwt', {
   session: false
 }), contractController.createContract);
 

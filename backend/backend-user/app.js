@@ -7,10 +7,10 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
-const teachersRouter = require('./components/teachers/routers/routers');
 const chatRouter = require('./components/chat/router/chatRouter');
-const paymentRouter = require('./components/payments/router/paymentRouter');
+const transactionRouter = require('./components/transactions/router/transactionRouter');
 const contractRouter = require('./components/contract/router/contractRouter');
+
 
 const app = express();
 var mongoose = require('mongoose');
@@ -62,9 +62,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/chat', chatRouter);
 app.use('/users', usersRouter);
-app.use('/teachers', teachersRouter);
+app.use('/transaction', transactionRouter);
 app.use('/contract', contractRouter);
-app.use('/payment', paymentRouter);
+
+
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

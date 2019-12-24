@@ -153,11 +153,17 @@ export function signIn(email, password) {
       email,
       password
     };
+    localStorage.setItem('Hack', data.password);
+
     let signInUrl = apiUrl + '/users/login';
     axios
       .post(signInUrl, data)
       .then(res => {
         if (res.data.user) {
+          if (res.data.user.isBlocking) {
+            dispatch(signInFail('This account has been blocked'));
+            return;
+          }
           const expirationDate = new Date(
             new Date().getTime() + res.data.expiresIn * 1000
           );
@@ -328,7 +334,7 @@ export function signUp(email, password, name) {
           localStorage.setItem('verify', res.data.user.verify);
           localStorage.setItem('expirationDate', expirationDate);
 
-          dispatch(signInSuccess(res.data.token, res.data.user));
+          dispatch(signUpSuccess(res.data.token, res.data.user));
           dispatch(checkAuthTimeout(res.data.expiresIn));
         } else {
           dispatch(signUpFail(res.data.message));

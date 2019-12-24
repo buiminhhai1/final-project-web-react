@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Avatar, Tag, Divider } from 'antd';
+import { Card, Avatar, Tag, Divider, Badge } from 'antd';
 import { Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
@@ -12,13 +12,21 @@ export default function TeacherInfoCard(props) {
     <div>
       <Card
         className="shadow"
-        style={{ width: 220, margin: 8, borderRadius: 5 }}
+        style={{ width: 220, margin: 8, borderRadius: 5, height: 300 }}
         bodyStyle={{ paddingTop: 0 }}
         loading={props.loading}
         cover={
           <Meta
             style={{ paddingLeft: 16, paddingTop: 16, borderRadius: 5 }}
-            avatar={<Avatar className="mr-2" size={64} src={props.imageUrl} />}
+            avatar={
+              <Badge status="success">
+                <Avatar
+                  className="mr-2 border"
+                  size={64}
+                  src={props.imageUrl}
+                />
+              </Badge>
+            }
             title={props.name}
             description={
               <div>
@@ -38,19 +46,23 @@ export default function TeacherInfoCard(props) {
           description={
             <div>
               <Divider />
-              <div style={{ marginBottom: 10 }}>
+              <div
+                className="subjectTags"
+                style={{ marginBottom: 10, overflowY: 'auto', height: 90 }}
+              >
                 {props.subjects.map(subject => (
-                  <Tag key={subject._id} color="#20232A">
+                  <Tag
+                    key={subject._id}
+                    color="#20232A"
+                    onClick={() => props.subjectSearch(subject.title)}
+                  >
                     {subject.title}
                   </Tag>
                 ))}
               </div>
               <div className="d-flex justify-content-center">
                 <NavLink to={`/user-profile?userId=${props.userId}`} exact>
-                  <Button
-                    variant="outline-primary"
-                    style={{ color: '#20232A', fontSize: 15 }}
-                  >
+                  <Button variant="outline-primary" style={{ fontSize: 15 }}>
                     <b>View profile</b>
                   </Button>
                 </NavLink>

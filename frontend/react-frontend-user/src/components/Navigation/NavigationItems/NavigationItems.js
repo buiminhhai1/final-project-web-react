@@ -45,6 +45,14 @@ function NavigationItems(props) {
             Teacher Profile
           </NavLink>
         </Menu.Item>
+        {(props.user.isTeacher === 'true' || props.user.isTeacher === true) && (
+          <Menu.Item>
+          <NavLink className="d-flex align-items-center btn-outline-info" to="/contractHistory" >
+          <Icon className="mr-2" type="file-protect" />
+            Contracts
+          </NavLink>
+        </Menu.Item>
+        )}
         <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-danger" to="/logout" >
             <Icon className="mr-2" type="logout" /> Log out
@@ -56,6 +64,9 @@ function NavigationItems(props) {
   return (
     <ul className={classes.NavigationItems} >
       <NavigationItem link="/">HOME</NavigationItem>
+      {props.token ?
+        <NavigationItem link="/chat">CHAT</NavigationItem>
+        : null}
       {props.token ?
         <Dropdown overlay={menu} className="mx-4">
           <Avatar src={props.user.imageUrl} />

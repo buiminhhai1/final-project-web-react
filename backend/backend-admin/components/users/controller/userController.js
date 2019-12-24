@@ -1,5 +1,28 @@
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
+
+const sgMail = require('@sendgrid/mail');
+
+const SENDGRID_API_KEY = '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'
+sgMail.setApiKey(SENDGRID_API_KEY);
+
+
+const options = {
+  auth: {
+    api_key: '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'
+  }
+};
+
+const client = nodemailer.createTransport(sgTransport(options));
+
+// const sgMail = require('@sendgrid/mail');
+// const {
+//   sendEmail
+// } = require('../../utils/email/sendEmail');
 const UserSchema = require('../model/userModel');
+
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const typeGet = {
   teacher: 1,
@@ -79,15 +102,25 @@ exports.getListUser = async (req, res, next) => {
 exports.blockingUser = async (req, res, next) => {
   const {
     _id,
-    blocking
+    block,
+    content
   } = req.body;
   try {
     const user = await UserSchema.findById({
       _id
     });
     if (user) {
-      user.isBlocking = blocking;
+      user.isBlocking = block;
       await user.save();
+      const msg = {
+        to: 'ngovietduc20088@gmail.com',
+        from: 'ngovietduc20088@gmail.com',
+        subject: 'Sending with Twilio SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      };
+      await sgMail.send(msg);
+      // await sgMail.send(msg);
       return res.json({
         user,
         message: `user ${user.local.email} has blocked!`

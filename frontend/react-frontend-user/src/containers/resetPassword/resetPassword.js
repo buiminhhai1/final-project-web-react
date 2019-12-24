@@ -39,7 +39,7 @@ function ResetPassword(props) {
     return <Redirect to={props.redirectPage} />;
 
   return (
-    <div className="ForgotPassword">
+    <div className="ResetPassword">
       <form onSubmit={handleSubmit}>
         {successMessage}
         {errorMessage}

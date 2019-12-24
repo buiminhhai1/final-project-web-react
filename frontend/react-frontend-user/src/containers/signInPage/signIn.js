@@ -112,9 +112,11 @@ function Login(props) {
           cssClass="btn facebook-btn btn-primary btn-block my-2"
         />
         <NavLink className="signUpLink" to="/signUp" exact>
-          Don't have account? Sign up now
+          Don't have account? 
+          <b className="mx-1">Sign up</b>
+          now
         </NavLink>
-        <h6 className="d-flex justify-content-center m-0">
+        <h6 className="d-flex justify-content-center my-1">
           <b>OR</b>
         </h6>
         <NavLink className="signUpLink" to="/forgotPassword" exact>

@@ -194,7 +194,7 @@ export function getTeacher(userId) {
       .then(res => {
         let teacher = res.data.teacher;
         console.log(teacher);
-        
+
         if (teacher) {
           dispatch(getTeacherSuccess(teacher));
         } else dispatch(getTeacherFail(res.data.message));
@@ -241,6 +241,240 @@ export function getLocations() {
       .catch(err => {
         console.log(err);
         dispatch(getLocationsFail(err));
+      });
+  };
+}
+
+export const sendFirstMessagePending = () => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_PENDING
+  };
+};
+
+export const sendFirstMessageSuccess = () => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_SUCCESS
+  };
+};
+
+export const sendFirstMessageFail = error => {
+  return {
+    type: actionTypes.SEND_FIRST_MESSAGE_ERROR,
+    error
+  };
+};
+
+export function sendFirstMessage(token, data) {
+  return dispatch => {
+    dispatch(sendFirstMessagePending());
+    const chatUrl = apiUrl + '/chat/groups';
+
+    axios({
+        method: 'post',
+        url: chatUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(sendFirstMessageSuccess());
+        } else {
+          dispatch(sendFirstMessageFail('You have sent your first messages'));
+        }
+      })
+      .catch(err => {
+        dispatch(sendFirstMessageFail('Something wrong happened'));
+      });
+  };
+}
+
+export const createContractPending = () => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_PENDING
+  };
+};
+
+export const createContractSuccess = () => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_SUCCESS
+  };
+};
+
+export const createContractFail = error => {
+  return {
+    type: actionTypes.CREATE_CONTRACT_ERROR,
+    error
+  };
+};
+
+export function createContract(token, data) {
+  return dispatch => {
+    dispatch(createContractPending());
+    const chatUrl = apiUrl + '/contract/createContract';
+    console.log(data);
+
+    axios({
+        method: 'post',
+        url: chatUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(createContractSuccess());
+        } else {
+          dispatch(createContractFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(createContractFail('Something wrong happened'));
+      });
+  };
+}
+
+export const sendRatingPending = () => {
+  return {
+    type: actionTypes.SEND_RATING_PENDING
+  };
+};
+
+export const sendRatingSuccess = () => {
+  return {
+    type: actionTypes.SEND_RATING_SUCCESS
+  };
+};
+
+export const sendRatingFail = error => {
+  return {
+    type: actionTypes.SEND_RATING_ERROR,
+    error
+  };
+};
+
+export function sendRating(token, data) {
+  return dispatch => {
+    dispatch(sendRatingPending());
+    const ratingUrl = apiUrl + '/sendRating';
+    console.log(data);
+
+    axios({
+        method: 'post',
+        url: ratingUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(sendRatingSuccess());
+        } else {
+          dispatch(sendRatingFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(sendRatingFail('Something wrong happened'));
+      });
+  };
+}
+
+export const sendComplainPending = () => {
+  return {
+    type: actionTypes.SEND_COMPLAIN_PENDING
+  };
+};
+
+export const sendComplainSuccess = () => {
+  return {
+    type: actionTypes.SEND_COMPLAIN_SUCCESS
+  };
+};
+
+export const sendComplainFail = error => {
+  return {
+    type: actionTypes.SEND_COMPLAIN_ERROR,
+    error
+  };
+};
+
+export function sendComplain(token, data) {
+  return dispatch => {
+    dispatch(sendComplainPending());
+    const complainUrl = apiUrl + '/sendComplain';
+    console.log(data);
+
+    axios({
+        method: 'post',
+        url: complainUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(sendComplainSuccess());
+        } else {
+          dispatch(sendComplainFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(sendComplainFail('Something wrong happened'));
+      });
+  };
+}
+
+export const withdrawMoneyPending = () => {
+  return {
+    type: actionTypes.WITHDRAW_MONEY_PENDING
+  };
+};
+
+export const withdrawMoneySuccess = () => {
+  return {
+    type: actionTypes.WITHDRAW_MONEY_SUCCESS
+  };
+};
+
+export const withdrawMoneyFail = error => {
+  return {
+    type: actionTypes.WITHDRAW_MONEY_ERROR,
+    error
+  };
+};
+
+export function withdrawMoney(token, data) {
+  return dispatch => {
+    dispatch(withdrawMoneyPending());
+    const withdrawUrl = apiUrl + '/withdrawMoney';
+    console.log(data);
+
+    axios({
+        method: 'post',
+        url: withdrawUrl,
+        headers: {
+          Authorization: token
+        },
+        data
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.result) {
+          dispatch(withdrawMoneySuccess());
+        } else {
+          dispatch(withdrawMoneyFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(withdrawMoneyFail('Something wrong happened'));
       });
   };
 }
