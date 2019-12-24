@@ -1,8 +1,14 @@
 .ant-collapse-header {
     margin-bottom: 20px;
+    background-color: #F2F2F2 !important;
+}
+
+.ant-collapse-item {
+    background-color: #F2F2F2 !important;
 }
 
 .filter {
-    font-size: 30px !important;
-    margin-right: 3px;
+    font-size: 20px !important;
+    color: #61DAFB !important;
+    background-color: #20232A;
 }

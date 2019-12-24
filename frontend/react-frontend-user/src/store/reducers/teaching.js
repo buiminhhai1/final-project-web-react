@@ -177,6 +177,7 @@ export default function teachingReducer(state = initialState, action) {
       return {
         ...state,
         pending: false,
+        message: 'Contract has been created'
       };
     case actionTypes.CREATE_CONTRACT_ERROR:
       return {
@@ -184,6 +185,60 @@ export default function teachingReducer(state = initialState, action) {
         pending: false,
         error: action.error,
       };
+    case actionTypes.SEND_RATING_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actionTypes.SEND_RATING_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        message: 'Rating successful'
+      };
+    case actionTypes.SEND_RATING_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+    case actionTypes.SEND_COMPLAIN_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actionTypes.SEND_COMPLAIN_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        message: 'Complain successful! We will consider this'
+      };
+    case actionTypes.SEND_COMPLAIN_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+    case actionTypes.WITHDRAW_MONEY_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actionTypes.WITHDRAW_MONEY_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        message: 'We have sent money to your account'
+      };
+    case actionTypes.WITHDRAW_MONEY_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+
+
+
     default:
       return state;
   }

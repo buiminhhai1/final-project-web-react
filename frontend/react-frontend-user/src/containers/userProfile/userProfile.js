@@ -156,7 +156,7 @@ class userProfile extends Component {
           <Container className="shadow mt-5 p-3 bg-white">
             <div className="mb-3">
               <h5>
-                <i className="fas fa-user-graduate fa-lg mr-2"></i>
+                <i className="fas fa-book-reader fa-lg mr-2"></i>
                 <b>Subjects</b>
               </h5>
               {teacher.experience &&

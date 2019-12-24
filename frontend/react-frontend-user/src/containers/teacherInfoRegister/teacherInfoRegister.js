@@ -163,7 +163,7 @@ class TeacherProfile extends Component {
       hourWork: e.target.value
     });
     if (e.target.value > 120) {
-      message.error('Do you to die?', 1);
+      message.error('Do you want to die?', 1);
     } else if (e.target.value > 84) {
       message.warning('You have commited more than 12 hours a day', 1);
     }
@@ -262,7 +262,11 @@ class TeacherProfile extends Component {
                         className="teachingLevel"
                         value={level.data}
                         key={level.value}
-                        checked={this.props.teacher.experience.level && true}
+                        checked={
+                          this.props.teacher.experience &&
+                          this.props.teacher.experience.level &&
+                          true
+                        }
                       >
                         {level.label}
                       </Radio>

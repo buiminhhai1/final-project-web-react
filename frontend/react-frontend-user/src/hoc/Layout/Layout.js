@@ -32,7 +32,9 @@ class Layout extends Component {
           open={this.state.showSideDrawer}
           closed={this.sideDrawerToggleHandler}
         />
-        <main style={{ paddingTop: 50 }}>{this.props.children}</main>
+        <main className="mb-auto" style={{ paddingTop: 50, marginBottom: 'auto' }}>
+          {this.props.children}
+        </main>
         <footer id="footer" className="footer-1">
           <div className="main-footer widgets-dark typo-light">
             <div className="container">

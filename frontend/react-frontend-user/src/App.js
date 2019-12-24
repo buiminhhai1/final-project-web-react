@@ -57,6 +57,10 @@ const asyncChat = AsyncComponent(() => {
   return import('./components/Chat/Chat/Chat');
 });
 
+const asyncContractHistory = AsyncComponent(() => {
+  return import('./containers/contractHistory/contractHistory');
+});
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -100,6 +104,7 @@ class App extends React.Component {
           <Route path="/logout" component={asyncLogOut}></Route>
           <Route path="/profile" component={asyncUpdateProfile}></Route>
           <Route path="/user-profile" component={asyncUserProfile}></Route>
+          <Route path="/contractHistory" component={asyncContractHistory}></Route>
           <Route path="/changePassword" component={asyncChangePassword}></Route>
           <Route
             path="/teacher-profile"

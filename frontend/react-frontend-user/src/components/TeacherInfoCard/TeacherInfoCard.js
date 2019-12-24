@@ -12,7 +12,7 @@ export default function TeacherInfoCard(props) {
     <div>
       <Card
         className="shadow"
-        style={{ width: 220, margin: 8, borderRadius: 5 }}
+        style={{ width: 220, margin: 8, borderRadius: 5, height: 300 }}
         bodyStyle={{ paddingTop: 0 }}
         loading={props.loading}
         cover={
@@ -46,9 +46,16 @@ export default function TeacherInfoCard(props) {
           description={
             <div>
               <Divider />
-              <div style={{ marginBottom: 10 }}>
+              <div
+                className="subjectTags"
+                style={{ marginBottom: 10, overflowY: 'auto', height: 90 }}
+              >
                 {props.subjects.map(subject => (
-                  <Tag key={subject._id} color="#20232A">
+                  <Tag
+                    key={subject._id}
+                    color="#20232A"
+                    onClick={() => props.subjectSearch(subject.title)}
+                  >
                     {subject.title}
                   </Tag>
                 ))}

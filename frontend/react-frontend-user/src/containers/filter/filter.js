@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Container, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
-import { Collapse, Icon, TreeSelect, message, Spin } from 'antd';
-
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Collapse, Icon, TreeSelect, message, Spin, Input, Select } from 'antd';
 
 import {
   getLevel,
@@ -17,8 +14,8 @@ import { resetErrorMessage } from '../../store/actions/auth';
 import './filter.css';
 
 const { Panel } = Collapse;
-const animatedComponents = makeAnimated();
 const { TreeNode } = TreeSelect;
+const InputGroup = Input.Group;
 
 class filter extends Component {
   constructor(props) {
@@ -27,7 +24,7 @@ class filter extends Component {
       selectedSubject: [],
       selectedEducationLevel: [],
       selectedLevel: [],
-      locations: null,
+      locations: [],
       hourPay: 0,
       hourWork: 0
     };
@@ -40,50 +37,94 @@ class filter extends Component {
     this.props.getLocations();
   };
 
-  handleChangeEducationLevel = selectedOption => {
-    this.setState({ selectedEducationLevel: selectedOption });
+  updateFilterData = () => {
+    let city = '';
+    let districts = [];
+    if (this.state.locations.length > 0) {
+      let cityIndex = parseInt(this.state.locations[0].split('-')[0]);
+      city = this.props.locations[cityIndex].city;
+
+      for (let i = 0; i < this.state.locations.length; i++) {
+        let districtIndex = parseInt(this.state.locations[i].split('-')[1]);
+        const districtName = this.props.locations[cityIndex].district[
+          districtIndex
+        ].name;
+        districts.push(districtName);
+      }
+    }
+
+    const data = {
+      subjects: this.state.selectedSubject,
+      levels: this.state.selectedLevel,
+      educationLevel: this.state.selectedEducationLevel,
+      hourPay: this.state.hourPay,
+      hourWork: this.state.hourWork,
+      city,
+      districts
+    };
+
+    this.props.updateFilter(data);
   };
 
-  handleSubjectChange = selectedOption => {
-    this.setState({ selectedSubject: selectedOption });
+  handleChangeEducationLevel = async selectedOption => {
+    await this.setState({ selectedEducationLevel: selectedOption });
+    await this.updateFilterData();
   };
 
-  handleLevelChange = selectedOption => {
-    this.setState({ selectedLevel: selectedOption });
+  handleSubjectChange = async selectedOption => {
+    await this.setState({ selectedSubject: selectedOption });
+    this.updateFilterData();
   };
 
-  handleHourPay = e => {
-    this.setState({
-      hourPay: e.target.value
+  handleLevelChange = async selectedOption => {
+    await this.setState({ selectedLevel: selectedOption });
+    await this.updateFilterData();
+  };
+
+  handleHourPay = async e => {
+    const { value } = e.target;
+    await this.setState({
+      hourPay: e.target.value * 1
     });
-  };
-
-  handleHourWork = e => {
-    this.setState({
-      hourWork: e.target.value
-    });
-    if (e.target.value > 120) {
-      message.error('Do you to die?', 1);
-    } else if (e.target.value > 84) {
-      message.warning('You have commited more than 12 hours a day', 1);
+    await this.updateFilterData();
+    if (value > 1000) {
+      message.warning('You are crazy', 1);
+    } else if (value > 300) {
+      message.warning('Seriously, who are you finding', 1);
+    } else if (value > 100) {
+      message.warning('Are you a rich kid', 1);
     }
   };
 
-  handleLocationChange = value => {
+  handleHourWork = async e => {
+    const { value } = e.target;
+    await this.setState({
+      hourWork: e.target.value * 1
+    });
+    await this.updateFilterData();
+    if (value > 120) {
+      message.error('No teacher can do that. You know?', 1);
+    } else if (value > 84) {
+      message.warning('A little bit too much', 1);
+    }
+  };
+
+  handleLocationChange = async value => {
     if (this.checkLocations(value)) {
-      this.setState({ locations: value });
+      await this.setState({ locations: value });
+      await this.updateFilterData();
     }
   };
 
   checkLocations = locations => {
-    // if (locations.length === 0) return true;
-    // let index = parseInt(locations[0].split('-')[0]);
-    // for (let i = 0; i < locations.length; i++) {
-    //   if (parseInt(locations[i].split('-')[0]) !== index) {
-    //     message.error('You can choose only 1 city');
-    //     return false;
-    //   }
-    // }
+    if (locations.length === 0) return true;
+    let index = parseInt(locations[0].split('-')[0]);
+    for (let i = 0; i < locations.length; i++) {
+      if (parseInt(locations[i].split('-')[0]) !== index) {
+        message.error('You can choose only 1 city');
+        return false;
+      }
+    }
     return true;
   };
 
@@ -94,56 +135,83 @@ class filter extends Component {
       selectedLevel
     } = this.state;
     const { educationLevel, level, subjects, locations } = this.props;
+    const filteredSubjects = subjects.filter(
+      o => !selectedSubject.includes(o.label)
+    );
+    const filteredLevels = level.filter(o => !selectedLevel.includes(o.label));
+    const filteredEducationLevels = educationLevel.filter(
+      o => !selectedEducationLevel.includes(o.label)
+    );
 
     return (
       <Collapse
         bordered={false}
+        // activeKey="1"
         expandIcon={({ isActive }) => (
           <Icon
-            className="filter mr-2"
+            className="filter mr-2 btn "
             type="filter"
             theme="filled"
-            rotate={isActive ? 45 : 0}
+            rotate={isActive ? 180 : 0}
           />
         )}
       >
         <Panel header="" key="1">
           <Spin tip="Loading..." spinning={this.props.pending}>
-            <div className="px-3">
+            <div className="shadow bg-white p-3">
               <Container className="pb-3">
                 <Row className="mb-3">
                   <Col md>
                     <b>Subjects</b>
+                    <br />
                     <Select
-                      isMulti
-                      components={animatedComponents}
-                      className="subjectSelect mt-1"
+                      mode="multiple"
+                      placeholder="Inserted are removed"
                       value={selectedSubject}
                       onChange={this.handleSubjectChange}
-                      options={subjects}
-                    />
+                      style={{ width: '100%' }}
+                    >
+                      {filteredSubjects.map(subject => (
+                        <Select.Option key={subject} value={subject.label}>
+                          {subject.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </Col>
                   <Col md>
                     <b>Education level</b>
                     <Select
-                      isMulti
-                      components={animatedComponents}
-                      className="levelSelect mt-1"
+                      mode="multiple"
+                      placeholder="Inserted are removed"
                       value={selectedEducationLevel}
                       onChange={this.handleChangeEducationLevel}
-                      options={educationLevel}
-                    />
+                      style={{ width: '100%' }}
+                    >
+                      {filteredEducationLevels.map(educationLevel => (
+                        <Select.Option
+                          key={educationLevel}
+                          value={educationLevel.label}
+                        >
+                          {educationLevel.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </Col>
                   <Col md>
-                    <b>Teacher's level</b>
+                    <b>Lesson's level</b>
                     <Select
-                      isMulti
-                      components={animatedComponents}
-                      className="levelSelect mt-1"
+                      mode="multiple"
+                      placeholder="Inserted are removed"
                       value={selectedLevel}
                       onChange={this.handleLevelChange}
-                      options={level}
-                    />
+                      style={{ width: '100%' }}
+                    >
+                      {filteredLevels.map(level => (
+                        <Select.Option key={level} value={level.label}>
+                          {level.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </Col>
                 </Row>
                 <Row className="mt-3">
@@ -187,27 +255,46 @@ class filter extends Component {
                     </TreeSelect>
                   </Col>
                   <Col md>
-                    <b>Budget</b>
+                    <b>Budget (Maximum)</b>
                     <br />
-                    <InputGroup className="mt-1 description">
-                      <InputGroup.Prepend>
-                        <InputGroup.Text>$</InputGroup.Text>
-                      </InputGroup.Prepend>
-                      <FormControl
+                    <InputGroup compact className="mt-1 description">
+                      <Input
+                        style={{
+                          width: '20%',
+                          textAlign: 'center',
+                          color: '#85bb65',
+                          fontWeight: 'bold'
+                        }}
+                        defaultValue="$"
+                        disabled
+                      />
+                      <Input
+                        style={{ width: '80%' }}
                         type="number"
-                        value={this.state.hourPay}
-                        onChange={event => this.handleHourPay(event)}
+                        defaultValue="0"
+                        onChange={e => this.handleHourPay(e)}
                       />
                     </InputGroup>
                   </Col>
                   <Col md>
-                    <b>Teaching time</b>
+                    <b>Teaching time (Maximum) </b>
                     <br />
-                    <InputGroup className="mt-1 description">
-                      <FormControl
+                    <InputGroup compact className="mt-1 description">
+                      <Input
+                        style={{ width: '65%' }}
                         type="number"
-                        value={this.state.hourWork}
-                        onChange={event => this.handleHourWork(event)}
+                        defaultValue="0"
+                        onChange={e => this.handleHourWork(e)}
+                      />
+                      <Input
+                        style={{
+                          width: '35%',
+                          textAlign: 'center',
+                          color: '#000',
+                          fontWeight: 'bold'
+                        }}
+                        defaultValue="hours"
+                        disabled
                       />
                     </InputGroup>
                   </Col>
