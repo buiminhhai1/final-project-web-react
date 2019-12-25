@@ -124,11 +124,11 @@ class DetailUser extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log('test nav link params');
-    console.log(this.props.location.userDetail);
-    console.log(this.props);
-  }
+  // componentDidMount() {
+  //   console.log('test nav link params');
+  //   console.log(this.props.location.userDetail);
+  //   console.log(this.props);
+  // }
 
   render() {
     const {
@@ -235,18 +235,18 @@ class DetailUser extends Component {
                 </Tag>
               ))}
               <Divider />
-              <Title level={4}>History Contract</Title>
-              <Table
-                bordered
-                columns={this.state.userColumns}
-                dataSource={contracts}
-                rowKey={record => {
-                  return record._id;
-                }}
-              />
             </div>
           </div>
         ) : null}
+        <Title level={4}>History Contract</Title>
+        <Table
+          bordered
+          columns={this.state.userColumns}
+          dataSource={contracts}
+          rowKey={record => {
+            return record._id;
+          }}
+        />
       </div>
     );
 
@@ -274,20 +274,20 @@ class DetailUser extends Component {
             isTeacher ? (
               <Popover
                 key={name + 'title'}
-                content={<div>Teacher is free now</div>}
+                content={
+                  <div>
+                    {status.availability
+                      ? 'Teacher is free now'
+                      : 'Teacher is busy now'}
+                  </div>
+                }
                 trigger="hover"
               >
-                <Tag color="#2db7f5">Availability</Tag>
+                <Tag color={status.availability ? '#2db7f5' : '#f50'}>
+                  Availability
+                </Tag>
               </Popover>
-            ) : (
-              <Popover
-                key={name}
-                content={<div>Teacher is busy now</div>}
-                trigger="hover"
-              >
-                <Tag color="#f50">Busy</Tag>
-              </Popover>
-            ),
+            ) : null,
             verify ? (
               <Popover
                 key={name}

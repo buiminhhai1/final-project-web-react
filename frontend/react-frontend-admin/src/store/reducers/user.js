@@ -44,16 +44,28 @@ const getListUserFail = (state, action) =>
 
 const updateUserStart = state =>
   updateObject(state, {
-    loading: false,
+    loading: true,
     error: null,
     message: null
   });
 
 const updateUserSuccess = (state, action) => {
+  const data = state.userData.map(item => {
+    if (item._id === action.user._id) {
+      const updateItem = {
+        ...item,
+        isBlocking: action.user.isBlocking
+      };
+      return updateItem;
+    }
+    return item;
+  });
+
   return updateObject(state, {
     loading: false,
     error: null,
-    message: action.message
+    message: action.message,
+    userData: data
   });
 };
 
@@ -62,6 +74,12 @@ const updateUserFail = (state, action) =>
     loading: false,
     error: true,
     message: action.message
+  });
+
+const refreshMessage = state =>
+  updateObject(state, {
+    message: null,
+    error: null
   });
 
 const reducer = (state = initialState, action) => {
@@ -78,7 +96,8 @@ const reducer = (state = initialState, action) => {
       return updateUserSuccess(state, action);
     case actionTypes.UPDATE_USER_FAIL:
       return updateUserFail(state, action);
-
+    case actionTypes.REFRESH_MESSAGE_CRUD:
+      return refreshMessage(state);
     default:
       return state;
   }

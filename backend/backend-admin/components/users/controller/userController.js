@@ -3,33 +3,7 @@ const nodemailer = require('nodemailer');
 
 const UserSchema = require('../model/userModel');
 
-const config = {
-  mailserver: {
-    host: 'smtp.sendgrid.net',
-    port: 465,
-    secure: false,
-    auth: {
-      user: 'apikey',
-      pass: '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'
-    }
-  },
-  mail: {
-    from: 'ngovietduc20088@gmail.com',
-    to: 'ngovietduc20@gmail.com',
-    subject: 'Hello',
-    text: 'Testing Nodemailer'
-  }
-};
-
-const client = nodemailer.createTransport(sgTransport(options));
-
-// const sgMail = require('@sendgrid/mail');
-const {
-  sendEmail
-} = require('../../utils/email/sendEmail');
-const UserSchema = require('../model/userModel');
-
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const { sendEmail } = require('../../utils/email/sendEmail');
 
 const typeGet = {
   teacher: 1,
@@ -48,10 +22,7 @@ const typeBlock = {
 };
 
 exports.getListUser = async (req, res, next) => {
-  const {
-    type,
-    blocking
-  } = req.query;
+  const { type, blocking } = req.query;
   try {
     let condition = {};
     switch (+type) {
@@ -107,11 +78,7 @@ exports.getListUser = async (req, res, next) => {
 };
 
 exports.blockingUser = async (req, res, next) => {
-  const {
-    _id,
-    block,
-    content
-  } = req.body;
+  const { _id, block, content } = req.body;
   try {
     const user = await UserSchema.findById({
       _id
@@ -119,19 +86,25 @@ exports.blockingUser = async (req, res, next) => {
     if (user) {
       user.isBlocking = block;
       await user.save();
+      let subject;
+      let message;
+      if (block) {
+        subject = 'Blocking user';
+        message = `user ${user.email} has blocked!`;
+      } else {
+        subject = 'Unblocking user';
+        message = `user ${user.email} has unblocked!`;
+      }
       const msg = {
-        to: 'ngovietduc20088@gmail.com',
-        // from: 'ngovietduc20088@gmail.com',
-        subject: 'Sending with Twilio SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        to: user.email,
+        subject,
+        text: content,
+        html: `<h1>${content}</h1>`
       };
-      // await sgMail.send(msg);
-      // await sgMail.send(msg);
       sendEmail(msg);
       return res.json({
         user,
-        message: `user ${user.local.email} has blocked!`
+        message
       });
     }
   } catch (err) {
@@ -143,9 +116,7 @@ exports.blockingUser = async (req, res, next) => {
 };
 
 exports.getDetailUser = async (req, res, next) => {
-  const {
-    _id
-  } = req.body;
+  const { _id } = req.body;
   try {
     const user = await UserSchema.findById(_id);
     if (user) {

@@ -10,6 +10,7 @@ import userReducer from './store/reducers/user';
 import locationReducer from './store/reducers/location';
 import levelReducer from './store/reducers/level';
 import levelEducationReducer from './store/reducers/levelEducation';
+import contractReducer from './store/reducers/contract';
 
 import './index.css';
 import App from './App';
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   location: locationReducer,
   level: levelReducer,
-  levelEducation: levelEducationReducer
+  levelEducation: levelEducationReducer,
+  contract: contractReducer
 });
 
 const store = createStore(
