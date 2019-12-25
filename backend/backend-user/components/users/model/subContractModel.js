@@ -26,11 +26,11 @@ const subContract = new mongoose.Schema({
     require: false
   },
   hourRate: {
-    type: String,
+    type: Number,
     require: false
   },
   totalHourCommit: {
-    type: String,
+    type: Number,
     require: false
   },
   review: {
@@ -43,6 +43,10 @@ const subContract = new mongoose.Schema({
   },
   score: {
     type: Number,
+    require: false
+  },
+  isHirer: {
+    type: Boolean,
     require: false
   }
 });

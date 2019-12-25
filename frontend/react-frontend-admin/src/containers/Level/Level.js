@@ -33,7 +33,7 @@ class Level extends Component {
           key: 'title',
           render: text => (
             <Tag color={'geekblue'} key={text}>
-              <strong>{text.toUpperCase()}</strong>
+              <strong> {text.toUpperCase()} </strong>
             </Tag>
           )
         },
@@ -126,7 +126,9 @@ class Level extends Component {
   };
 
   onTitleChange = ({ target: { value } }) => {
-    this.setState({ title: value });
+    this.setState({
+      title: value
+    });
   };
 
   addNewLevel = async () => {
@@ -134,7 +136,7 @@ class Level extends Component {
       visible: true,
       _id: '',
       title: '',
-      modalName: 'Add skill'
+      modalName: 'Add Level'
     });
   };
 
@@ -144,7 +146,11 @@ class Level extends Component {
 
     return (
       <div>
-        <Row style={{ margin: '10px 0 20px 0' }}>
+        <Row
+          style={{
+            margin: '10px 0 20px 0'
+          }}
+        >
           <Col span={6} offset={0}>
             <Search
               placeholder="input search text"
@@ -161,7 +167,11 @@ class Level extends Component {
           </Col>
         </Row>
         <Spin spinning={this.props.loading}>
-          <div style={{ background: 'white' }}>
+          <div
+            style={{
+              background: 'white'
+            }}
+          >
             <Table
               columns={this.state.levelColumns}
               dataSource={this.props.levelData}
@@ -176,11 +186,29 @@ class Level extends Component {
                   onOk={this.handleSubmitUpdateForm}
                   confirmLoading={confirmLoading}
                   onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="Block"
+                      type="primary"
+                      onClick={this.handleSubmitUpdateForm}
+                      disabled={!this.state.title}
+                    >
+                      Save
+                    </Button>
+                  ]}
                 >
                   <div>
                     <div>
                       Level
-                      <span style={{ color: 'red', marginBottom: '5px' }}>
+                      <span
+                        style={{
+                          color: 'red',
+                          marginBottom: '5px'
+                        }}
+                      >
                         *
                       </span>
                     </div>
@@ -197,11 +225,21 @@ class Level extends Component {
                   onOk={this.handleDeleteForm}
                   confirmLoading={confirmLoading}
                   onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="Block"
+                      type="danger"
+                      onClick={this.handleDeleteForm}
+                      disabled={!this.state._id}
+                    >
+                      Delete
+                    </Button>
+                  ]}
                 >
-                  <span>
-                    Do you want to delete
-                    {this.state.title}
-                  </span>
+                  <span>Do you want to delete {' ' + this.state.title} </span>
                 </Modal>
               </div>
             ) : null}

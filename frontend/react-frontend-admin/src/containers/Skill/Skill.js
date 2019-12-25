@@ -176,6 +176,19 @@ class Skill extends Component {
                   onOk={this.handleSubmitUpdateForm}
                   confirmLoading={confirmLoading}
                   onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="Block"
+                      type="primary"
+                      onClick={this.handleSubmitUpdateForm}
+                      disabled={!this.state.title}
+                    >
+                      Save
+                    </Button>
+                  ]}
                 >
                   <div>
                     <div>
@@ -197,10 +210,23 @@ class Skill extends Component {
                   onOk={this.handleDeleteForm}
                   confirmLoading={confirmLoading}
                   onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="Block"
+                      type="danger"
+                      onClick={this.handleDeleteForm}
+                      disabled={!this.state._id}
+                    >
+                      Delete
+                    </Button>
+                  ]}
                 >
                   <span>
                     Do you want to delete
-                    {this.state.title}
+                    {' ' + this.state.title}
                   </span>
                 </Modal>
               </div>
