@@ -3,7 +3,9 @@ const nodemailer = require('nodemailer');
 
 const UserSchema = require('../model/userModel');
 
-const { sendEmail } = require('../../utils/email/sendEmail');
+const {
+  sendEmail
+} = require('../../utils/email/sendEmail');
 
 const typeGet = {
   teacher: 1,
@@ -22,7 +24,10 @@ const typeBlock = {
 };
 
 exports.getListUser = async (req, res, next) => {
-  const { type, blocking } = req.query;
+  const {
+    type,
+    blocking
+  } = req.query;
   try {
     let condition = {};
     switch (+type) {
@@ -78,7 +83,11 @@ exports.getListUser = async (req, res, next) => {
 };
 
 exports.blockingUser = async (req, res, next) => {
-  const { _id, block, content } = req.body;
+  const {
+    _id,
+    block,
+    content
+  } = req.body;
   try {
     const user = await UserSchema.findById({
       _id
@@ -116,9 +125,11 @@ exports.blockingUser = async (req, res, next) => {
 };
 
 exports.getDetailUser = async (req, res, next) => {
-  const { _id } = req.body;
+  const {
+    userId
+  } = req.params;
   try {
-    const user = await UserSchema.findById(_id);
+    const user = await UserSchema.findById(userId);
     if (user) {
       return res.json({
         user,

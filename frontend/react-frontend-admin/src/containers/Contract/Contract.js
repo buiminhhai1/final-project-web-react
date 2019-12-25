@@ -1,153 +1,177 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  Typography,
-  Table,
-  Spin,
-  Icon,
-  Tag,
-  Avatar,
-  Input,
-  Popover,
-  Col,
-  Row,
-  Button
-} from 'antd';
+import { Table, Spin, Rate, Tag, Input, Popover, Col, Row, Button } from 'antd';
 import 'antd/dist/antd.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions/index';
-import './HomePage.css';
 
-const { Text } = Typography;
 const { Search } = Input;
 
 class Contract extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: '',
       contractColumns: [
         {
-          title: 'Teacher Detail',
-          dataIndex: 'teacher',
-          key: 'teacher',
+          title: 'Student Detail',
+          dataIndex: 'student',
+          key: 'student',
           render: (text, record) => {
+            const idStudent = record.student.userId;
             return (
               <div>
-                <Avatar
-                  shape="square"
-                  size="large"
-                  src={record.imageUrl ? record.imageUrl : null}
-                />
-                <div
-                  style={{
-                    display: 'inline-block',
-                    margin: '5px 5px 5px 10px'
-                  }}
+                <Popover
+                  content={<div>View detail Student</div>}
+                  trigger="hover"
                 >
-                  <Popover
-                    content={<div>View detail user</div>}
-                    trigger="hover"
+                  <div
+                    onClick={() => {
+                      this.getDetailUser(idStudent);
+                    }}
                   >
-                    <NavLink
-                      to={{
-                        pathname: '/userdetail',
-                        userDetail: record
-                      }}
-                      contextMenu="view detail"
-                      sytle={{ paddingRight: '5px' }}
-                    >
-                      {' ' + record.name + ' '}
-                    </NavLink>
-                  </Popover>
-
-                  <Icon
-                    style={{ visibility: record.verify ? 'visible' : 'hidden' }}
-                    type="check-circle"
-                    theme="twoTone"
-                    twoToneColor="#52c41a"
-                  />
-                </div>
+                    <strong style={{ color: '#003a8c' }}>
+                      {record.student.name}
+                      <br />
+                      {record.student.email}
+                    </strong>
+                  </div>
+                </Popover>
               </div>
             );
           }
         },
         {
-          title: 'Email',
-          dataIndex: 'email',
-          key: 'email',
-          render: (text, record) => (
-            <div>
-              <Text>{record.email}</Text>
-            </div>
-          )
+          title: 'Teacher Detail',
+          dataIndex: 'teacher',
+          key: 'teacher',
+          render: (text, record) => {
+            const idTeacher = record.teacher.userId;
+            return (
+              <div>
+                <Popover
+                  content={<div>Click view detail Teacher</div>}
+                  trigger="hover"
+                >
+                  <div
+                    onClick={() => {
+                      this.getDetailUser(idTeacher);
+                    }}
+                  >
+                    <strong style={{ color: '#003a8c' }}>
+                      {record.teacher.name}
+                      <br />
+                      {record.teacher.email}
+                    </strong>
+                  </div>
+                </Popover>
+              </div>
+            );
+          }
+        },
+        {
+          title: 'From to',
+          dataIndex: 'timecontract',
+          key: 'timecontract',
+          render: (text, record) => {
+            return (
+              <div>
+                {record.from} <br />
+                {record.to}
+              </div>
+            );
+          }
+        },
+        {
+          title: 'hours & price',
+          dataIndex: 'hrsprice',
+          key: 'hrsprice',
+          render: (text, record) => {
+            return (
+              <div>
+                <strong>{record.totalHourCommit + ' hrs'}</strong>
+                <br />
+                <strong>{record.hourRate + ' $'}</strong>
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Value',
+          dataIndex: 'value',
+          key: 'value',
+          render: (text, record) => {
+            return (
+              <div>
+                <strong>
+                  {record.totalHourCommit * record.hourRate + ' $'}
+                </strong>
+              </div>
+            );
+          }
         },
         {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
           render: (text, record) => {
-            const tagTeacher = record.isTeacher ? (
-              <Tag color="#87d068">Teacher</Tag>
-            ) : (
-              <Tag color="#2db7f5">Student</Tag>
-            );
-            return (
-              <div>
-                {tagTeacher}
-                <Tag color="red" visible={record.isBlocking}>
-                  Blocked
-                </Tag>
-              </div>
-            );
+            let color;
+            let status;
+            switch (record.status) {
+              case 2:
+                color = '#87d068';
+                status = 'Success';
+                break;
+              case 3:
+                color = '#f50';
+                status = 'Fail';
+                break;
+              default:
+                color = '#2db7f5';
+                status = 'Pending';
+            }
+            return <Tag color={color}>{status}</Tag>;
           }
         },
         {
-          title: 'Action',
+          title: 'Rating',
+          dataIndex: 'rating',
+          status: 'rating',
+          render: (text, record) => (
+            <Rate
+              type=""
+              disabled
+              key="ratingkey"
+              allowHalf
+              value={record.score}
+              style={{ fontSize: '15px', marginLeft: '0px' }}
+            />
+          )
+        },
+        {
+          title: 'action',
           dataIndex: 'action',
           key: 'action',
           render: (text, record) => {
-            const btnBlock = !record.isBlocking ? (
-              <Button
-                type="danger"
-                onClick={() => {
-                  this.setState({
-                    visible: true,
-                    _id: record._id,
-                    block: record.isBlocking
-                  });
-                }}
-              >
-                Block
-              </Button>
-            ) : (
-              <Button
-                type="primary"
-                onClick={() => {
-                  this.setState({
-                    visible: true,
-                    _id: record._id,
-                    block: record.isBlocking
-                  });
-                }}
-              >
-                Unblock
-              </Button>
-            );
             return (
               <div>
-                <NavLink
-                  to={{
-                    pathname: '/userdetail',
-                    userDetail: record
-                  }}
-                  contextMenu="view detail"
-                  sytle={{ paddingRight: '5px' }}
+                <Popover
+                  content={<div>View detail Contract</div>}
+                  trigger="hover"
                 >
-                  <Button type="primary" style={{ marginRight: '5px' }}>
-                    Detail
-                  </Button>
-                </NavLink>
-                {btnBlock}
+                  <NavLink
+                    to={{
+                      pathname: '/detailcontract',
+                      userDetail: record
+                    }}
+                    contextMenu="view detail"
+                    sytle={{ paddingRight: '5px' }}
+                  >
+                    <Button type="primary" style={{ marginRight: '5px' }}>
+                      Detail
+                    </Button>
+                  </NavLink>
+                </Popover>
               </div>
             );
           }
@@ -158,34 +182,35 @@ class Contract extends Component {
 
   componentDidMount() {
     this.props.onGetListContract();
-    // switch (this.props.location.pathname + '') {
-    //   case '/':
-    //     this.props.onGetListUser(TypeDefine.All);
-    //     break;
-    //   case '/students':
-    //     this.props.onGetListUser(TypeDefine.Student);
-    //     break;
-    //   case '/teachers':
-    //     this.props.onGetListUser(TypeDefine.Teacher);
-    //     break;
-    //   default:
-    //     this.props.onGetListUser(TypeDefine.All);
-    //     break;
-    // }
   }
 
-  componentDidUpdate() {
-    // this.props.onRefreshMessage();
-    // if (this.props.error) {
-    //   this.render.actionMessage = message.error(this.props.message);
-    // } else if (this.props.message) {
-    //   this.render.actionMessage = message.success(this.props.message);
-    // }
-  }
+  componentDidUpdate() {}
+
+  getDetailUser = async userId => {
+    await this.props.onGetDetailUser(userId);
+    await this.setState({
+      redirect: (
+        <Redirect
+          to={{
+            pathname: '/contract',
+            userDetail: this.props.userDetail
+          }}
+        />
+      )
+    });
+  };
 
   render() {
     return (
       <div>
+        {this.props.userDetail ? (
+          <Redirect
+            to={{
+              pathname: '/userdetail',
+              userDetail: this.props.userDetail
+            }}
+          />
+        ) : null}
         <Row style={{ margin: '10px 0 20px 0' }}>
           <Col span={6} offset={0}>
             <Search
@@ -197,13 +222,15 @@ class Contract extends Component {
             />
           </Col>
         </Row>
-        <Spin spinning={this.props.loading}>
+        <Spin spinning={this.props.loading || this.props.loadingUser}>
           <div style={{ background: 'white' }}>
             {
               <Table
-                columns={this.state.userColumns}
+                columns={this.state.contractColumns}
                 dataSource={
-                  this.props.userData.length > 0 ? this.props.userData : []
+                  this.props.contractData.length > 0
+                    ? this.props.contractData
+                    : []
                 }
                 size="middle"
               />
@@ -219,11 +246,14 @@ const mapStateToProps = state => ({
   loading: state.contract.loading,
   contractData: state.contract.contractData,
   error: state.contract.error,
-  message: state.contract.message
+  message: state.contract.message,
+  userDetail: state.user.userDetail,
+  loadingUser: state.user.loading
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetListContract: () => dispatch(actions.getListContract())
+  onGetListContract: () => dispatch(actions.getListContract()),
+  onGetDetailUser: userId => dispatch(actions.getDetailUser(userId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Contract);

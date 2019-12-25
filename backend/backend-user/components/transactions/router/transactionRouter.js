@@ -19,9 +19,10 @@ router.get('/checkBalance', passport.authenticate('jwt', {
     session: false
 }), transactionController.checkBalance);
 
-router.post('/completeCourse', passport.authenticate('jwt', {
-    session: false
-}), transactionController.completeContract);
+router.post('/completeCourse', transactionController.completeContract);
+
+router.post('/failedCourse', transactionController.failedContract);
+
 
 
 module.exports = router;

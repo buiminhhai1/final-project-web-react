@@ -4,47 +4,52 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const formData = require('express-form-data');
+const cloudinary = require('cloudinary').v2;
 const indexRouter = require('./routes/index');
 const usersRouter = require('./components/users/router/userRouter');
 const chatRouter = require('./components/chat/router/chatRouter');
 const transactionRouter = require('./components/transactions/router/transactionRouter');
 const contractRouter = require('./components/contract/router/contractRouter');
+const complainRouter = require('./components/complain/router/complainRouter');
 
+const dbInfo = require('./components/utils/const/constant');
+require('./components/utils/authentication/passport');
 
 const app = express();
-var mongoose = require('mongoose');
-const bodyParser = require("body-parser");
 app.use(bodyParser.json({
   limit: '10mb'
 }));
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
   extended: true
 }));
-const formData = require('express-form-data');
-app.use(formData.parse());
-const passport = require('passport');
-const dbInfo = require('./components/utils/const/constant');
-app.use(passport.initialize());
-require('./components/utils/authentication/passport');
 
-var uri = dbInfo.CONNECTION_STRING;
+app.use(formData.parse());
+
+
+app.use(passport.initialize());
+
+const uri = dbInfo.CONNECTION_STRING;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
-var db = mongoose.connection;
+const db = mongoose.connection;
+// eslint-disable-next-line no-console
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
+db.once('open', () => {
+  // eslint-disable-next-line no-console
   console.log('database connected');
 });
 
-const cloudinary = require('cloudinary').v2
 cloudinary.config({
   cloud_name: 'dc4rxxjyt',
   api_key: '182393896791142',
   api_secret: 'g95hnkYtxrJWTGY0FfSDs0yms5w'
-})
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -65,9 +70,11 @@ app.use('/chat',passport.authenticate('jwt', {
 }), chatRouter);
 app.use('/users', usersRouter);
 app.use('/transaction', transactionRouter);
-app.use('/contract',passport.authenticate('jwt', {
-  session: false
-}), contractRouter);
+app.use('/contract', contractRouter);
+app.use('/complain', complainRouter);
+
+
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
