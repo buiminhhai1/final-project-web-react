@@ -59,15 +59,15 @@ class SideBar extends Component {
             title={
               <span>
                 <Icon type="notification" />
-                Notification
+                Contract
               </span>
             }
           >
             <Menu.Item key="9">
-              <NavLink to="/historyContract">History Contract</NavLink>
+              <NavLink to="/contract">History Contract</NavLink>
             </Menu.Item>
             <Menu.Item key="10">
-              <NavLink to="/historyComplain">History Complain</NavLink>
+              <NavLink to="/complain">History Complain</NavLink>
             </Menu.Item>
           </SubMenu>
           <SubMenu

@@ -10,7 +10,7 @@ router.put('/blocking-user', passport.authenticate('jwt', {
   session: false
 }), userController.blockingUser);
 
-router.get('/detail', passport.authenticate('jwt', {
+router.get('/detail/:userId', passport.authenticate('jwt', {
   session: false
 }), userController.getDetailUser);
 

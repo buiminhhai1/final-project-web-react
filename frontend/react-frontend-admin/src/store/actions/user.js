@@ -76,6 +76,47 @@ export const updateUser = (_id, block, content) => dispatch => {
     });
 };
 
+export const getDetailUserStart = () => ({
+  type: actionTypes.GET_DETAIL_USER_START
+});
+
+export const getDetailUserSuccess = user => ({
+  type: actionTypes.GET_DETAIL_USER_SUCCESS,
+  user
+});
+
+export const getDetailUserFail = error => ({
+  type: actionTypes.GET_DETAIL_USER_FAIL,
+  error
+});
+
+export const getDetailUser = userId => dispatch => {
+  dispatch(getDetailUserStart());
+  const authToken = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + authToken
+  };
+  const url = `http://localhost:4200/users/detail/${userId}`;
+  axios
+    .get(url, {
+      headers
+    })
+    .then(res => {
+      console.log('res user');
+      console.log(res);
+      console.log(res.data.user);
+      if (res.data.user) {
+        dispatch(getDetailUserSuccess(res.data.user));
+      } else {
+        dispatch(getDetailUserFail('User not found!'));
+      }
+    })
+    .catch(err => {
+      dispatch(getDetailUserFail(err));
+    });
+};
+
 export const refreshMessage = () => ({
   type: actionTypes.REFRESH_MESSAGE_CRUD
 });

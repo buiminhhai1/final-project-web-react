@@ -44,6 +44,10 @@ const subContract = new mongoose.Schema({
   score: {
     type: Number,
     require: false
+  },
+  isHire: {
+    type: Boolean,
+    require: false
   }
 });
 
