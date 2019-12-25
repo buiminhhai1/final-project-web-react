@@ -14,7 +14,7 @@ exports.checkout = (req, res) => {
       res.redirect(failedUrl);
     } else {
       try {
-        const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
+        const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
         const amount = contract.totalHourCommit * contract.hourRate;
         const payment_json = create_payment_json(amount,
           `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
@@ -44,11 +44,10 @@ exports.checkout = (req, res) => {
   });
 }
 
-
 exports.successCheckout = async (req, res) => {
   const { PayerID, paymentId, successUrl, failedUrl, contractId } = req.query;
   try {
-    const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
+    const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
     const amount = contract.totalHourCommit * contract.hourRate;
     paypal.payment.execute(paymentId, execute_payment_json(PayerID, amount),
       async function (error) {
@@ -66,7 +65,7 @@ exports.successCheckout = async (req, res) => {
               console.log('Something wrong');
               res.redirect(failedUrl);
             } else {
-              const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
+              const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
               if (contract) {
                 const transaction = new TransactionModel({
                   idUser: contract.student._id,
@@ -105,6 +104,8 @@ exports.cancelCheckout = (req, res) => {
 
 exports.checkBalance = async (req, res) => {
   const { idUser } = req.body;
+  console.log(req.user);
+  
   const balance = await checkBalanceUser(idUser);
   if (balance < 0) {
     res.json({ result: false, balance, message: 'Cannot check balance' });

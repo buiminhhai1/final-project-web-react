@@ -371,7 +371,7 @@ export function getContracts(token) {
       }
     })
       .then(res => {
-        //console.log(res.data.contracts);
+        console.log(res.data.contracts);
         if (res.data.contracts) {
           dispatch(getContractsSuccess(res.data.contracts));
         } else {
@@ -404,10 +404,10 @@ export const getMoneyFail = error => {
   };
 };
 
-export function getMoney(token) {
+export function getMoney(token, userId) {
   return dispatch => {
     dispatch(getMoneyPending());
-    const contractUrl = apiUrl + '/contract/getMoney';
+    const contractUrl = apiUrl + '/transaction/checkBalance';
 
     axios({
       method: 'get',
@@ -418,14 +418,14 @@ export function getMoney(token) {
     })
       .then(res => {
         //console.log(res.data.money);
-        if (res.data.money) {
-          dispatch(getMoneySuccess(res.data.money));
+        if (res.data.result) {
+          dispatch(getMoneySuccess(res.data.balance));
         } else {
-          dispatch(getMoneyFail('Something wrong happened'));
+          dispatch(getMoneyFail('Cannot get your balance'));
         }
       })
       .catch(err => {
-        dispatch(getMoneyFail('Something wrong happened'));
+        dispatch(getMoneyFail('Cannot get your balance'));
       });
   };
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Spin, message, Table, Divider, Icon } from 'antd';
+import { Spin, message, Table, Divider, Icon, Modal } from 'antd';
 import { Container } from 'react-bootstrap';
 
 import {
@@ -22,14 +22,16 @@ class contractHistory extends Component {
     this.state = {
       ratingVisible: false,
       complainVisible: false,
-      withdrawVisible: false
+      withdrawVisible: false,
+      endCourseVisible: false,
+      removeVisible: false,
     };
   }
 
   componentDidMount() {
     const token = 'Bearer ' + this.props.token;
     this.props.getContracts(token);
-    this.props.getMoney(token);
+    this.props.getMoney(token, this.props.user.userId);
   }
 
   componentDidUpdate() {
@@ -68,6 +70,8 @@ class contractHistory extends Component {
     const successMessage = null;
     const errorMessage = null;
 
+    const status = ["Processing", "Transfered", "Done", "Failed"];
+
     const columns = [
       {
         title: 'From',
@@ -97,50 +101,90 @@ class contractHistory extends Component {
         render: text => (
           <p className="m-0">
             <b className="mr-1">$</b>
-            {text}
+            {text}/<b>hr</b>
           </p>
         )
       },
       {
         title: 'Rating',
+        dataIndex: 'action',
         key: 'action',
-        render: () => (
-          <span className="d-flex align-items-center">
-            <button
-              className="btn btn-outline-warning d-flex align-items-center py-1"
-              onClick={() => this.setState({ ratingVisible: true })}
-            >
-              <Icon className="mr-2" type="star" theme="filled" />
-              Rating
+        render: (data) => {
+          if (data.index > 0)
+            return (
+              <span className="d-flex align-items-center">
+                {data.index === 1 ?
+                  <button
+                    className="btn btn-outline-info d-flex align-items-center py-1"
+                    onClick={() => this.setState({ endCourseVisible: true })}
+                  >
+                    <Icon className="mr-2" type="fast-forward" theme="filled" />
+                    End course
+                  </button>
+                  :
+                  <button
+                    className="btn btn-outline-warning d-flex align-items-center py-1"
+                    onClick={() => this.setState({ ratingVisible: true })}
+                  >
+                    <Icon className="mr-2" type="star" theme="filled" />
+                    Rating
+                  </button>
+                }
+                <Divider type="vertical" />
+                <button
+                  className="btn btn-outline-danger d-flex align-items-center py-1"
+                  onClick={() => this.setState({ complainVisible: true })}
+                >
+                  <Icon className="mr-2" type="frown" theme="filled" />
+                  Complain
+                </button>
+              </span>
+            )
+          else return (
+            <span className="d-flex align-items-center">
+              <button
+                className="btn btn-outline-success d-flex align-items-center py-1"
+                onClick={() => {
+                  window.location.replace(
+                    `http://localhost:4000/transaction/payment?contractId=${data.id}&successUrl=http://localhost:3000/contractHistory&failedUrl=http://localhost:3000/contractHistory`
+                  )
+                }}
+              >
+                <Icon className="mr-2" type="dollar-circle" theme="filled" />
+                Checkout
             </button>
-            <Divider type="vertical" />
-            <button
-              className="btn btn-outline-danger d-flex align-items-center py-1"
-              onClick={() => this.setState({ complainVisible: true })}
-            >
-              <Icon className="mr-2" type="frown" theme="filled" />
-              Complain
+              <Divider type="vertical" />
+              <button
+                className="btn btn-outline-danger d-flex align-items-center py-1"
+                onClick={() => this.setState({ removeVisible: true })}
+              >
+                <Icon className="mr-2" type="delete" theme="filled" />
+                Remove
             </button>
-          </span>
-        )
+            </span>
+          )
+        }
       },
       {
         title: 'Status',
         dataIndex: 'status',
-        key: 'status'
+        key: 'status',
+        render: (index) => (
+          <p className="mb-0">{status[index]}</p>
+        )
       }
     ];
 
-    const status = ["Failed", "Processing", "Done"];
     const data = this.props.contracts.map(contract => {
       return {
         key: contract._id,
-        startDate: contract.from,
-        endDate: contract.to,
+        startDate: contract.from.replace(/-/g, '/'),
+        endDate: contract.to.replace(/-/g, '/'),
         teacher: contract.nameUserContract,
         totalCost: contract.hourRate,
         totalTime: contract.totalHourCommit,
-        status: status[contract.status]
+        status: contract.status,
+        action: { index: contract.status, id: contract._id }
       }
     })
 
@@ -182,6 +226,22 @@ class contractHistory extends Component {
             close={() => this.setState({ withdrawVisible: false })}
             loading={this.props.pending}
           />
+          <Modal
+            title="Confirmation"
+            visible={this.state.endCourseVisible}
+            onOk={this.handleEndCourse}
+            onCancel={() => this.setState({endCourseVisible: false})}
+          >
+            <p>Are you sure to end this course sooner than due date?</p>
+          </Modal>
+          <Modal
+            title="Confirmation"
+            visible={this.state.removeVisible}
+            onOk={this.handleRemove}
+            onCancel={() => this.setState({removeVisible: false})}
+          >
+            <p>Are you sure to remove this course?</p>
+          </Modal>
         </Spin>
       </div>
     );
