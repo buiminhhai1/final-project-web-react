@@ -18,6 +18,7 @@ const locationRouter = require('./components/locations/router/locationRouter');
 const contractRouter = require('./components/contracts/router/contractRouter');
 const complainRouter = require('./components/complain/router/complainRouter');
 const chatRouter = require('./components/chat/router/chatRouter');
+const transactionRouter = require('./components/transactions/router/transactionRouter');
 
 require('./components/utils/authentication/passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -68,6 +69,9 @@ app.use('/users', userRouter);
 app.use('/contract', contractRouter);
 app.use('/complain', complainRouter);
 app.use('/chat', chatRouter);
+app.use('/transaction', passport.authenticate('jwt', {
+  session: false
+}), transactionRouter);
 
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({

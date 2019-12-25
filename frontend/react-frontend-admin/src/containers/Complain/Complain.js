@@ -418,7 +418,7 @@ class Complain extends Component {
                     </Button>
                   ]}
                 >
-                  <div>
+                  <div style={{ overflow: 'unset' }}>
                     {this.props.chatList
                       ? this.props.chatList.map(item => {
                           return (

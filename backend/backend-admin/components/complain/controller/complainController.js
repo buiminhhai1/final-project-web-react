@@ -52,6 +52,8 @@ exports.updateComplain = async (req, res, next) => {
         text: content,
         html: `<h1>${content}</h1>`
       };
+      // thểm phần transaction ở đây nhé man
+
       sendEmail(msgComplainer);
       sendEmail(msg);
       return res.json({
