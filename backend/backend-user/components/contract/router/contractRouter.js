@@ -15,4 +15,9 @@ router.post('/createContract', passport.authenticate('jwt', {
 router.put('/update-contract', passport.authenticate('jwt', {
   session: false
 }), contractController.updateContract);
+
+router.put('/rating', passport.authenticate('jwt', {
+  session: false
+}), contractController.rateContract);
+
 module.exports = router;

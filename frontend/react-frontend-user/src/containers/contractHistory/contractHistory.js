@@ -5,10 +5,7 @@ import { Spin, message, Table, Divider, Icon, Modal } from 'antd';
 import { Container } from 'react-bootstrap';
 
 import {
-  sendRating,
-  sendComplain,
-  withdrawMoney,
-  getContracts, getMoney
+  sendRating, sendComplain, withdrawMoney, getContracts, getMoney, updateContract, endContract
 } from '../../store/actions/teaching';
 import { resetErrorMessage } from '../../store/actions/auth';
 import RatingModal from './ratingModal/ratingModal';
@@ -25,6 +22,7 @@ class contractHistory extends Component {
       withdrawVisible: false,
       endCourseVisible: false,
       removeVisible: false,
+      currentContractId: '',
     };
   }
 
@@ -51,7 +49,12 @@ class contractHistory extends Component {
   handleRating(data) {
     console.log(data);
     const token = 'Bearer ' + this.props.token;
-    this.props.sendRating(token, data);
+    let sendData = {
+      _id: this.state.currentContractId,
+      review: data.message,
+      score: data.rate,
+    }
+    this.props.sendRating(token, sendData);
   }
 
   handleComplain(message) {
@@ -64,6 +67,22 @@ class contractHistory extends Component {
     console.log(data);
     const token = 'Bearer ' + this.props.token;
     this.props.withdrawMoney(token, data);
+  }
+
+  handleRemove() {
+    const token = 'Bearer ' + this.props.token;
+    let data = {
+      _id: this.state.currentContractId,
+      review: '',
+      score: '',
+      status: -1,
+    }
+    this.props.updateContract(token, data);
+  }
+
+  handleEndCourse() {
+    const token = 'Bearer ' + this.props.token;
+    this.props.endContract(token, { contractId: this.state.currentContractId });
   }
 
   render() {
@@ -116,7 +135,7 @@ class contractHistory extends Component {
                 {data.index === 1 ?
                   <button
                     className="btn btn-outline-info d-flex align-items-center py-1"
-                    onClick={() => this.setState({ endCourseVisible: true })}
+                    onClick={() => this.setState({ endCourseVisible: true, currentContractId: data.id })}
                   >
                     <Icon className="mr-2" type="fast-forward" theme="filled" />
                     End course
@@ -124,7 +143,7 @@ class contractHistory extends Component {
                   :
                   <button
                     className="btn btn-outline-warning d-flex align-items-center py-1"
-                    onClick={() => this.setState({ ratingVisible: true })}
+                    onClick={() => this.setState({ ratingVisible: true, currentContractId: data.id })}
                   >
                     <Icon className="mr-2" type="star" theme="filled" />
                     Rating
@@ -133,7 +152,7 @@ class contractHistory extends Component {
                 <Divider type="vertical" />
                 <button
                   className="btn btn-outline-danger d-flex align-items-center py-1"
-                  onClick={() => this.setState({ complainVisible: true })}
+                  onClick={() => this.setState({ complainVisible: true, currentContractId: data.id })}
                 >
                   <Icon className="mr-2" type="frown" theme="filled" />
                   Complain
@@ -156,7 +175,7 @@ class contractHistory extends Component {
               <Divider type="vertical" />
               <button
                 className="btn btn-outline-danger d-flex align-items-center py-1"
-                onClick={() => this.setState({ removeVisible: true })}
+                onClick={() => this.setState({ removeVisible: true, currentContractId: data.id })}
               >
                 <Icon className="mr-2" type="delete" theme="filled" />
                 Remove
@@ -175,18 +194,20 @@ class contractHistory extends Component {
       }
     ];
 
-    const data = this.props.contracts.map(contract => {
-      return {
-        key: contract._id,
-        startDate: contract.from.replace(/-/g, '/'),
-        endDate: contract.to.replace(/-/g, '/'),
-        teacher: contract.nameUserContract,
-        totalCost: contract.hourRate,
-        totalTime: contract.totalHourCommit,
-        status: contract.status,
-        action: { index: contract.status, id: contract._id }
-      }
-    })
+    const data = this.props.contracts
+      .filter(contract => contract.status >= 0)
+      .map(contract => {
+        return {
+          key: contract._id,
+          startDate: contract.from.replace(/-/g, '/'),
+          endDate: contract.to.replace(/-/g, '/'),
+          teacher: contract.nameUserContract,
+          totalCost: contract.hourRate,
+          totalTime: contract.totalHourCommit,
+          status: contract.status,
+          action: { index: contract.status, id: contract._id }
+        }
+      })
 
     return (
       <div className="py-4">
@@ -210,6 +231,7 @@ class contractHistory extends Component {
           </Container>
           <RatingModal
             visible={this.state.ratingVisible}
+            // visible={true}
             submitRating={data => this.handleRating(data)}
             close={() => this.setState({ ratingVisible: false })}
             loading={this.props.pending}
@@ -229,16 +251,18 @@ class contractHistory extends Component {
           <Modal
             title="Confirmation"
             visible={this.state.endCourseVisible}
-            onOk={this.handleEndCourse}
-            onCancel={() => this.setState({endCourseVisible: false})}
+            confirmLoading={this.props.pending}
+            onOk={() => this.handleEndCourse()}
+            onCancel={() => this.setState({ endCourseVisible: false })}
           >
             <p>Are you sure to end this course sooner than due date?</p>
           </Modal>
           <Modal
             title="Confirmation"
             visible={this.state.removeVisible}
-            onOk={this.handleRemove}
-            onCancel={() => this.setState({removeVisible: false})}
+            confirmLoading={this.props.pending}
+            onOk={() => this.handleRemove()}
+            onCancel={() => this.setState({ removeVisible: false })}
           >
             <p>Are you sure to remove this course?</p>
           </Modal>
@@ -262,11 +286,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      resetErrorMessage,
-      sendRating,
-      sendComplain,
-      withdrawMoney,
-      getContracts, getMoney
+      resetErrorMessage, sendRating, sendComplain, withdrawMoney,
+      getContracts, getMoney, updateContract, endContract
     },
     dispatch
   );

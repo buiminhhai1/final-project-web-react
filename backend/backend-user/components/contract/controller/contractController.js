@@ -149,3 +149,52 @@ exports.updateContract = async (req, res, next) => {
     });
   }
 };
+
+exports.rateContract = async (req, res, next) => {
+  const {
+    _id,
+    review,
+    score,
+  } = req.body;
+  try {
+    const contract = await ContractModel.findById(_id);
+    const idTeach = contract.teacher.userId;
+    const idStudent = contract.student.userId;
+    const teacher = await UserModel.findById(idTeach);
+    const student = await UserModel.findById(idStudent);
+    if (teacher && student) {
+      const updateTeacher = teacher.contracts.id(_id);
+      updateTeacher.review = review;
+      updateTeacher.score = score;
+      // teacher.contracts.id(_id) = updateTeacher;
+      const updateStudent = student.contracts.id(_id);
+      updateStudent.review = review;
+      updateStudent.score = score;
+      await teacher.save();
+      await student.save();
+    } else {
+      return res.json({
+        message: 'update contract has failed because user not fount'
+      });
+    }
+
+    if (contract) {
+      contract.review = review;
+      contract.score = score;
+      await contract.save();
+      return res.json({
+        contract,
+        message: 'update contract has success'
+      });
+    }
+    return res.json({
+      message: 'update contract has fail',
+      error: 'update contract has failed'
+    });
+  } catch (err) {
+    return res.json({
+      error: err,
+      message: 'update has failed!'
+    });
+  }
+};

@@ -384,6 +384,60 @@ export function getContracts(token) {
   };
 }
 
+export function updateContract(token, data) {
+  return dispatch => {
+    dispatch(getContractsPending());
+    const updateContractUrl = apiUrl + '/contract/update-contract';
+
+    axios({
+      method: 'put',
+      url: updateContractUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
+      .then(res => {
+        console.log(res.data.contract);
+        if (res.data.contract) {
+          getContracts(token);
+        } else {
+          dispatch(getContractsFail(res.data.error));
+        }
+      })
+      .catch(err => {
+        dispatch(getContractsFail('Something wrong happened'));
+      });
+  };
+}
+
+export function endContract(token, data) {
+  return dispatch => {
+    dispatch(getContractsPending());
+    const endContractUrl = apiUrl + '/transaction/completeCourse';
+
+    axios({
+      method: 'post',
+      url: endContractUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
+      .then(res => {
+        console.log(res.data.contract);
+        if (res.data.contract) {
+          getContracts(token);
+        } else {
+          dispatch(getContractsFail(res.data.error));
+        }
+      })
+      .catch(err => {
+        dispatch(getContractsFail('Something wrong happened'));
+      });
+  };
+}
+
 export const getMoneyPending = () => {
   return {
     type: actionTypes.GET_MONEY_PENDING
@@ -452,11 +506,11 @@ export const sendRatingFail = error => {
 export function sendRating(token, data) {
   return dispatch => {
     dispatch(sendRatingPending());
-    const ratingUrl = apiUrl + '/sendRating';
-    //console.log(data);
+    const ratingUrl = apiUrl + '/contract/rating';
+    console.log(data);
 
     axios({
-      method: 'post',
+      method: 'put',
       url: ratingUrl,
       headers: {
         Authorization: token

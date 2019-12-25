@@ -8,12 +8,16 @@ router.get('/payment', transactionController.checkout);
 router.get('/payment/cancel', transactionController.cancelCheckout);
 router.get('/payment/success', transactionController.successCheckout);
 
-router.post('/withdraw', transactionController.withdraw);
-
-router.post('/transfer', transactionController.transfer);
-router.post('/checkBalance', passport.authenticate('jwt', {
+router.post('/withdraw',passport.authenticate('jwt', {
     session: false
-}), transactionController.checkBalance);
+  }), transactionController.withdraw);
+
+router.post('/transfer',passport.authenticate('jwt', {
+    session: false
+  }), transactionController.transfer);
+router.get('/checkBalance',passport.authenticate('jwt', {
+    session: false
+  }),transactionController.checkBalance);
 
 
 module.exports = router;

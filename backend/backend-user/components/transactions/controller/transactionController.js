@@ -14,27 +14,36 @@ exports.checkout = (req, res) => {
       res.redirect(failedUrl);
     } else {
       try {
-        const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
-        const amount = contract.totalHourCommit * contract.hourRate;
-        const payment_json = create_payment_json(amount,
-          `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
-          `${BACKEND_USER_URL}/transaction/payment/cancel?failedUrl=${failedUrl}`);
-        //Set the id of the created payment experience in payment json
-        var experience_profile_id = web_profile.id;
-        payment_json.experience_profile_id = experience_profile_id;
+        const existTransaction = await TransactionModel.findOne({
+          method: "PAYMENT", 'detail.payment.contractId': contractId
+        });
+        if (existTransaction) {
+          console.log('exist');
+          res.redirect(failedUrl);
+        } else {
+          const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
+          const amount = contract.totalHourCommit * contract.hourRate;
+          const payment_json = create_payment_json(amount,
+            `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
+            `${BACKEND_USER_URL}/transaction/payment/cancel?failedUrl=${failedUrl}`);
+          //Set the id of the created payment experience in payment json
+          var experience_profile_id = web_profile.id;
+          payment_json.experience_profile_id = experience_profile_id;
 
-        paypal.payment.create(payment_json, function (error, payment) {
-          if (error) {
-            throw error;
-          } else {
-            for (let i = 0; i < payment.links.length; i++) {
-              if (payment.links[i].rel === 'approval_url') {
-                res.redirect(payment.links[i].href);
-                break;
+          paypal.payment.create(payment_json, function (error, payment) {
+            if (error) {
+              throw error;
+            } else {
+              for (let i = 0; i < payment.links.length; i++) {
+                if (payment.links[i].rel === 'approval_url') {
+                  res.redirect(payment.links[i].href);
+                  break;
+                }
               }
             }
-          }
-        });
+          });
+        }
+
       }
       catch (error) {
         console.log('cannot get contract ' + contractId);
@@ -103,14 +112,21 @@ exports.cancelCheckout = (req, res) => {
 };
 
 exports.checkBalance = async (req, res) => {
-  const { idUser } = req.body;
-  console.log(req.user);
-  
-  const balance = await checkBalanceUser(idUser);
-  if (balance < 0) {
+  try {
+    if (req.user) {
+      const idUser = req.user.user._id;
+      const balance = await checkBalanceUser(idUser);
+      if (balance < 0) {
+        res.json({ result: false, balance, message: 'Cannot check balance' });
+      } else {
+        res.json({ result: true, balance, message: 'Check balance success' });
+      }
+    } else {
+      res.json({ result: false, balance, message: 'Cannot check balance' });
+    }
+
+  } catch (error) {
     res.json({ result: false, balance, message: 'Cannot check balance' });
-  } else {
-    res.json({ result: true, balance, message: 'Check balance success' });
   }
 }
 
@@ -183,7 +199,7 @@ exports.transfer = async (req, res) => {
     console.log(existTransaction);
     if (existTransaction) res.json({ result: false, message: "cannot transfer money" });
     else {
-      const contract = await ContractModel.findOne({ _id: idContract, status: { $ne: 1 } });
+      const contract = await ContractModel.findOne({ _id: idContract, status: { $gt: 1 } });
       if (contract) {
         let idReceiveMoney = (contract.status == 2) ? contract.teacher._id : contract.student._id;
         const transaction = new TransactionModel({
