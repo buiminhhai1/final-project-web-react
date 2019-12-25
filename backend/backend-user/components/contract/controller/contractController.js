@@ -150,6 +150,23 @@ exports.updateContract = async (req, res, next) => {
   }
 };
 
+const totalScore = (list,score)=>{
+  let sum = 0;
+  let count = 0;
+  if(!!score && score>0){
+    count +=1;
+    sum = score;
+  } 
+  list.forEach(element => {
+    if(!!element.score && element.score>0) {
+      sum += score;
+      count+=1;
+    }
+  });
+  if(count>0) return Math.round(sum/count);
+  else return 0; 
+}
+
 exports.rateContract = async (req, res, next) => {
   const {
     _id,
@@ -163,6 +180,7 @@ exports.rateContract = async (req, res, next) => {
     const teacher = await UserModel.findById(idTeach);
     const student = await UserModel.findById(idStudent);
     if (teacher && student) {
+      teacher.totalScore = totalScore(teacher.contracts,score);
       const updateTeacher = teacher.contracts.id(_id);
       updateTeacher.review = review;
       updateTeacher.score = score;
