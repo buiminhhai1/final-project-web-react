@@ -103,9 +103,6 @@ export const getDetailUser = userId => dispatch => {
       headers
     })
     .then(res => {
-      console.log('res user');
-      console.log(res);
-      console.log(res.data.user);
       if (res.data.user) {
         dispatch(getDetailUserSuccess(res.data.user));
       } else {

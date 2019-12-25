@@ -16,6 +16,7 @@ const levelEducationRouter = require('./components/level-education/router/levelE
 const userRouter = require('./components/users/router/userRouter');
 const locationRouter = require('./components/locations/router/locationRouter');
 const contractRouter = require('./components/contracts/router/contractRouter');
+const complainRouter = require('./components/complain/router/complainRouter');
 
 require('./components/utils/authentication/passport');
 const dbInfo = require('./components/utils/const/constant');
@@ -64,6 +65,8 @@ app.use('/location', locationRouter);
 app.use('/skill', skillRouter);
 app.use('/users', userRouter);
 app.use('/contract', contractRouter);
+app.use('/complain', complainRouter);
+
 app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({
     info: req.user.user

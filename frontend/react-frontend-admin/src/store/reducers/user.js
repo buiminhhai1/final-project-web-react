@@ -82,7 +82,8 @@ const updateUserFail = (state, action) =>
 const refreshMessage = state =>
   updateObject(state, {
     message: null,
-    error: null
+    error: null,
+    userDetail: null
   });
 
 const getUserDetailStart = state =>

@@ -57,6 +57,10 @@ const asyncContract = AsyncComponent(() => {
   return import('./containers/Contract/Contract');
 });
 
+const asyncComplain = AsyncComponent(() => {
+  return import('./containers/Complain/Complain');
+});
+
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
@@ -76,6 +80,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={asyncHomePage} />
           <Route path="/contract*" exact component={asyncContract} />
+          <Route path="/complain*" exact component={asyncComplain} />
           <Route path="/skills*" component={asyncSkill} />
           <Route path="/students*" component={asyncStudent} />
           <Route path="/teachers*" component={asyncTeacher} />

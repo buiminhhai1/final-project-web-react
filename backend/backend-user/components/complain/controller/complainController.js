@@ -12,7 +12,8 @@ exports.createComplain = async (req, res, next) => {
     _id: new mongoose.Types.ObjectId(),
     userComplain,
     contract,
-    content
+    content,
+    status: 0
   });
 
   try {
