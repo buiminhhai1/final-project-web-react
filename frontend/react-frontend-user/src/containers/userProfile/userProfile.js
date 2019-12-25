@@ -77,6 +77,9 @@ class userProfile extends Component {
     const { teacher } = this.props;
     const successMessage = null;
     const errorMessage = null;
+    const successContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 2).length : 0;
+    const failContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 3).length : 0;
+    const successRate = failContracts === 0 ? 0 : successContracts * 100 / (successContracts + failContracts);
 
     return (
       <div className="teacher-profile p-4">
@@ -118,7 +121,7 @@ class userProfile extends Component {
               </div>
               <div className="ml-2">
                 <h5>Rating:</h5>
-                <Rate allowHalf defaultValue={teacher.totalScore} disabled />
+                <Rate defaultValue={1} value={teacher.totalScore} disabled />
               </div>
             </div>
             <div className="mb-3">
@@ -160,6 +163,14 @@ class userProfile extends Component {
                 )}
                 <p>Contracts</p>
               </Col>
+              <Col sm>
+                {teacher.contracts && (
+                  <h5 style={{ color: '#000' }}>
+                    {successRate} <b>%</b>
+                  </h5>
+                )}
+                <p>Success rate</p>
+              </Col>
             </Row>
           </Container>
           <Container className="shadow mt-3 p-3 bg-white">
@@ -184,15 +195,17 @@ class userProfile extends Component {
               </h5>
               <Divider className="my-2" />
               {teacher.contracts &&
-                teacher.contracts.map(contract =>
-                  <div key={contract._id}>
-                    <Rating key={contract._id} name="zzz" rate={2}
-                      startDate={contract.from} endDate={contract.to}
-                      review={contract.review} hourPay={contract.hourRate}
-                      hourWork={contract.totalHourCommit} />
-                    <Divider className="my-2" />
-                  </div>
-                )}
+                teacher.contracts.map(contract => {
+                  if (contract.status === 2)
+                    return (
+                      <div key={contract._id}>
+                        <Rating key={contract._id} name={contract.nameUserContract} rate={contract.score}
+                          startDate={contract.from} endDate={contract.to}
+                          review={contract.review} hourPay={contract.hourRate}
+                          hourWork={contract.totalHourCommit} />
+                        <Divider className="my-2" />
+                      </div>)
+                })}
             </div>
           </Container>
           {this.props.user && this.props.user.userId !== this.state.teacherId &&
