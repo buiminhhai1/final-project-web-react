@@ -14,7 +14,8 @@ import {
   Button,
   Rate,
   Modal,
-  message
+  message,
+  Divider
 } from 'antd';
 import 'antd/dist/antd.css';
 import * as actions from '../../store/actions/index';
@@ -421,21 +422,24 @@ class Complain extends Component {
                     {this.props.chatList
                       ? this.props.chatList.map(item => {
                           return (
-                            <Text
-                              key={item._id}
-                              style={{ marginBottom: '10px' }}
-                            >
-                              <strong>
-                                {(item.idUser === teacher.userId
-                                  ? teacher.email
-                                  : student.email) +
-                                  ' ' +
-                                  '   ' +
-                                  item.time}
-                              </strong>
-                              <br />
-                              {item.message}
-                            </Text>
+                            <div key={item._id + 'some'}>
+                              <Text
+                                key={item._id}
+                                style={{ marginBottom: '10px' }}
+                              >
+                                <strong>
+                                  {(item.idUser === teacher.userId
+                                    ? teacher.email
+                                    : student.email) +
+                                    ' ' +
+                                    '   ' +
+                                    item.time}
+                                </strong>
+                                <br />
+                                {item.message}
+                              </Text>
+                              <Divider key={item._id + 'di'} />
+                            </div>
                           );
                         })
                       : null}
