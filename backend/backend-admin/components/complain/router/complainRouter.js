@@ -8,12 +8,9 @@ router.get('/getListComplain', passport.authenticate('jwt', {
   session: false
 }), complainController.getListComplain);
 
+
 router.put('/updateStatusComplain', passport.authenticate('jwt', {
   session: false
-}), complainController.updateStatusComplain);
-
-// router.put('/updateComplain', passport.authenticate('jwt', {
-//   session: false
-// }), complainController.updateComplain);
+}), complainController.updateComplain);
 
 module.exports = router;

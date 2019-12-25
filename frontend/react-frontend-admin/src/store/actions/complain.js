@@ -5,12 +5,12 @@ export const getListComplainStart = () => ({
   type: actionTypes.GET_LIST_COMPLAIN_START
 });
 
-export const getListComplainSuccess = (complains) => ({
+export const getListComplainSuccess = complains => ({
   type: actionTypes.GET_LIST_COMPLAIN_SUCCESS,
   complains
 });
 
-export const getListComplainFail = (error) => ({
+export const getListComplainFail = error => ({
   type: actionTypes.GET_LIST_COMPLAIN_FAIL,
   error
 });
@@ -43,23 +43,25 @@ export const updateStatusComplainStart = () => ({
   type: actionTypes.UPDATE_STATUS_COMPLAIN_START
 });
 
-export const updateStatusComplainSuccess = (complain) => ({
+export const updateStatusComplainSuccess = (complain, message) => ({
   type: actionTypes.UPDATE_STATUS_COMPLAIN_SUCCESS,
-  complain
+  complain,
+  message
 });
 
-export const updateStatusComplainFail = (error) => ({
+export const updateStatusComplainFail = error => ({
   type: actionTypes.UPDATE_STATUS_COMPLAIN_FAIL,
-  error
+  message: error
 });
 
-export const updateStatusComplain = (_id, status) => dispatch => {
+export const updateStatusComplain = (_id, status, content) => dispatch => {
   dispatch(updateStatusComplainStart());
   const data = {
     _id,
-    status
+    status,
+    content
   };
-  const url = 'http://localhost:4200/complain/getListComplain';
+  const url = 'http://localhost:4200/complain/updateStatusComplain';
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -71,7 +73,7 @@ export const updateStatusComplain = (_id, status) => dispatch => {
     })
     .then(res => {
       if (res.data.complain) {
-        dispatch(updateStatusComplainSuccess(res.data.complain))
+        dispatch(updateStatusComplainSuccess(res.data.complain, res.data.message));
       } else {
         dispatch(updateStatusComplainFail('update complain has failed!'));
       }

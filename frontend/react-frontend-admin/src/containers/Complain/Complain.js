@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Table, Spin, Rate, Tag, Input, Popover, Col, Row, Icon } from 'antd';
+import {
+  Typography,
+  Table,
+  Spin,
+  Tag,
+  Input,
+  Popover,
+  Col,
+  Row,
+  Icon,
+  Button,
+  Rate,
+  Modal,
+  message
+} from 'antd';
 import 'antd/dist/antd.css';
 import * as actions from '../../store/actions/index';
 
-const { Search } = Input;
+const { Search, TextArea } = Input;
+const { Text } = Typography;
 
 class Complain extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      _id: '',
       redirect: '',
+      visible: false,
+      content: '',
       complainColumns: [
         {
           title: 'Complainer Detail',
           dataIndex: 'complainer',
           key: 'complainer',
+          fixed: 'left',
+          width: '140px',
           render: (text, record) => {
             const idComplainer = record.userComplain.userId;
             return (
@@ -45,6 +65,8 @@ class Complain extends Component {
           title: 'Teacher Detail',
           dataIndex: 'teacher',
           key: 'teacher',
+          fixed: 'left',
+          width: '140px',
           render: (text, record) => {
             const idTeacher = record.contract.teacher.userId;
             return (
@@ -70,6 +92,36 @@ class Complain extends Component {
           }
         },
         {
+          title: 'Student Detail',
+          dataIndex: 'studentdetail',
+          key: 'studentdetail',
+          fixed: 'left',
+          width: '140px',
+          render: (text, record) => {
+            const idStudent = record.contract.student.userId;
+            return (
+              <div>
+                <Popover
+                  content={<div>Click view detail Student</div>}
+                  trigger="hover"
+                >
+                  <div
+                    onClick={() => {
+                      this.getDetailUser(idStudent);
+                    }}
+                  >
+                    <strong style={{ color: '#003a8c' }}>
+                      {record.contract.student.name}
+                      <br />
+                      {record.contract.student.email}
+                    </strong>
+                  </div>
+                </Popover>
+              </div>
+            );
+          }
+        },
+        {
           title: 'From to',
           dataIndex: 'timecontract',
           key: 'timecontract',
@@ -83,7 +135,7 @@ class Complain extends Component {
           }
         },
         {
-          title: 'hours & price & value',
+          title: 'Detail contract',
           dataIndex: 'hrsprice',
           key: 'hrsprice',
           render: (text, record) => {
@@ -91,24 +143,12 @@ class Complain extends Component {
               <div>
                 <strong>{record.contract.totalHourCommit + ' hrs'}</strong>
                 <br />
-                <strong>{record.contract.hourRate + ' $'}</strong>
+                <strong>{record.contract.hourRate + ' $ per hr'}</strong>
                 <br />
                 <strong>
                   {record.contract.totalHourCommit * record.contract.hourRate +
                     ' $'}
                 </strong>
-              </div>
-            );
-          }
-        },
-        {
-          title: 'Content',
-          dataIndex: 'content',
-          key: 'content',
-          render: (text, record) => {
-            return (
-              <div>
-                <strong>{record.content}</strong>
               </div>
             );
           }
@@ -123,15 +163,28 @@ class Complain extends Component {
               disabled
               key="ratingkey"
               allowHalf
-              value={record.score}
+              value={record.contract.score}
               style={{ fontSize: '15px', marginLeft: '0px' }}
             />
           )
         },
         {
+          title: 'Content',
+          dataIndex: 'content',
+          key: 'content',
+          render: (text, record) => {
+            return (
+              <div>
+                <strong>{record.content}</strong>
+              </div>
+            );
+          }
+        },
+        {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
+          fixed: 'right',
           render: (text, record) => {
             let color;
             let status;
@@ -151,11 +204,37 @@ class Complain extends Component {
             return (
               <div>
                 <Tag color={color}>{status}</Tag>
+              </div>
+            );
+          }
+        },
+        {
+          title: 'Action',
+          dataIndex: 'action',
+          key: 'action',
+          fixed: 'right',
+          render: (text, record) => {
+            return (
+              <div>
                 <Popover
                   content={<div>Edit status complain</div>}
                   trigger="hover"
                 >
-                  <Icon type="edit" onClick={this.showModal} />
+                  <Icon
+                    style={{ marginRight: '10px' }}
+                    type="edit"
+                    onClick={() => {
+                      this.setState({
+                        visible: true,
+                        _id: record._id
+                      });
+                    }}
+                  />
+                </Popover>
+                <Popover content={<div>View Chat Detail</div>} trigger="hover">
+                  <Button type="primary" size="small">
+                    View Chat
+                  </Button>
                 </Popover>
               </div>
             );
@@ -169,11 +248,30 @@ class Complain extends Component {
     this.props.onGetListComplain();
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    console.log('message');
+    this.props.onRefreshMessage();
+    if (this.props.error) {
+      this.render.actionMessage = message.error(this.props.message);
+    } else if (this.props.message) {
+      this.render.actionMessage = message.success(this.props.message);
+    }
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      visibleConfirm: false
+    });
+  };
+
+  onChangeContent = event => {
+    this.setState({ content: event.target.value });
+  };
 
   getDetailUser = async userId => {
     await this.props.onGetDetailUser(userId);
-    await this.setState({
+    this.setState({
       redirect: (
         <Redirect
           to={{
@@ -185,7 +283,21 @@ class Complain extends Component {
     });
   };
 
+  handleChangeStatus = async status => {
+    await this.props.onUpdateStatusComplain(
+      this.state._id,
+      status,
+      this.state.content
+    );
+    this.setState({
+      content: '',
+      visible: false
+    });
+  };
+
   render() {
+    const { visible } = this.state;
+    const actionMessage = null;
     return (
       <div>
         {this.props.userDetail ? (
@@ -217,9 +329,58 @@ class Complain extends Component {
                     ? this.props.complainData
                     : []
                 }
-                size="middle"
+                scroll={{ x: 1250, y: 600 }}
               />
             }
+            {actionMessage}
+            {this.props.complainData ? (
+              <div>
+                <Modal
+                  visible={visible}
+                  title="ARE SURE BLOCKING THIS USER ???"
+                  onOk={this.handleChangeStatus}
+                  onCancel={this.handleCancel}
+                  confirmLoading={this.props.loading}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>,
+                    <Button
+                      key="approved"
+                      type={'primary'}
+                      onClick={() => {
+                        this.handleChangeStatus(1);
+                      }}
+                      disabled={!this.state.content}
+                    >
+                      Approve
+                    </Button>,
+                    <Button
+                      key="reject"
+                      type={'danger'}
+                      onClick={() => {
+                        this.handleChangeStatus(2);
+                      }}
+                      disabled={!this.state.content}
+                    >
+                      Reject
+                    </Button>
+                  ]}
+                >
+                  <div>
+                    <Text style={{ marginBottom: '10px' }}>
+                      Reason <span style={{ color: 'red' }}>*</span>
+                    </Text>
+                    <TextArea
+                      rows={4}
+                      value={this.state.content}
+                      onChange={this.onChangeContent}
+                      placeholder="Reason"
+                    />
+                  </div>
+                </Modal>
+              </div>
+            ) : null}
           </div>
         </Spin>
       </div>
@@ -238,9 +399,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onGetListComplain: () => dispatch(actions.getListComplain()),
-  onUpdateStatusComplain: (_id, status) =>
-    dispatch(actions.updateStatusComplain(_id, status)),
-  onGetDetailUser: userId => dispatch(actions.getDetailUser(userId))
+  onUpdateStatusComplain: (_id, status, content) =>
+    dispatch(actions.updateStatusComplain(_id, status, content)),
+  onGetDetailUser: userId => dispatch(actions.getDetailUser(userId)),
+  onRefreshMessage: () => dispatch(actions.refreshMessageUComplain())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Complain);
