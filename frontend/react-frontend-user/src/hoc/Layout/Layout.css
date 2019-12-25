@@ -15,12 +15,12 @@ body,
     height: 100% !important;
 }
 
+/*
 body,
 #root {
     display: flex;
     flex-direction: column;
-    height: 100vh !important;
-}
+} */
 
 main {
     flex: 1 0 auto;

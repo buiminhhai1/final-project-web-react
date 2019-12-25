@@ -38,7 +38,7 @@ export function getSubjects() {
         dispatch(getSubjectsSuccess(subjects));
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         dispatch(getSubjectsFail(err));
       });
   };
@@ -76,7 +76,7 @@ export function getEducationLevel() {
         dispatch(getEducationLevelSuccess(level));
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         dispatch(getEducationLevelFail(err));
       });
   };
@@ -114,7 +114,7 @@ export function getLevel() {
         dispatch(getLevelSuccess(level));
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         dispatch(getLevelFail(err));
       });
   };
@@ -149,12 +149,12 @@ export function getTeachers() {
       .get(url)
       .then(res => {
         let teachers = res.data.users;
-        console.log(teachers);
+        //console.log(teachers);
 
         dispatch(getTeachersSuccess(teachers));
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         dispatch(getTeachersFail(err));
       });
   };
@@ -239,7 +239,7 @@ export function getLocations() {
         } else dispatch(getLocationsFail(res.data.message));
       })
       .catch(err => {
-        console.log(err);
+        //console.log(err);
         dispatch(getLocationsFail(err));
       });
   };
@@ -270,15 +270,15 @@ export function sendFirstMessage(token, data) {
     const chatUrl = apiUrl + '/chat/groups';
 
     axios({
-        method: 'post',
-        url: chatUrl,
-        headers: {
-          Authorization: token
-        },
-        data
-      })
+      method: 'post',
+      url: chatUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         if (res.data.result) {
           dispatch(sendFirstMessageSuccess());
         } else {
@@ -313,19 +313,19 @@ export const createContractFail = error => {
 export function createContract(token, data) {
   return dispatch => {
     dispatch(createContractPending());
-    const chatUrl = apiUrl + '/contract/createContract';
-    console.log(data);
+    const contractUrl = apiUrl + '/contract/createContract';
+    //console.log(data);
 
     axios({
-        method: 'post',
-        url: chatUrl,
-        headers: {
-          Authorization: token
-        },
-        data
-      })
+      method: 'post',
+      url: contractUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         if (res.data.result) {
           dispatch(createContractSuccess());
         } else {
@@ -334,6 +334,98 @@ export function createContract(token, data) {
       })
       .catch(err => {
         dispatch(createContractFail('Something wrong happened'));
+      });
+  };
+}
+
+export const getContractsPending = () => {
+  return {
+    type: actionTypes.GET_CONTRACTS_PENDING
+  };
+};
+
+export const getContractsSuccess = (contracts) => {
+  return {
+    type: actionTypes.GET_CONTRACTS_SUCCESS,
+    contracts
+  };
+};
+
+export const getContractsFail = error => {
+  return {
+    type: actionTypes.GET_CONTRACTS_ERROR,
+    error
+  };
+};
+
+export function getContracts(token) {
+  return dispatch => {
+    dispatch(getContractsPending());
+    const contractUrl = apiUrl + '/contract/getContracts';
+
+    axios({
+      method: 'get',
+      url: contractUrl,
+      headers: {
+        Authorization: token
+      }
+    })
+      .then(res => {
+        //console.log(res.data.contracts);
+        if (res.data.contracts) {
+          dispatch(getContractsSuccess(res.data.contracts));
+        } else {
+          dispatch(getContractsFail(res.data.error));
+        }
+      })
+      .catch(err => {
+        dispatch(getContractsFail('Something wrong happened'));
+      });
+  };
+}
+
+export const getMoneyPending = () => {
+  return {
+    type: actionTypes.GET_MONEY_PENDING
+  };
+};
+
+export const getMoneySuccess = (money) => {
+  return {
+    type: actionTypes.GET_MONEY_SUCCESS,
+    money
+  };
+};
+
+export const getMoneyFail = error => {
+  return {
+    type: actionTypes.GET_MONEY_ERROR,
+    error
+  };
+};
+
+export function getMoney(token) {
+  return dispatch => {
+    dispatch(getMoneyPending());
+    const contractUrl = apiUrl + '/contract/getMoney';
+
+    axios({
+      method: 'get',
+      url: contractUrl,
+      headers: {
+        Authorization: token
+      }
+    })
+      .then(res => {
+        //console.log(res.data.money);
+        if (res.data.money) {
+          dispatch(getMoneySuccess(res.data.money));
+        } else {
+          dispatch(getMoneyFail('Something wrong happened'));
+        }
+      })
+      .catch(err => {
+        dispatch(getMoneyFail('Something wrong happened'));
       });
   };
 }
@@ -361,18 +453,18 @@ export function sendRating(token, data) {
   return dispatch => {
     dispatch(sendRatingPending());
     const ratingUrl = apiUrl + '/sendRating';
-    console.log(data);
+    //console.log(data);
 
     axios({
-        method: 'post',
-        url: ratingUrl,
-        headers: {
-          Authorization: token
-        },
-        data
-      })
+      method: 'post',
+      url: ratingUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         if (res.data.result) {
           dispatch(sendRatingSuccess());
         } else {
@@ -408,18 +500,18 @@ export function sendComplain(token, data) {
   return dispatch => {
     dispatch(sendComplainPending());
     const complainUrl = apiUrl + '/sendComplain';
-    console.log(data);
+    //console.log(data);
 
     axios({
-        method: 'post',
-        url: complainUrl,
-        headers: {
-          Authorization: token
-        },
-        data
-      })
+      method: 'post',
+      url: complainUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         if (res.data.result) {
           dispatch(sendComplainSuccess());
         } else {
@@ -455,18 +547,18 @@ export function withdrawMoney(token, data) {
   return dispatch => {
     dispatch(withdrawMoneyPending());
     const withdrawUrl = apiUrl + '/withdrawMoney';
-    console.log(data);
+    //console.log(data);
 
     axios({
-        method: 'post',
-        url: withdrawUrl,
-        headers: {
-          Authorization: token
-        },
-        data
-      })
+      method: 'post',
+      url: withdrawUrl,
+      headers: {
+        Authorization: token
+      },
+      data
+    })
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         if (res.data.result) {
           dispatch(withdrawMoneySuccess());
         } else {

@@ -71,9 +71,6 @@ app.use('/contract',passport.authenticate('jwt', {
   session: false
 }), contractRouter);
 
-
-
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

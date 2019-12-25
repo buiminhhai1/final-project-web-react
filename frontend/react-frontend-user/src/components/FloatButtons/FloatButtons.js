@@ -7,20 +7,17 @@ export default function FloatButtons(props) {
   return (
     <Container>
       <Button
-        onClick={() => {props.setChatVisible()}}
+        onClick={() => { props.setChatVisible() }}
+        className="support-btn  btn-lg text-white"
         tooltip="Chat with this teacher"
         icon="fas fa-comments"
       />
       <Button
-        onClick={() => {props.setHireVisible()}}
+        onClick={() => { props.setHireVisible() }}
+        className="btn-lg text-white"
         tooltip="Hire this teacher"
-        icon="fas fa-user-plus"
-      />
-      <Button
-        tooltip="Contact with this teacher"
-        className="fab-item btn btn-link btn-lg text-white"
-        icon="fas fa-phone"
         rotate={true}
+        icon="fas fa-handshake fa-lg"
       />
     </Container>
   );

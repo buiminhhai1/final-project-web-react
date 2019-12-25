@@ -6,3 +6,10 @@
     width: 10px;
     height: 10px;
 }
+
+.teacher-profile {
+    max-width: 900px ;
+    display: block;
+    justify-content: space-between;
+    margin-left: 50px;
+}

@@ -3,6 +3,13 @@ const ContractModel = require('../model/contractModel');
 const UserModel = require('../../users/model/userModel');
 const SubUserModel = require('../model/subUserModel');
 
+exports.getContracts = async (req, res, next) => {
+  if(!!req.user){
+    return res.json({contracts: req.user.user.contracts});
+  }
+  return res.json({error: 'Cannor find user'});
+};
+
 exports.createContract = async (req, res, next) => {
   const {
     student,
@@ -66,23 +73,25 @@ exports.createContract = async (req, res, next) => {
     } else {
       return res.json({
         message: 'not found user',
-        error: 'not found user!'
+        error: 'not found user!',
+        result: false,
       });
     }
     if (result) {
       return res.json({
+        result: true,
         contract: result,
         message: 'create message success'
       });
     }
     return res.json({
+      result: false,
       error: 'create contract has failed',
-      message: 'create contract has failed'
     });
   } catch (err) {
     return res.json({
       error: err,
-      message: 'some thing went wrong!'
+      result: false,
     });
   }
 };
