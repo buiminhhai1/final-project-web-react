@@ -18,12 +18,18 @@ router.post('/user-profile', passport.authenticate('jwt', {
 router.post('/teacher-profile', passport.authenticate('jwt', {
     session: false
 }), userController.updateTeacher);
-router.post('/image-upload', userController.uploadImage);
+router.post('/image-upload',passport.authenticate('jwt', {
+    session: false
+}), userController.uploadImage);
 
 router.get('/verify', userController.verifyUser);
 router.post('/changePassword', passport.authenticate('jwt', {
     session: false
 }), userController.changePassword);
-router.post('/resetPassword', userController.resetPassword);
-router.post('/sendEmailResetPassword', userController.sendEmailResetPassword);
+router.post('/resetPassword',passport.authenticate('jwt', {
+    session: false
+}), userController.resetPassword);
+router.post('/sendEmailResetPassword',passport.authenticate('jwt', {
+    session: false
+}), userController.sendEmailResetPassword);
 module.exports = router;
