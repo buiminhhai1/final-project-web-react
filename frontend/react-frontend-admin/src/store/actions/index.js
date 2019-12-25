@@ -50,6 +50,7 @@ from './levelEducation';
 export {
   getListUser,
   updateUser,
+  getDetailUser,
   refreshMessageUUser
 }
 from './user';

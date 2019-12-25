@@ -1,9 +1,12 @@
 import * as actionTypes from '../actions/actionTypes';
 
-import { updateObject } from '../../shared/utility';
+import {
+  updateObject
+} from '../../shared/utility';
 
 const initialState = {
   userData: [],
+  userDetail: null,
   loading: false,
   error: null,
   message: null,
@@ -82,6 +85,30 @@ const refreshMessage = state =>
     error: null
   });
 
+const getUserDetailStart = state =>
+  updateObject(state, {
+    message: null,
+    error: null,
+    loading: true,
+    userDetail: null,
+  });
+
+const getUserDetailSuccess = (state, action) =>
+  updateObject(state, {
+    loading: false,
+    message: 'get detail user success',
+    error: null,
+    userDetail: action.user
+  });
+
+const getUserDetailFail = (state, action) =>
+  updateObject(state, {
+    loading: false,
+    error: true,
+    message: action.error,
+    userDetail: null,
+  });
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_LIST_USER_START:
@@ -98,6 +125,12 @@ const reducer = (state = initialState, action) => {
       return updateUserFail(state, action);
     case actionTypes.REFRESH_MESSAGE_CRUD:
       return refreshMessage(state);
+    case actionTypes.GET_DETAIL_USER_START:
+      return getUserDetailStart(state);
+    case actionTypes.GET_DETAIL_USER_SUCCESS:
+      return getUserDetailSuccess(state, action);
+    case actionTypes.GET_DETAIL_USER_FAIL:
+      return getUserDetailFail(state, action);
     default:
       return state;
   }
