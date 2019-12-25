@@ -60,10 +60,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/chat', chatRouter);
+app.use('/chat',passport.authenticate('jwt', {
+  session: false
+}), chatRouter);
 app.use('/users', usersRouter);
-app.use('/transaction', transactionRouter);
-app.use('/contract', contractRouter);
+app.use('/transaction',passport.authenticate('jwt', {
+  session: false
+}), transactionRouter);
+app.use('/contract',passport.authenticate('jwt', {
+  session: false
+}), contractRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

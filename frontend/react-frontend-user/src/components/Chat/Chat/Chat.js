@@ -47,7 +47,7 @@ const themes = {
 };
 
 const Chat = props => {
-  const [groupName, setGroupName] = useState('');
+  // const [groupName, setGroupName] = useState('');
   const [toUser, setToUser] = useState({});
   const [user, setUser] = useState({});
   const [currentGroup, setCurrentGroup] = useState({});
@@ -80,7 +80,7 @@ const Chat = props => {
         const data = groupList[0];
         socket.emit('joinToGroup', { idGroup: data.group._id });
         setCurrentGroup(data.group);
-        setGroupName(data.user.name);
+        // setGroupName(data.user.name);
         setToUser(data.user);
       }
       setGroupList(groupList);
@@ -143,7 +143,7 @@ const Chat = props => {
             onClick={i => {
               socket.emit('joinToGroup', { idGroup: data.group._id });
               setCurrentGroup(data.group);
-              setGroupName(data.user.name);
+              // setGroupName(data.user.name);
               setToUser(data.user);
             }}
           />
