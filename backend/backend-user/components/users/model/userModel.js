@@ -121,7 +121,8 @@ const userSchema = mongoose.Schema({
   contracts: [SubContractModel],
   totalScore: {
     type: Number,
-    require: false
+    require: false,
+    default: 0
   },
   isBlocking: {
     type: Boolean,

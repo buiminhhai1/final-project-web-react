@@ -124,14 +124,19 @@ exports.saveNewMessage = async (idGroup, idUser, message) => {
 };
 
 exports.getListMessages = async (req, res, next) => {
-  const { id } = req.params;
+  const { idUser1,idUser2 } = req.body;
   try {
-    const results = await MessageModel.find({ idGroup: id });
-    console.log(results);
+    const group = await GroupChatModel.findOne({
+      $or: [
+        { "groupInfo.idUser1": idUser1, "groupInfo.idUser2": idUser2 },
+        { "groupInfo.idUser1": idUser2, "groupInfo.idUser2": idUser1 }
+      ]
+    });
+    const results = await MessageModel.find({ idGroup: group._id });
     if (!!results) {
       return res.json(results);
-    } else return res.json({ message: "something wrong" });
+    } else return res.json([]);
   } catch (error) {
-    res.json({ message: "something wrong" });
+    res.json([]);
   }
 };

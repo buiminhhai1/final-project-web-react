@@ -59,10 +59,56 @@ class contractHistory extends Component {
     this.props.sendRating(token, sendData);
   }
 
-  handleComplain(message) {
-    console.log(message);
-    const token = 'Bearer ' + this.props.token;
-    this.props.sendComplain(token, message);
+  handleComplain(messages) {
+    // console.log(messages);
+    // console.log(this.props.contracts);
+    // console.log(this.state.currentContractId);
+    let result = false;
+    this.props.contracts.map(contract => {
+      if (contract._id === this.state.currentContractId) {
+        console.log(contract);
+        const token = 'Bearer ' + this.props.token;
+
+        const userComplain = {
+          userId: this.props.user.userId,
+          name: this.props.user.name,
+          email: this.props.user.email,
+        }
+
+        const userBeComplained = {
+          userId: contract.userContractId,
+          name: contract.nameUserContract,
+          email: contract.emailUserContract,
+        }
+
+        const student = this.props.user.isTeacher ? userBeComplained : userComplain;
+        const teacher = !this.props.user.isTeacher ? userBeComplained : userComplain;
+
+        const contractData = {
+          _id: contract._id,
+          student, teacher,
+          hourRate: contract.hourRate,
+          totalHourCommit: contract.totalHourCommit,
+          from: contract.from,
+          to: contract.to,
+          review: contract.review,
+          status: contract.status,
+          score: contract.score
+        }
+
+        const data = {
+          userComplain,
+          contract: contractData,
+          content: messages
+        }
+        this.props.sendComplain(token, data);
+        result = true;
+        return true;
+      }
+      return false;
+    })
+    if (!result)
+      message.error('Something is wrong with your contractId');
   }
 
   handleWithdraw(data) {
@@ -106,7 +152,7 @@ class contractHistory extends Component {
         key: 'endDate'
       },
       {
-        title: 'Teacher',
+        title: 'Contractor',
         dataIndex: 'teacher',
         key: 'teacher'
       },
@@ -127,7 +173,7 @@ class contractHistory extends Component {
         )
       },
       {
-        title: 'Rating',
+        title: 'Actions',
         dataIndex: 'action',
         key: 'action',
         render: (data) => {
@@ -136,15 +182,18 @@ class contractHistory extends Component {
               <span>
                 {data.index === 1 ?
                   <div className="d-flex align-items-center">
-                    <button
-                      className="btn btn-outline-info d-flex align-items-center py-1"
-                      onClick={() => this.setState({ endCourseVisible: true, currentContractId: data.id })}
-                    >
-                      <Icon className="mr-2" type="fast-forward" theme="filled" />
-                      End course
-                    </button>
-                    <Divider type="vertical" />
-
+                    {!this.props.user.isTeacher &&
+                      <div className="d-flex align-items-center">
+                        <button
+                          className="btn btn-outline-info d-flex align-items-center py-1"
+                          onClick={() => this.setState({ endCourseVisible: true, currentContractId: data.id })}
+                        >
+                          <Icon className="mr-2" type="fast-forward" theme="filled" />
+                          End course
+                        </button>
+                        <Divider type="vertical" />
+                      </div>
+                    }
                     <button
                       className="btn btn-outline-danger d-flex align-items-center py-1"
                       onClick={() => this.setState({ complainVisible: true, currentContractId: data.id })}
@@ -157,6 +206,7 @@ class contractHistory extends Component {
                   <button
                     className="btn btn-outline-warning d-flex align-items-center py-1"
                     onClick={() => this.setState({ ratingVisible: true, currentContractId: data.id })}
+                    disabled={this.props.user.isTeacher}
                   >
                     <Icon className="mr-2" type="star" theme="filled" />
                     Rating
@@ -167,7 +217,7 @@ class contractHistory extends Component {
           else return (
             <span className="d-flex align-items-center">
               {!this.props.user.isTeacher &&
-                <div>
+                <div className="d-flex align-items-center">
                   <button
                     className="btn btn-outline-success d-flex align-items-center py-1"
                     onClick={() => {

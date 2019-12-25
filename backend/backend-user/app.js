@@ -74,8 +74,6 @@ app.use('/contract', contractRouter);
 app.use('/complain', complainRouter);
 
 
-
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

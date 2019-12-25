@@ -553,8 +553,8 @@ export const sendComplainFail = error => {
 export function sendComplain(token, data) {
   return dispatch => {
     dispatch(sendComplainPending());
-    const complainUrl = apiUrl + '/sendComplain';
-    //console.log(data);
+    const complainUrl = apiUrl + '/complain/createComplain';
+    console.log(data);
 
     axios({
       method: 'post',
@@ -565,8 +565,8 @@ export function sendComplain(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data);
-        if (res.data.result) {
+        console.log(res.data.complain);
+        if (res.data.complain) {
           dispatch(sendComplainSuccess());
         } else {
           dispatch(sendComplainFail('Something wrong happened'));
