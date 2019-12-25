@@ -147,7 +147,7 @@ class userProfile extends Component {
               <Col sm>
                 {teacher.status && (
                   <h5 style={{ color: '#000' }}>
-                    {teacher.status.timeCommit} <b style={{fontSize: 15}}>hrs</b>
+                    {teacher.status.timeCommit} <b style={{ fontSize: 15 }}>hrs</b>
                   </h5>
                 )}
                 <p>Per week</p>
@@ -182,33 +182,34 @@ class userProfile extends Component {
                 <i className="fas fa-tasks fa-lg mr-2"></i>
                 <b>Projects & Feedbacks</b>
               </h5>
-              <Divider className="my-2"/>
+              <Divider className="my-2" />
               {teacher.contracts &&
                 teacher.contracts.map(contract =>
                   <div key={contract._id}>
                     <Rating key={contract._id} name="zzz" rate={2}
-                      startDate={contract.from} endDate={contract.to} 
+                      startDate={contract.from} endDate={contract.to}
                       review={contract.review} hourPay={contract.hourRate}
-                      hourWork={contract.totalHourCommit}/>
-                    <Divider  className="my-2"/>
+                      hourWork={contract.totalHourCommit} />
+                    <Divider className="my-2" />
                   </div>
                 )}
             </div>
           </Container>
-          {this.props.user && this.props.user.userId !== this.state.teacherId && (
-            <FloatButtons
-              setChatVisible={() =>
-                this.setState({
-                  chatVisible: !this.state.chatVisible
-                })
-              }
-              setHireVisible={() =>
-                this.setState({
-                  hireVisible: !this.state.hireVisible
-                })
-              }
-            />
-          )}
+          {this.props.user && this.props.user.userId !== this.state.teacherId &&
+            !this.props.user.isTeacher && (
+              <FloatButtons
+                setChatVisible={() =>
+                  this.setState({
+                    chatVisible: !this.state.chatVisible
+                  })
+                }
+                setHireVisible={() =>
+                  this.setState({
+                    hireVisible: !this.state.hireVisible
+                  })
+                }
+              />
+            )}
           <ChatModal
             visible={this.state.chatVisible}
             sendMessage={message => this.sendMessage(message)}
