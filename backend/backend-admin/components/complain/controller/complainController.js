@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ComplainModel = require('../model/complainModel');
+const TransactionController = require('../../transactions/controller/transactionController');
 const {
   sendEmail
 } = require('../../utils/email/sendEmail');
@@ -53,14 +54,24 @@ exports.updateComplain = async (req, res, next) => {
         html: `<h1>${content}</h1>`
       };
       // thểm phần transaction ở đây nhé man
-
-      sendEmail(msgComplainer);
-      sendEmail(msg);
-      return res.json({
-        complain: result,
-        message: 'Update complain success!'
-      });
+      let complete = false;
+      if (status === 1) {
+        complete = await TransactionController.completeContract(updated.contract._id);
+        console.log('complete' + complete);
+      } else {
+        complete = await TransactionController.failedContract(updated.contract._id);
+        console.log('complete' + complete);
+      }
+      if (complete) {
+        sendEmail(msgComplainer);
+        sendEmail(msg);
+        return res.json({
+          complain: result,
+          message: 'Update complain success!'
+        });
+      }
     }
+    console.log('update failed');
     return res.json({
       error: 'Update complain has failed!',
       message: 'Update complain has fail'
