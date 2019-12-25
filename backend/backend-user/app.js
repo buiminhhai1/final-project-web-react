@@ -65,9 +65,6 @@ app.use('/users', usersRouter);
 app.use('/transaction', transactionRouter);
 app.use('/contract', contractRouter);
 
-
-
-
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));

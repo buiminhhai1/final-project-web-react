@@ -6,7 +6,9 @@ const initialState = {
   educationLevel: [],
   locations: [],
   teachers: [],
+  contracts: [],
   teacher: {},
+  money: 0,
   pending: false,
   error: null,
   message: null
@@ -180,6 +182,41 @@ export default function teachingReducer(state = initialState, action) {
         message: 'Contract has been created'
       };
     case actionTypes.CREATE_CONTRACT_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+    case actionTypes.GET_CONTRACTS_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actionTypes.GET_CONTRACTS_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        contracts: action.contracts,
+        message: 'All the contracts has been loaded'
+      };
+    case actionTypes.GET_CONTRACTS_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+    case actionTypes.GET_MONEY_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actionTypes.GET_MONEY_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        money: action.money,
+      };
+    case actionTypes.GET_MONEY_ERROR:
       return {
         ...state,
         pending: false,

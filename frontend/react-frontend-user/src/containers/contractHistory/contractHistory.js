@@ -7,7 +7,8 @@ import { Container } from 'react-bootstrap';
 import {
   sendRating,
   sendComplain,
-  withdrawMoney
+  withdrawMoney,
+  getContracts, getMoney
 } from '../../store/actions/teaching';
 import { resetErrorMessage } from '../../store/actions/auth';
 import RatingModal from './ratingModal/ratingModal';
@@ -25,7 +26,11 @@ class contractHistory extends Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const token = 'Bearer ' + this.props.token;
+    this.props.getContracts(token);
+    this.props.getMoney(token);
+  }
 
   componentDidUpdate() {
     if (this.props.message) {
@@ -126,17 +131,18 @@ class contractHistory extends Component {
       }
     ];
 
-    let data = [];
-    for (let i = 1; i < 100; i++)
-      data.push({
-        key: i,
-        startDate: '10/11/2019',
-        endDate: '12/12/2020',
-        teacher: 'Dinh Ho Ngoc',
-        totalCost: 200,
-        totalTime: 30,
-        status: 'Done'
-      });
+    const status = ["Failed", "Processing", "Done"];
+    const data = this.props.contracts.map(contract => {
+      return {
+        key: contract._id,
+        startDate: contract.from,
+        endDate: contract.to,
+        teacher: contract.nameUserContract,
+        totalCost: contract.hourRate,
+        totalTime: contract.totalHourCommit,
+        status: status[contract.status]
+      }
+    })
 
     return (
       <div className="py-4">
@@ -146,7 +152,7 @@ class contractHistory extends Component {
           <Container className="shadow p-3 bg-white">
             <div className="d-flex align-items-end flex-column mb-3">
               <h4>
-                <b>$</b>5.00
+                <b>$</b>{this.props.money}
               </h4>
               <button
                 className="btn btn-outline-success"
@@ -187,8 +193,10 @@ const mapStateToProps = state => ({
   message: state.teachingReducer.message,
   pending: state.teachingReducer.pending,
   teacher: state.teachingReducer.teacher,
+  money: state.teachingReducer.money,
+  contracts: state.teachingReducer.contracts,
   user: state.authReducer.user,
-  token: state.authReducer.token
+  token: state.authReducer.token,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -197,7 +205,8 @@ const mapDispatchToProps = dispatch =>
       resetErrorMessage,
       sendRating,
       sendComplain,
-      withdrawMoney
+      withdrawMoney,
+      getContracts, getMoney
     },
     dispatch
   );

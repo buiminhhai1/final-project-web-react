@@ -1,8 +1,15 @@
 .fab-container {
     bottom: 30vh;
-    right: 3vw;
+    right: 10vw;
 }
 
 .fab-item {
     background-color: #20232A !important;
+    width: 65px;
+    height: 65px;
+}
+
+.fab-item.support-btn {
+    width: 50px !important;
+    height: 50px !important;
 }
