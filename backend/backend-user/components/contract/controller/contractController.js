@@ -46,6 +46,7 @@ exports.createContract = async (req, res, next) => {
         to,
         status: 0,
         hourRate,
+        isHirer: true,
         totalHourCommit
       });
       exTeacher.contracts.push({
@@ -57,6 +58,7 @@ exports.createContract = async (req, res, next) => {
         to,
         status: 0,
         hourRate,
+        isHirer: false,
         totalHourCommit
       });
       await exStudent.save();
