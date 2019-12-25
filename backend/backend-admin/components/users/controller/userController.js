@@ -21,14 +21,15 @@ const config = {
   }
 };
 
-const sendMail = async ({
-  mailserver,
-  mail
-}) => {
-  const transporter = nodemailer.createTransport(mailserver);
-  const info = await transporter.sendMail(mail);
-  console.log(`Preview: ${nodemailer.getTestMessageUrl(info)}`);
-};
+const client = nodemailer.createTransport(sgTransport(options));
+
+// const sgMail = require('@sendgrid/mail');
+const {
+  sendEmail
+} = require('../../utils/email/sendEmail');
+const UserSchema = require('../model/userModel');
+
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const typeGet = {
   teacher: 1,
@@ -118,8 +119,16 @@ exports.blockingUser = async (req, res, next) => {
     if (user) {
       user.isBlocking = block;
       await user.save();
+      const msg = {
+        to: 'ngovietduc20088@gmail.com',
+        // from: 'ngovietduc20088@gmail.com',
+        subject: 'Sending with Twilio SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      };
       // await sgMail.send(msg);
-      sendMail(config).catch(console.error);
+      // await sgMail.send(msg);
+      sendEmail(msg);
       return res.json({
         user,
         message: `user ${user.local.email} has blocked!`

@@ -26,10 +26,11 @@ exports.init = (server) => {
             e = {'group':e,'user':user};
             return (e);
           }else{
+            e = {'group':e,'user':undefined};
             return (e);
           }
         })).then(data=>{
-          console.log(data);
+          data = data.filter(item => item.user !=undefined);
           io.to(socket.id).emit('groupData', data);
         })
         
@@ -41,7 +42,7 @@ exports.init = (server) => {
       const toUser = users.getUserById(toIdUser);
       const user = users.getUserBySocketId(socket.id);
       if(toUser)
-        io.to(toUser.idSocket).emit('message', { user: user.idUser, message, group:idGroup });
+        io.to(toUser.idSocket).emit('message', { user: user.idUser,time:Date.now(), message, group:idGroup });
       chatController.saveNewMessage(idGroup,user.idUser,message);
       callback();
     });

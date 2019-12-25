@@ -40,10 +40,9 @@ exports.register = async (req, res) => {
           },
           email,
           name,
-          imageUrl: "https://icon-library.net/images/bot-icon/bot-icon-18.jpg",
-          method: "local",
-          isTeacher: false,
-          verify: true
+          imageUrl: 'https://icon-library.net/images/bot-icon/bot-icon-18.jpg',
+          method: 'local',
+          isTeacher: false
         });
         const result = await newUser.save();
         if (!!result) {
