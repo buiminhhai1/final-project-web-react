@@ -1,10 +1,6 @@
 const TransactionModel = require('../model/transactionModel');
-const ContractModel = require('../../contract/model/contractModel');
+const ContractModel = require('../../contracts/model/contractModel');
 const UserModel = require('../../users/model/userModel');
-const paypal = require('paypal-rest-sdk');
-const { paypalConfigure } = require('../utils/utils');
-paypal.configure(paypalConfigure);
-
 
 const transferMoney = async (idContract) => {
   try {
@@ -81,6 +77,7 @@ exports.failedContract = async (req, res) => {
 const updateContract = async (_id, status) => {
   try {
     const contract = await ContractModel.findById(_id);
+    console.log('update contract');
     if (contract) {
       contract.status = status;
       const idTeach = contract.teacher.userId;
@@ -88,6 +85,7 @@ const updateContract = async (_id, status) => {
       const teacher = await UserModel.findById(idTeach);
       const student = await UserModel.findById(idStudent);
       if (teacher && student) {
+        console.log('update teacher student');
         const updateTeacher = teacher.contracts.id(_id);
         updateTeacher.status = status;
         const updateStudent = student.contracts.id(_id);
