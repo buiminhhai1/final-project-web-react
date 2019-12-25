@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Spin, Avatar, Badge, Rate, Tag, message } from 'antd';
+import { Spin, Avatar, Badge, Rate, Tag, message, Divider } from 'antd';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import {
@@ -14,6 +14,7 @@ import FloatButtons from '../../components/FloatButtons/FloatButtons';
 import './userProfile.css';
 import ChatModal from './ChatModal/ChatModal';
 import HireModal from './HireModal/HireModal';
+import Rating from './Rating/Rating';
 
 const queryString = require('query-string');
 
@@ -76,13 +77,16 @@ class userProfile extends Component {
     const { teacher } = this.props;
     const successMessage = null;
     const errorMessage = null;
+    const successContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 2).length : 0;
+    const failContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 3).length : 0;
+    const successRate = failContracts === 0 ? 0 : successContracts * 100 / (successContracts + failContracts);
 
     return (
-      <div className="py-4">
+      <div className="teacher-profile p-4">
         {successMessage}
         {errorMessage}
         <Spin tip="Loading..." spinning={this.props.pending}>
-          <Container className="shadow p-3 bg-white">
+          <Container className="shadow p-3 bg-white my-2 rounded">
             <div className="d-flex justify-content-between mb-3">
               <div className="d-flex">
                 <Badge
@@ -115,9 +119,9 @@ class userProfile extends Component {
                     ))}
                 </div>
               </div>
-              <div>
+              <div className="ml-2">
                 <h5>Rating:</h5>
-                <Rate allowHalf defaultValue={teacher.totalScore} disabled />
+                <Rate defaultValue={1} value={teacher.totalScore} disabled />
               </div>
             </div>
             <div className="mb-3">
@@ -146,14 +150,30 @@ class userProfile extends Component {
               <Col sm>
                 {teacher.status && (
                   <h5 style={{ color: '#000' }}>
-                    {teacher.status.timeCommit} <b>hrs</b>
+                    {teacher.status.timeCommit} <b style={{ fontSize: 15 }}>hrs</b>
                   </h5>
                 )}
                 <p>Per week</p>
               </Col>
+              <Col sm>
+                {teacher.contracts && (
+                  <h5 style={{ color: '#000' }}>
+                    {teacher.contracts.length} <b></b>
+                  </h5>
+                )}
+                <p>Contracts</p>
+              </Col>
+              <Col sm>
+                {teacher.contracts && (
+                  <h5 style={{ color: '#000' }}>
+                    {successRate} <b>%</b>
+                  </h5>
+                )}
+                <p>Success rate</p>
+              </Col>
             </Row>
           </Container>
-          <Container className="shadow mt-5 p-3 bg-white">
+          <Container className="shadow mt-3 p-3 bg-white">
             <div className="mb-3">
               <h5>
                 <i className="fas fa-book-reader fa-lg mr-2"></i>
@@ -167,30 +187,42 @@ class userProfile extends Component {
                 ))}
             </div>
           </Container>
-          <Container className="shadow mt-5 p-3 bg-white">
+          <Container className="shadow mt-3 p-3 bg-white">
             <div className="mb-3">
               <h5>
                 <i className="fas fa-tasks fa-lg mr-2"></i>
                 <b>Projects & Feedbacks</b>
               </h5>
-              {teacher.contract &&
-                teacher.contract.map(contract => <p>Contract</p>)}
+              <Divider className="my-2" />
+              {teacher.contracts &&
+                teacher.contracts.map(contract => {
+                  if (contract.status === 2)
+                    return (
+                      <div key={contract._id}>
+                        <Rating key={contract._id} name={contract.nameUserContract} rate={contract.score}
+                          startDate={contract.from} endDate={contract.to}
+                          review={contract.review} hourPay={contract.hourRate}
+                          hourWork={contract.totalHourCommit} />
+                        <Divider className="my-2" />
+                      </div>)
+                })}
             </div>
           </Container>
-          {this.props.user && this.props.user.userId !== this.state.teacherId && (
-            <FloatButtons
-              setChatVisible={() =>
-                this.setState({
-                  chatVisible: !this.state.chatVisible
-                })
-              }
-              setHireVisible={() =>
-                this.setState({
-                  hireVisible: !this.state.hireVisible
-                })
-              }
-            />
-          )}
+          {this.props.user && this.props.user.userId !== this.state.teacherId &&
+            !this.props.user.isTeacher && (
+              <FloatButtons
+                setChatVisible={() =>
+                  this.setState({
+                    chatVisible: !this.state.chatVisible
+                  })
+                }
+                setHireVisible={() =>
+                  this.setState({
+                    hireVisible: !this.state.hireVisible
+                  })
+                }
+              />
+            )}
           <ChatModal
             visible={this.state.chatVisible}
             sendMessage={message => this.sendMessage(message)}

@@ -153,7 +153,7 @@ class homepage extends Component {
     // COMMIT TIME
     teachers = teachers.filter(teacher => {
       if (filterHourWork === 0) return true;
-      if (filterHourWork >= teacher.status.timeCommit) return true;
+      if (filterHourWork <= teacher.status.timeCommit) return true;
       return false;
     });
 
@@ -175,7 +175,7 @@ class homepage extends Component {
       <Container className="teacher-list">
         <Filter updateFilter={data => this.filterteacher(data)} />
         <Spin tip="Loading..." spinning={this.props.pending}>
-          <Tabs tabPosition="bottom">
+          <Tabs style={{minHeight: 300}} tabPosition="bottom">
             {pages.map((page, index) => {
               return (
                 <TabPane tab={index + 1} key={index}>

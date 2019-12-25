@@ -1,5 +1,6 @@
 const TransactionModel = require('../model/transactionModel');
 const ContractModel = require('../../contract/model/contractModel');
+const UserModel = require('../../users/model/userModel');
 const paypal = require('paypal-rest-sdk');
 require('dotenv').config();
 const { BACKEND_USER_URL } = process.env;
@@ -14,27 +15,36 @@ exports.checkout = (req, res) => {
       res.redirect(failedUrl);
     } else {
       try {
-        const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
-        const amount = contract.totalHourCommit * contract.hourRate;
-        const payment_json = create_payment_json(amount,
-          `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
-          `${BACKEND_USER_URL}/transaction/payment/cancel?failedUrl=${failedUrl}`);
-        //Set the id of the created payment experience in payment json
-        var experience_profile_id = web_profile.id;
-        payment_json.experience_profile_id = experience_profile_id;
+        const existTransaction = await TransactionModel.findOne({
+          method: "PAYMENT", 'detail.payment.contractId': contractId
+        });
+        if (existTransaction) {
+          console.log('exist');
+          res.redirect(failedUrl);
+        } else {
+          const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
+          const amount = contract.totalHourCommit * contract.hourRate;
+          const payment_json = create_payment_json(amount,
+            `${BACKEND_USER_URL}/transaction/payment/success?contractId=${contractId}&successUrl=${successUrl}&failedUrl=${failedUrl}`,
+            `${BACKEND_USER_URL}/transaction/payment/cancel?failedUrl=${failedUrl}`);
+          //Set the id of the created payment experience in payment json
+          var experience_profile_id = web_profile.id;
+          payment_json.experience_profile_id = experience_profile_id;
 
-        paypal.payment.create(payment_json, function (error, payment) {
-          if (error) {
-            throw error;
-          } else {
-            for (let i = 0; i < payment.links.length; i++) {
-              if (payment.links[i].rel === 'approval_url') {
-                res.redirect(payment.links[i].href);
-                break;
+          paypal.payment.create(payment_json, function (error, payment) {
+            if (error) {
+              throw error;
+            } else {
+              for (let i = 0; i < payment.links.length; i++) {
+                if (payment.links[i].rel === 'approval_url') {
+                  res.redirect(payment.links[i].href);
+                  break;
+                }
               }
             }
-          }
-        });
+          });
+        }
+
       }
       catch (error) {
         console.log('cannot get contract ' + contractId);
@@ -44,11 +54,10 @@ exports.checkout = (req, res) => {
   });
 }
 
-
 exports.successCheckout = async (req, res) => {
   const { PayerID, paymentId, successUrl, failedUrl, contractId } = req.query;
   try {
-    const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
+    const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
     const amount = contract.totalHourCommit * contract.hourRate;
     paypal.payment.execute(paymentId, execute_payment_json(PayerID, amount),
       async function (error) {
@@ -66,7 +75,7 @@ exports.successCheckout = async (req, res) => {
               console.log('Something wrong');
               res.redirect(failedUrl);
             } else {
-              const contract = await ContractModel.findOne({ _id: contractId, status: 1 });
+              const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
               if (contract) {
                 const transaction = new TransactionModel({
                   idUser: contract.student._id,
@@ -78,9 +87,13 @@ exports.successCheckout = async (req, res) => {
                     }
                   }
                 });
-                transaction.save().then(result => {
-                  if (result)
-                    res.redirect(successUrl);
+                transaction.save().then(async result => {
+                  if (result) {
+                    const isUpdate = await updateContract(contract._id, 1);
+                    if (isUpdate)
+                      res.redirect(successUrl);
+                    else res.redirect(failedUrl);
+                  }
                   else res.redirect(failedUrl);
                 })
               } else res.redirect(failedUrl);
@@ -104,12 +117,21 @@ exports.cancelCheckout = (req, res) => {
 };
 
 exports.checkBalance = async (req, res) => {
-  const { idUser } = req.body;
-  const balance = await checkBalanceUser(idUser);
-  if (balance < 0) {
+  try {
+    if (req.user.user) {
+      const idUser = req.user.user._id;
+      const balance = await checkBalanceUser(idUser);
+      if (balance < 0) {
+        res.json({ result: false, balance, message: 'Cannot check balance' });
+      } else {
+        res.json({ result: true, balance, message: 'Check balance success' });
+      }
+    } else {
+      res.json({ result: false, balance, message: 'Cannot check balance' });
+    }
+
+  } catch (error) {
     res.json({ result: false, balance, message: 'Cannot check balance' });
-  } else {
-    res.json({ result: true, balance, message: 'Check balance success' });
   }
 }
 
@@ -175,16 +197,21 @@ exports.withdraw = async (req, res) => {
 
 exports.transfer = async (req, res) => {
   const { idContract } = req.body;
+  const successTransfer = await transferMoney(idContract);
+  if (successTransfer) res.json({ result: true, message: 'transfer money success' });
+  else
+    res.json({ result: true, message: 'transfer money success' });
+}
+const transferMoney = async (idContract) => {
   try {
     const existTransaction = await TransactionModel.findOne({
       method: "TRANSFER", 'detail.transfer.contractId': idContract
     });
-    console.log(existTransaction);
-    if (existTransaction) res.json({ result: false, message: "cannot transfer money" });
+    if (existTransaction) return false
     else {
-      const contract = await ContractModel.findOne({ _id: idContract, status: { $ne: 1 } });
+      const contract = await ContractModel.findOne({ _id: idContract, status: { $gt: 1 } });
       if (contract) {
-        let idReceiveMoney = (contract.status == 2) ? contract.teacher._id : contract.student._id;
+        let idReceiveMoney = (contract.status == 2) ? contract.teacher.userId : contract.student.userId;
         const transaction = new TransactionModel({
           idUser: idReceiveMoney,
           method: "TRANSFER",
@@ -197,16 +224,86 @@ exports.transfer = async (req, res) => {
         });
         transaction.save().then(result => {
           if (result)
-            res.json({ result: true, message: "transfer money success" });
-          else res.json({ result: false, message: "cannot transfer money" });
+            return true;
+          else return false
         })
-      } else res.json({ result: false, message: "cannot transfer money" });
+      } else return false
 
     }
   }
 
   catch (error) {
-    res.json({ result: false, message: "cannot transfer money" });
+    return false
   }
 }
 
+exports.completeContract = async (req, res) => {
+  const user = req.user.user;
+  const { contractId } = req.body;
+  try {
+    if (user) {
+      const contract = await ContractModel.findById(contractId);
+      if (contract && contract.student.userId.toString() == user._id && contract.status === 1) {
+        const isUpdate = await updateContract(contractId, 2);
+        if (isUpdate) {
+          await transferMoney(contractId);
+          res.json({ result: true, message: 'End course success' });
+        } else res.json({ result: false, message: 'cannot end course' });
+      } else
+        res.json({ result: false, message: 'cannot end course' });
+    } else res.json({ result: false, message: 'cannot end course' });
+  } catch (error) {
+    res.json({ result: false, message: 'cannot end course' });
+  }
+}
+
+exports.failedContract = async (req, res) => {
+  const { contractId } = req.body;
+  try {
+    const contract = await ContractModel.findById(contractId);
+    if (contract && contract.status === 1) {
+      const isUpdate = await updateContract(contractId, 3);
+      if (isUpdate) {
+        await transferMoney(contractId);
+        res.json({ result: true, message: 'Complaint is accepted' });
+      } else res.json({ result: false, message: 'something wrong' });
+    } else
+      res.json({ result: false, message: 'something wrong' });
+  } catch (error) {
+    console.log('catch');
+    res.json({ result: false, message: 'something wrong' });
+  }
+}
+
+
+const updateContract = async (_id, status) => {
+  try {
+    const contract = await ContractModel.findById(_id);
+    if (contract) {
+      contract.status = status;
+      const idTeach = contract.teacher.userId;
+      const idStudent = contract.student.userId;
+      const teacher = await UserModel.findById(idTeach);
+      const student = await UserModel.findById(idStudent);
+      if (teacher && student) {
+        const updateTeacher = teacher.contracts.id(_id);
+        updateTeacher.status = status;
+        const updateStudent = student.contracts.id(_id);
+        updateStudent.status = status;
+        teacher.save();
+        student.save();
+        contract.save();
+        return true;
+      } else {
+        console.log('cant update contract status');
+        return false;
+      }
+    } else {
+      console.log('cant update contract status');
+      return false;
+    }
+  } catch (err) {
+    console.log('cant update contract status');
+    return false;
+  }
+};

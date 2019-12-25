@@ -255,7 +255,7 @@ class filter extends Component {
                     </TreeSelect>
                   </Col>
                   <Col md>
-                    <b>Budget (Maximum)</b>
+                    <b>Budget (Maximum per hour)</b>
                     <br />
                     <InputGroup compact className="mt-1 description">
                       <Input
@@ -277,7 +277,7 @@ class filter extends Component {
                     </InputGroup>
                   </Col>
                   <Col md>
-                    <b>Teaching time (Maximum) </b>
+                    <b>Teaching time (Minimum per week) </b>
                     <br />
                     <InputGroup compact className="mt-1 description">
                       <Input
