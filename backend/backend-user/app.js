@@ -64,9 +64,7 @@ app.use('/chat',passport.authenticate('jwt', {
   session: false
 }), chatRouter);
 app.use('/users', usersRouter);
-app.use('/transaction',passport.authenticate('jwt', {
-  session: false
-}), transactionRouter);
+app.use('/transaction', transactionRouter);
 app.use('/contract',passport.authenticate('jwt', {
   session: false
 }), contractRouter);
