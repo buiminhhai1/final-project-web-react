@@ -193,7 +193,7 @@ export function getTeacher(userId) {
       })
       .then(res => {
         let teacher = res.data.teacher;
-        console.log(teacher);
+        //console.log(teacher);
 
         if (teacher) {
           dispatch(getTeacherSuccess(teacher));
@@ -371,7 +371,7 @@ export function getContracts(token) {
       }
     })
       .then(res => {
-        console.log(res.data.contracts);
+        //console.log(res.data.contracts);
         if (res.data.contracts) {
           dispatch(getContractsSuccess(res.data.contracts));
         } else {
@@ -398,9 +398,9 @@ export function updateContract(token, data) {
       data
     })
       .then(res => {
-        console.log(res.data.contract);
+        //console.log(res.data.contract);
         if (res.data.contract) {
-          getContracts(token);
+          dispatch(getContracts(token));
         } else {
           dispatch(getContractsFail(res.data.error));
         }
@@ -425,9 +425,9 @@ export function endContract(token, data) {
       data
     })
       .then(res => {
-        console.log(res.data.contract);
-        if (res.data.contract) {
-          getContracts(token);
+        //console.log(res.data.result);
+        if (res.data.result) {
+          dispatch(getContracts(token));
         } else {
           dispatch(getContractsFail(res.data.error));
         }
@@ -507,7 +507,7 @@ export function sendRating(token, data) {
   return dispatch => {
     dispatch(sendRatingPending());
     const ratingUrl = apiUrl + '/contract/rating';
-    console.log(data);
+    //console.log(data);
 
     axios({
       method: 'put',
@@ -519,7 +519,7 @@ export function sendRating(token, data) {
     })
       .then(res => {
         //console.log(res.data);
-        if (res.data.result) {
+        if (res.data.contract) {
           dispatch(sendRatingSuccess());
         } else {
           dispatch(sendRatingFail('Something wrong happened'));
@@ -600,7 +600,7 @@ export const withdrawMoneyFail = error => {
 export function withdrawMoney(token, data) {
   return dispatch => {
     dispatch(withdrawMoneyPending());
-    const withdrawUrl = apiUrl + '/withdrawMoney';
+    const withdrawUrl = apiUrl + '/transaction/withdraw';
     //console.log(data);
 
     axios({
@@ -615,6 +615,8 @@ export function withdrawMoney(token, data) {
         //console.log(res.data);
         if (res.data.result) {
           dispatch(withdrawMoneySuccess());
+          dispatch(getContracts(token));
+          dispatch(getMoney(token));
         } else {
           dispatch(withdrawMoneyFail('Something wrong happened'));
         }

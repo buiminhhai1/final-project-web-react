@@ -42,15 +42,15 @@ function NavigationItems(props) {
         <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-success" to="/teacher-profile" >
             <Icon className="mr-2" type="read" />
-            Teacher Profile
+            {props.user.isTeacher ? "Teacher Profile" : "Register Teacher"}
           </NavLink>
         </Menu.Item>
-        <Menu.Item>
+        {/* <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-info" to="/contractHistory" >
             <Icon className="mr-2" type="file-protect" />
             Contracts
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-danger" to="/logout" >
             <Icon className="mr-2" type="logout" /> Log out
@@ -64,6 +64,9 @@ function NavigationItems(props) {
       <NavigationItem link="/">HOME</NavigationItem>
       {props.token ?
         <NavigationItem link="/chat">CHAT</NavigationItem>
+        : null}
+      {props.token ?
+        <NavigationItem link="/contractHistory">CONTRACTS</NavigationItem>
         : null}
       {props.token ?
         <Dropdown overlay={menu} className="mx-4">

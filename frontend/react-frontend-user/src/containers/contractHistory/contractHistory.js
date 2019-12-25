@@ -38,7 +38,9 @@ class contractHistory extends Component {
       this.setState({
         ratingVisible: false,
         complainVisible: false,
-        withdrawVisible: false
+        withdrawVisible: false,
+        removeVisible: false,
+        endCourseVisible: false,
       });
     }
     if (this.props.error)
@@ -66,7 +68,7 @@ class contractHistory extends Component {
   handleWithdraw(data) {
     console.log(data);
     const token = 'Bearer ' + this.props.token;
-    this.props.withdrawMoney(token, data);
+    this.props.withdrawMoney(token, { idUser: this.props.user.userId, email: data });
   }
 
   handleRemove() {
@@ -131,15 +133,26 @@ class contractHistory extends Component {
         render: (data) => {
           if (data.index > 0)
             return (
-              <span className="d-flex align-items-center">
+              <span>
                 {data.index === 1 ?
-                  <button
-                    className="btn btn-outline-info d-flex align-items-center py-1"
-                    onClick={() => this.setState({ endCourseVisible: true, currentContractId: data.id })}
-                  >
-                    <Icon className="mr-2" type="fast-forward" theme="filled" />
-                    End course
-                  </button>
+                  <div className="d-flex align-items-center">
+                    <button
+                      className="btn btn-outline-info d-flex align-items-center py-1"
+                      onClick={() => this.setState({ endCourseVisible: true, currentContractId: data.id })}
+                    >
+                      <Icon className="mr-2" type="fast-forward" theme="filled" />
+                      End course
+                    </button>
+                    <Divider type="vertical" />
+
+                    <button
+                      className="btn btn-outline-danger d-flex align-items-center py-1"
+                      onClick={() => this.setState({ complainVisible: true, currentContractId: data.id })}
+                    >
+                      <Icon className="mr-2" type="frown" theme="filled" />
+                      Complain
+                    </button>
+                  </div>
                   :
                   <button
                     className="btn btn-outline-warning d-flex align-items-center py-1"
@@ -149,30 +162,26 @@ class contractHistory extends Component {
                     Rating
                   </button>
                 }
-                <Divider type="vertical" />
-                <button
-                  className="btn btn-outline-danger d-flex align-items-center py-1"
-                  onClick={() => this.setState({ complainVisible: true, currentContractId: data.id })}
-                >
-                  <Icon className="mr-2" type="frown" theme="filled" />
-                  Complain
-                </button>
               </span>
             )
           else return (
             <span className="d-flex align-items-center">
-              <button
-                className="btn btn-outline-success d-flex align-items-center py-1"
-                onClick={() => {
-                  window.location.replace(
-                    `http://localhost:4000/transaction/payment?contractId=${data.id}&successUrl=http://localhost:3000/contractHistory&failedUrl=http://localhost:3000/contractHistory`
-                  )
-                }}
-              >
-                <Icon className="mr-2" type="dollar-circle" theme="filled" />
-                Checkout
-            </button>
-              <Divider type="vertical" />
+              {!this.props.user.isTeacher &&
+                <div>
+                  <button
+                    className="btn btn-outline-success d-flex align-items-center py-1"
+                    onClick={() => {
+                      window.location.replace(
+                        `http://localhost:4000/transaction/payment?contractId=${data.id}&successUrl=http://localhost:3000/contractHistory&failedUrl=http://localhost:3000/contractHistory`
+                      )
+                    }}
+                  >
+                    <Icon className="mr-2" type="dollar-circle" theme="filled" />
+                    Checkout
+                  </button>
+                  <Divider type="vertical" />
+                </div>
+              }
               <button
                 className="btn btn-outline-danger d-flex align-items-center py-1"
                 onClick={() => this.setState({ removeVisible: true, currentContractId: data.id })}
