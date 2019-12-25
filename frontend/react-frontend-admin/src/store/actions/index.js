@@ -51,7 +51,8 @@ export {
   getListUser,
   updateUser,
   getDetailUser,
-  refreshMessageUUser
+  refreshMessageUUser,
+  getChatList
 }
 from './user';
 

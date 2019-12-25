@@ -65,7 +65,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/chat',passport.authenticate('jwt', {
+app.use('/chat', passport.authenticate('jwt', {
   session: false
 }), chatRouter);
 app.use('/users', usersRouter);

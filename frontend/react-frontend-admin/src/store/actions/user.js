@@ -121,3 +121,48 @@ export const refreshMessage = () => ({
 export const refreshMessageUUser = () => dispatch => {
   dispatch(refreshMessage());
 };
+
+export const getChatListStart = () => ({
+  type: actionTypes.GET_CHAT_USER_START
+});
+
+export const getChatListSuccess = chats => ({
+  type: actionTypes.GET_CHAT_USER_SUCCESS,
+  chats,
+  message: 'get list chat success'
+});
+
+export const getChatListFail = error => ({
+  type: actionTypes.GET_CHAT_USER_FAIL,
+  error
+});
+
+export const getChatList = (idUser1, idUser2) => dispatch => {
+  dispatch(getChatListStart());
+  const data = {
+    idUser1,
+    idUser2
+  };
+  const url = 'http://localhost:4200/chat/messages';
+  const authToken = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + authToken
+  };
+  axios
+    .post(url, data, {
+      headers
+    })
+    .then(res => {
+      if (res.data.length > 0) {
+        dispatch(getChatListSuccess(res.data));
+      } else {
+        dispatch(
+          getChatListFail('something went wrong when get list message!')
+        );
+      }
+    })
+    .catch(err => {
+      dispatch(getChatListFail(err));
+    });
+};

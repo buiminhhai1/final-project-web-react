@@ -46,7 +46,8 @@ exports.updateComplain = async (req, res, next) => {
         html: `<h1>${content}</h1>`
       };
       const msg = {
-        to: updated.contract.student.email === updated.userComplain.email ? updated.contract.teacher.email : updated.contract.student.email,
+        to: updated.contract.student.email === updated.userComplain.email ?
+          updated.contract.teacher.email : updated.contract.student.email,
         subject,
         text: content,
         html: `<h1>${content}</h1>`

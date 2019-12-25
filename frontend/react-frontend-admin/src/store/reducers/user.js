@@ -7,6 +7,7 @@ import {
 const initialState = {
   userData: [],
   userDetail: null,
+  chatList: [],
   loading: false,
   error: null,
   message: null,
@@ -83,7 +84,8 @@ const refreshMessage = state =>
   updateObject(state, {
     message: null,
     error: null,
-    userDetail: null
+    userDetail: null,
+    chatList: []
   });
 
 const getUserDetailStart = state =>
@@ -110,6 +112,31 @@ const getUserDetailFail = (state, action) =>
     userDetail: null,
   });
 
+const getChatListStart = state =>
+  updateObject(state, {
+    loading: true,
+    error: null,
+    message: null,
+    chatList: []
+  });
+
+const getChatListSuccess = (state, action) =>
+  updateObject(state, {
+    chatList: action.chats,
+    loading: false,
+    message: action.message,
+    error: null
+  });
+
+const getChatListFail = (state, action) =>
+  updateObject(state, {
+    chatList: [],
+    loading: false,
+    error: true,
+    message: action.err
+  });
+
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_LIST_USER_START:
@@ -132,6 +159,12 @@ const reducer = (state = initialState, action) => {
       return getUserDetailSuccess(state, action);
     case actionTypes.GET_DETAIL_USER_FAIL:
       return getUserDetailFail(state, action);
+    case actionTypes.GET_CHAT_USER_START:
+      return getChatListStart(state);
+    case actionTypes.GET_CHAT_USER_SUCCESS:
+      return getChatListSuccess(state, action);
+    case actionTypes.GET_CHAT_USER_FAIL:
+      return getChatListFail(state, action);
     default:
       return state;
   }

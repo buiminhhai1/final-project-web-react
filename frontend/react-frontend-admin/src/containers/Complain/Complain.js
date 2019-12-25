@@ -29,7 +29,10 @@ class Complain extends Component {
       _id: '',
       redirect: '',
       visible: false,
+      visibleMessage: false,
       content: '',
+      teacher: {},
+      student: {},
       complainColumns: [
         {
           title: 'Complainer Detail',
@@ -232,7 +235,21 @@ class Complain extends Component {
                   />
                 </Popover>
                 <Popover content={<div>View Chat Detail</div>} trigger="hover">
-                  <Button type="primary" size="small">
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      this.setState({
+                        visibleMessage: true,
+                        teacher: record.contract.teacher,
+                        student: record.contract.student
+                      });
+                      this.onChatMessage(
+                        record.contract.teacher.userId,
+                        record.contract.student.userId
+                      );
+                    }}
+                  >
                     View Chat
                   </Button>
                 </Popover>
@@ -246,21 +263,29 @@ class Complain extends Component {
 
   componentDidMount() {
     this.props.onGetListComplain();
+    // this.props.onGetChatMessage(
+    //   '5e02e151670695178c101a58',
+    //   '5e02cc8b1f1cd6108e4e6e0f'
+    // );
   }
 
   componentDidUpdate() {
-    console.log('message');
-    this.props.onRefreshMessage();
     if (this.props.error) {
       this.render.actionMessage = message.error(this.props.message);
+      this.props.onRefreshMessage();
     } else if (this.props.message) {
       this.render.actionMessage = message.success(this.props.message);
     }
   }
 
+  onChatMessage = async (userId1, userId2) => {
+    await this.props.onGetChatMessage(userId1, userId2);
+  };
+
   handleCancel = () => {
     this.setState({
       visible: false,
+      visibleMessage: false,
       visibleConfirm: false
     });
   };
@@ -296,7 +321,7 @@ class Complain extends Component {
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible, visibleMessage, student, teacher } = this.state;
     const actionMessage = null;
     return (
       <div>
@@ -336,6 +361,7 @@ class Complain extends Component {
             {this.props.complainData ? (
               <div>
                 <Modal
+                  key="editmodal"
                   visible={visible}
                   title="ARE SURE BLOCKING THIS USER ???"
                   onOk={this.handleChangeStatus}
@@ -379,6 +405,42 @@ class Complain extends Component {
                     />
                   </div>
                 </Modal>
+                <Modal
+                  key="viewlistmodel"
+                  visible={visibleMessage}
+                  title="List message"
+                  onCancel={this.handleCancel}
+                  confirmLoading={this.props.loading}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Cancel
+                    </Button>
+                  ]}
+                >
+                  <div>
+                    {this.props.chatList
+                      ? this.props.chatList.map(item => {
+                          return (
+                            <Text
+                              key={item._id}
+                              style={{ marginBottom: '10px' }}
+                            >
+                              <strong>
+                                {(item.idUser === teacher.userId
+                                  ? teacher.email
+                                  : student.email) +
+                                  ' ' +
+                                  '   ' +
+                                  item.time}
+                              </strong>
+                              <br />
+                              {item.message}
+                            </Text>
+                          );
+                        })
+                      : null}
+                  </div>
+                </Modal>
               </div>
             ) : null}
           </div>
@@ -394,7 +456,8 @@ const mapStateToProps = state => ({
   error: state.complain.error,
   message: state.complain.message,
   userDetail: state.user.userDetail,
-  loadingUser: state.user.loading
+  loadingUser: state.user.loading,
+  chatList: state.user.chatList
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -402,7 +465,9 @@ const mapDispatchToProps = dispatch => ({
   onUpdateStatusComplain: (_id, status, content) =>
     dispatch(actions.updateStatusComplain(_id, status, content)),
   onGetDetailUser: userId => dispatch(actions.getDetailUser(userId)),
-  onRefreshMessage: () => dispatch(actions.refreshMessageUComplain())
+  onRefreshMessage: () => dispatch(actions.refreshMessageUComplain()),
+  onGetChatMessage: (userId1, userId2) =>
+    dispatch(actions.getChatList(userId1, userId2))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Complain);
