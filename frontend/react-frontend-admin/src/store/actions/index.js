@@ -59,3 +59,10 @@ export {
   getListContract
 }
 from './contract'
+
+export {
+  getListComplain,
+  updateStatusComplain,
+  refreshMessageUComplain
+}
+from './complain';
