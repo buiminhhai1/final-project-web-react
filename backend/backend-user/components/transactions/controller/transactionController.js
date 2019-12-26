@@ -207,7 +207,6 @@ const transferMoney = async (idContract) => {
     const existTransaction = await TransactionModel.findOne({
       method: "TRANSFER", 'detail.transfer.contractId': idContract
     });
-    console.log(existTransaction);
     if (existTransaction) return false
     else {
       const contract = await ContractModel.findOne({ _id: idContract, status: { $gt: 1 } });
@@ -240,26 +239,42 @@ const transferMoney = async (idContract) => {
 
 exports.completeContract = async (req, res) => {
   const user = req.user.user;
-  const {contractId} = req.body;
-  try{
-  if (user) {
-    const contract = await ContractModel.findById(contractId);
-    if(contract && contract.student.userId.toString()==user._id && contract.status===1){
-      const isUpdate = await updateContract(contractId,2);
-      if(isUpdate){
-        console.log('is update success');
-        await transferMoney(contractId);
-        res.json({result:true,message:'End course success'});
-      }else res.json({result:false,message:'cannot end course'});
-    }else 
-    res.json({result:false,message:'cannot end course'});
-  } else res.json({result:false,message:'cannot end course'});
-  }catch(error){
-
-    console.log('catch');
-    res.json({result:false,message:'cannot end course'});
+  const { contractId } = req.body;
+  try {
+    if (user) {
+      const contract = await ContractModel.findById(contractId);
+      if (contract && contract.student.userId.toString() == user._id && contract.status === 1) {
+        const isUpdate = await updateContract(contractId, 2);
+        if (isUpdate) {
+          await transferMoney(contractId);
+          res.json({ result: true, message: 'End course success' });
+        } else res.json({ result: false, message: 'cannot end course' });
+      } else
+        res.json({ result: false, message: 'cannot end course' });
+    } else res.json({ result: false, message: 'cannot end course' });
+  } catch (error) {
+    res.json({ result: false, message: 'cannot end course' });
   }
 }
+
+exports.failedContract = async (req, res) => {
+  const { contractId } = req.body;
+  try {
+    const contract = await ContractModel.findById(contractId);
+    if (contract && contract.status === 1) {
+      const isUpdate = await updateContract(contractId, 3);
+      if (isUpdate) {
+        await transferMoney(contractId);
+        res.json({ result: true, message: 'Complaint is accepted' });
+      } else res.json({ result: false, message: 'something wrong' });
+    } else
+      res.json({ result: false, message: 'something wrong' });
+  } catch (error) {
+    console.log('catch');
+    res.json({ result: false, message: 'something wrong' });
+  }
+}
+
 
 const updateContract = async (_id, status) => {
   try {

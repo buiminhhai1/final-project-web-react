@@ -14,9 +14,9 @@ export default function FloatButtons(props) {
       />
       <Button
         onClick={() => { props.setHireVisible() }}
-        className="btn-lg text-white"
+        className="main-btn btn-lg text-white"
         tooltip="Hire this teacher"
-        rotate={true}
+        // rotate={true}
         icon="fas fa-handshake fa-lg"
       />
     </Container>

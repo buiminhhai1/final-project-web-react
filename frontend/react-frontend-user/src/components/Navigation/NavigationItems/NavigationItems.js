@@ -19,12 +19,12 @@ function NavigationItems(props) {
           <b>{props.user.name}</b>
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item>
+        {/* <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-primary" to="/settings" >
             <Icon className="mr-2" type="setting" />
             Settings
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item>
           <NavLink className="d-flex align-items-center btn-outline-primary" to="/profile" >
             <Icon className="mr-2" type="profile" />
