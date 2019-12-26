@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const createLevelEducationStart = () => ({
   type: actionTypes.CREATE_LEVEL_EDUCATION_START
@@ -27,7 +30,7 @@ export const createLevelEducation = title => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = 'http://localhost:4200/level-education/add-level-education';
+  const url = `${API_URL}/level-education/add-level-education`;
   axios
     .post(url, levelEducationData, {
       headers
@@ -77,7 +80,7 @@ export const updateLevelEducation = (_id, title) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/level-education/update-level-education`;
+  const url = `${API_URL}/level-education/update-level-education`;
   axios
     .put(url, updated, {
       headers
@@ -122,7 +125,7 @@ export const getListLevelEducation = searchString => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   const resultSearch = searchString ? `?searchString=${searchString}` : '';
-  const url = `http://localhost:4200/level-education/get-list-level-education${resultSearch}`;
+  const url = `${API_URL}/level-education/get-list-level-education${resultSearch}`;
   axios
     .get(url, {
       headers
@@ -164,7 +167,7 @@ export const deleteLevelEducation = _id => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = 'http://localhost:4200/level-education/delete-level-education';
+  const url = `${API_URL}/level-education/delete-level-education`;
 
   axios.delete(url, {
     headers,

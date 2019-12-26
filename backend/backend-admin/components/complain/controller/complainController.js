@@ -59,10 +59,8 @@ exports.updateComplain = async (req, res, next) => {
       let complete = false;
       if (status === 1) {
         complete = await TransactionController.completeContract(updated.contract._id);
-        console.log('complete' + complete);
       } else {
         complete = await TransactionController.failedContract(updated.contract._id);
-        console.log('complete' + complete);
       }
       if (complete) {
         sendEmail(msgComplainer);

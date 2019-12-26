@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const createLocationStart = () => ({
   type: actionTypes.CREATE_LOCATION_START
@@ -29,7 +32,7 @@ export const createLocation = (city, district) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = 'http://localhost:4200/location/add-location';
+  const url = `${API_URL}/location/add-location`;
   axios
     .post(url, locationData, {
       headers
@@ -82,7 +85,7 @@ export const updateLocation = (_id, city, district) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/location/update-location/`;
+  const url = `${API_URL}/location/update-location/`;
   axios
     .put(url, updated, {
       headers
@@ -128,7 +131,7 @@ export const getListLocation = searchString => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   const resultSearch = searchString ? `?searchString=${searchString}` : '';
-  const url = `http://localhost:4200/location/get-list-location${resultSearch}`;
+  const url = `${API_URL}/location/get-list-location${resultSearch}`;
   axios
     .get(url, {
       headers
@@ -170,7 +173,7 @@ export const deleteLocation = _id => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/location/delete-location`;
+  const url = `${API_URL}/location/delete-location`;
   axios
     .delete(url, {
       headers,
