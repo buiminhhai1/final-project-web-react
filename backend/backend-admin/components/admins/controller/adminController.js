@@ -124,7 +124,6 @@ exports.facebookLogin = async (req, res, next) => {
       const token = jwt.sign(isUser.toJSON(), constant.JWT_SECRET, {
         expiresIn: '150m'
       });
-      console.log(isUser);
       res.json({
         user: isUser,
         token,
@@ -215,6 +214,5 @@ exports.googleLogin = async (req, res, next) => {
 };
 
 exports.getDetailUser = (req, res, next) => {
-  console.log(req);
   res.json(req.user);
 };

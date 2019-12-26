@@ -6,12 +6,21 @@ const userController = require('../controller/userController');
 
 router.get('/get-list-user', userController.getListUser);
 
-router.put('/blocking-user', passport.authenticate('jwt', {
-  session: false
-}), userController.blockingUser);
+router.put(
+  '/blocking-user',
+  passport.authenticate('jwt', {
+    session: false
+  }),
+  userController.blockingUser
+);
 
-router.get('/detail/:userId', passport.authenticate('jwt', {
-  session: false
-}), userController.getDetailUser);
+router.get(
+  '/detail/:userId',
+  passport.authenticate('jwt', {
+    session: false
+  }),
+  userController.getDetailUser
+);
 
+router.get('/getTopUser/:numDate', userController.getTopUser);
 module.exports = router;

@@ -52,7 +52,8 @@ export {
   updateUser,
   getDetailUser,
   refreshMessageUUser,
-  getChatList
+  getChatList,
+  getTopUser
 }
 from './user';
 

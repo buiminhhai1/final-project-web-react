@@ -136,6 +136,36 @@ const getChatListFail = (state, action) =>
     message: action.err
   });
 
+const getTopUserStart = (state) =>
+  updateObject(state, {
+    loading: true,
+    error: null,
+    message: null,
+    userData: []
+  });
+
+const getTopUserSuccess = (state, action) => {
+  const data = action.users.map((item, index) => {
+    const result = {
+      ...item
+    };
+    result.key = index + 1 + '';
+    return result;
+  });
+  return updateObject(state, {
+    loading: false,
+    error: null,
+    message: action.message,
+    userData: data
+  });
+};
+
+const getTopUserFail = (state, action) =>
+  updateObject(state, {
+    loading: false,
+    error: true,
+    message: action.message
+  });
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -165,6 +195,12 @@ const reducer = (state = initialState, action) => {
       return getChatListSuccess(state, action);
     case actionTypes.GET_CHAT_USER_FAIL:
       return getChatListFail(state, action);
+    case actionTypes.GET_TOP_USER_START:
+      return getTopUserStart(state);
+    case actionTypes.GET_TOP_USER_SUCCESS:
+      return getTopUserSuccess(state, action);
+    case actionTypes.GET_TOP_USER_FAIL:
+      return getTopUserFail(state, action);
     default:
       return state;
   }

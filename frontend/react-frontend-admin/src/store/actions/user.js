@@ -166,3 +166,35 @@ export const getChatList = (idUser1, idUser2) => dispatch => {
       dispatch(getChatListFail(err));
     });
 };
+
+export const getTopUserStart = () => ({
+  type: actionTypes.GET_TOP_USER_START
+});
+
+export const getTopUserSuccess = users => ({
+  type: actionTypes.GET_TOP_USER_SUCCESS,
+  users
+});
+
+export const getTopUserFail = error => ({
+  type: actionTypes.GET_TOP_USER_FAIL,
+  error
+});
+
+export const getTopUser = numDate => dispatch => {
+  dispatch(getTopUserStart());
+  const url = `http://localhost:4200/users/getTopUser/${numDate}`;
+  axios
+    .get(url)
+    .then(res => {
+      console.log(res.data.result);
+      if (res.data.result) {
+        dispatch(getTopUserSuccess(res.data.result));
+      } else {
+        dispatch(getTopUserFail('get top has failed'));
+      }
+    })
+    .catch(err => {
+      dispatch(getTopUserFail(err));
+    });
+};

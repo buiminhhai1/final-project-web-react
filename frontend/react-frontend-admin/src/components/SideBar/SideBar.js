@@ -75,12 +75,12 @@ class SideBar extends Component {
             title={
               <span>
                 <Icon type="area-chart" />
-                Notification
+                Statistical
               </span>
             }
           >
             <Menu.Item key="9">
-              <NavLink to="/user">History User Contract</NavLink>
+              <NavLink to="/topUser">Top User</NavLink>
             </Menu.Item>
             <Menu.Item key="10">
               <NavLink to="/historyComplain">History Complain</NavLink>

@@ -61,6 +61,10 @@ const asyncComplain = AsyncComponent(() => {
   return import('./containers/Complain/Complain');
 });
 
+const asyncTopUser = AsyncComponent(() => {
+  return import('./containers/TopUser/TopUser');
+});
+
 class App extends Component {
   componentDidMount() {
     this.props.onTryAuthLogin();
@@ -87,6 +91,7 @@ class App extends Component {
           <Route path="/locations*" component={asyncLocation} />
           <Route path="/levels*" component={asyncLevel} />
           <Route path="/levelEducations*" component={asyncLevelEducation} />
+          <Route path="/topUser" exact component={asyncTopUser} />
           <Route path="/userdetail" component={asyncUserDetail} />
           <Route path="/admin/logout*" component={asyncLogout} />
           <Redirect to="/" />

@@ -6,7 +6,9 @@ const {
 
 exports.getListComplain = async (req, res, next) => {
   try {
-    const complains = await ComplainModel.find({});
+    const complains = await ComplainModel.find({}).sort({
+      status: 'asc'
+    });
     return res.json({
       complains,
       message: 'Get List Complain success'
