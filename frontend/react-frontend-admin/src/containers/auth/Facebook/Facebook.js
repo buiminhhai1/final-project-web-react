@@ -26,8 +26,6 @@ class Facebook extends Component {
     this.props.onSingInFacebook(fbData);
   };
 
-  componentClicked = () => console.log('clicked');
-
   render() {
     let fbContent;
     if (this.state.isLoggedIn) {
@@ -42,7 +40,6 @@ class Facebook extends Component {
           autoLoad={false}
           fields="name,email,picture"
           scope="public_profile"
-          onClick={this.componentClicked}
           callback={this.responseFacebook}
         />
       );

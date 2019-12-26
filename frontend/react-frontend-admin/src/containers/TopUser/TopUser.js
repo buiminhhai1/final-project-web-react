@@ -38,7 +38,6 @@ class TopUser extends Component {
           dataIndex: 'employee',
           key: 'employee',
           render: (text, record) => {
-            console.log(record);
             return (
               <div>
                 <Avatar

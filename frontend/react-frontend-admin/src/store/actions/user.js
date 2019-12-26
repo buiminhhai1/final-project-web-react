@@ -187,7 +187,6 @@ export const getTopUser = numDate => dispatch => {
   axios
     .get(url)
     .then(res => {
-      console.log(res.data.result);
       if (res.data.result) {
         dispatch(getTopUserSuccess(res.data.result));
       } else {
