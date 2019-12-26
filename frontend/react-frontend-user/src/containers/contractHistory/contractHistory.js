@@ -13,6 +13,11 @@ import './contractHistory.css';
 import ComplainModal from './complainModal/complainModal';
 import WithdrawModal from './withdrawModal/withdrawModal';
 
+//reads in configuration from a .env file
+require('dotenv').config();
+const apiUrl = process.env.REACT_APP_API_URL;
+
+
 class contractHistory extends Component {
   constructor(props) {
     super(props);
@@ -222,7 +227,7 @@ class contractHistory extends Component {
                     className="btn btn-outline-success d-flex align-items-center py-1"
                     onClick={() => {
                       window.location.replace(
-                        `http://localhost:4000/transaction/payment?contractId=${data.id}&successUrl=http://localhost:3000/contractHistory&failedUrl=http://localhost:3000/contractHistory`
+                        `${apiUrl}/transaction/payment?contractId=${data.id}&successUrl=${window.location.href}&failedUrl=${window.location.href}`
                       )
                     }}
                   >
