@@ -29,6 +29,7 @@ main {
 
 .footer-1 {
     flex-shrink: 0;
+    width: 100% !important;
 }
 
 /* Main Footer */

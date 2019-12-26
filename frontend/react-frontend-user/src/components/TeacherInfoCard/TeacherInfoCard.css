@@ -7,6 +7,10 @@
     height: 10px;
 }
 
+.subjectTags {
+    text-align: start;
+}
+
 .subjectTags::-webkit-scrollbar {
     width: 6px;
     height: 6px;

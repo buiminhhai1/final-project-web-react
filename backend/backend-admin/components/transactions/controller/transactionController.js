@@ -79,72 +79,33 @@ const updateContract = async (_id, status) => {
   }
 };
 
-exports.completeContract = async (req, res) => {
-  const {
-    contractId
-  } = req.body;
+exports.completeContract = async (contractId) => {
   try {
     const contract = await ContractModel.findById(contractId);
     if (contract && contract.status === 1) {
       const isUpdate = await updateContract(contractId, 2);
       if (isUpdate) {
         await transferMoney(contractId);
-        res.json({
-          result: true,
-          message: 'End course success'
-        });
-      } else {
-        res.json({
-          result: false,
-          message: 'cannot end course'
-        });
-      }
-    } else {
-      res.json({
-        result: false,
-        message: 'cannot end course'
-      });
-    }
+        return true;
+      } else false;
+    } else return false;
   } catch (error) {
-    res.json({
-      result: false,
-      message: 'cannot end course'
-    });
+      return false;
   }
 };
 
 
-exports.failedContract = async (req, res) => {
-  const {
-    contractId
-  } = req.body;
+exports.failedContract = async (contractId) => {
   try {
     const contract = await ContractModel.findById(contractId);
     if (contract && contract.status === 1) {
       const isUpdate = await updateContract(contractId, 3);
       if (isUpdate) {
         await transferMoney(contractId);
-        res.json({
-          result: true,
-          message: 'Complaint is accepted'
-        });
-      } else {
-        res.json({
-          result: false,
-          message: 'something wrong'
-        });
-      }
-    } else {
-      res.json({
-        result: false,
-        message: 'something wrong'
-      });
-    }
+        return true;
+      } else return false;
+    } else return false;
   } catch (error) {
-    console.log('catch');
-    res.json({
-      result: false,
-      message: 'something wrong'
-    });
+    return false;
   }
 };

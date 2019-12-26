@@ -184,7 +184,7 @@ class Contract extends Component {
     this.props.onGetListContract();
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   getDetailUser = async userId => {
     await this.props.onGetDetailUser(userId);
@@ -228,6 +228,7 @@ class Contract extends Component {
               <Table
                 columns={this.state.contractColumns}
                 dataSource={
+                  this.props.contractData && 
                   this.props.contractData.length > 0
                     ? this.props.contractData
                     : []

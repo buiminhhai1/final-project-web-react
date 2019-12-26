@@ -79,7 +79,9 @@ class userProfile extends Component {
     const errorMessage = null;
     const successContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 2).length : 0;
     const failContracts = teacher.contracts ? teacher.contracts.filter(contract => contract.status === 3).length : 0;
-    const successRate = failContracts === 0 ? 0 : successContracts * 100 / (successContracts + failContracts);
+    const successRate = failContracts === 0 ? 0
+      :
+      Math.round((successContracts / (successContracts + failContracts)) * 10000) / 100;
 
     return (
       <div className="teacher-profile p-4">
@@ -205,6 +207,7 @@ class userProfile extends Component {
                           hourWork={contract.totalHourCommit} />
                         <Divider className="my-2" />
                       </div>)
+                  return true;
                 })}
             </div>
           </Container>

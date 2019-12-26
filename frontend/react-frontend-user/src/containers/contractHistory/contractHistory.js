@@ -157,9 +157,9 @@ class contractHistory extends Component {
         key: 'teacher'
       },
       {
-        title: 'Total time',
+        title: 'Total time (hours)',
         dataIndex: 'totalTime',
-        key: 'totalTime'
+        key: 'totalTime',
       },
       {
         title: 'Balance',
@@ -254,7 +254,7 @@ class contractHistory extends Component {
     ];
 
     const data = this.props.contracts
-      .filter(contract => contract.status >= 0)
+      .filter(contract => contract.status >= 0).reverse()
       .map(contract => {
         return {
           key: contract._id,

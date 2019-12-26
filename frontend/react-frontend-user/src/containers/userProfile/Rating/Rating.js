@@ -17,7 +17,7 @@ export default function Rating(props) {
                     <b className="mr-2">{props.rate}.00</b>
                     {props.startDate.slice(0, -3).replace('-', '/')} - {props.endDate.slice(0, -3).replace('-', '/')}
                 </div>
-                <i>{props.review}</i>
+                <i style={{ whiteSpace: 'pre-wrap' }}>{props.review}</i>
             </Col>
             <Col className="d-flex flex-column align-items-end flex-responsive" sm>
                 <b>${props.hourPay * props.hourWork}</b>

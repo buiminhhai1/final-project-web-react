@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import './Layout.css';
+
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 import Auxiliary from '../Auxiliary/Auxiliary';
@@ -36,6 +37,7 @@ class Layout extends Component {
           className="mb-auto d-flex flex-column justify-content-between"
           style={{ paddingTop: 50, minHeight: '100vh' }}
         >
+          
           {this.props.children}
           <footer id="footer" className="footer-1">
             <div className="main-footer widgets-dark typo-light">

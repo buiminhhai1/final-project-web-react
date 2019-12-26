@@ -27,9 +27,9 @@ export default function TeacherInfoCard(props) {
                 />
               </Badge>
             }
-            title={props.name}
+            title={<b className="d-flex align-items-start">{props.name}</b>}
             description={
-              <div>
+              <div className="d-flex align-items-start flex-column">
                 <p className="m-0">
                   <b style={{ color: '#85bb65' }}>${props.hourPay}</b> /hour
                 </p>

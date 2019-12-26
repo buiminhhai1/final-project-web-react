@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tabs, Spin } from 'antd';
-import { Container } from 'react-bootstrap';
+import { Container, Carousel } from 'react-bootstrap';
 
 import TeacherInfoCard from '../../components/TeacherInfoCard/TeacherInfoCard';
 import Filter from '../filter/filter';
 import { getTeachers } from '../../store/actions/teaching';
 import './homepage.css';
+import Banner1 from "../../assets/Images/winter_banner.png";
+import Banner2 from "../../assets/Images/christmas_banner.png";
+import Banner3 from "../../assets/Images/christmas_banner_1.png";
 
 const { TabPane } = Tabs;
 
@@ -78,20 +81,9 @@ class homepage extends Component {
     }
   }
 
-  render() {
-    // FILTER THE TEACHERS LIST
-    let { teachers } = this.props;
-
-    const {
-      itemsPerPage,
-      filterSubjects,
-      filterLevels,
-      filterEducationLevels,
-      filterHourPay,
-      filterCity,
-      filterHourWork,
-      filterDistrict
-    } = this.state;
+  filterAndSortTeacher(teachers) {
+    const { filterSubjects, filterLevels, filterEducationLevels,
+      filterHourPay, filterCity, filterHourWork, filterDistrict } = this.state;
 
     // SUBJECTS
     teachers = teachers.filter(teacher => {
@@ -157,6 +149,17 @@ class homepage extends Component {
       return false;
     });
 
+    // SORT TOP RATING TEACHER
+    teachers = teachers.sort((teacher1, teacher2) => teacher2.totalScore - teacher1.totalScore);
+
+    return teachers;
+  }
+
+  render() {
+    const { itemsPerPage } = this.state;
+    let { teachers } = this.props;
+    teachers = this.filterAndSortTeacher(teachers);
+
     // PAGINATION
     let pageNumber = Math.ceil(teachers.length / itemsPerPage);
     let pages = [];
@@ -172,37 +175,54 @@ class homepage extends Component {
       pages.push(page);
     }
     return (
-      <Container className="teacher-list">
-        <Filter updateFilter={data => this.filterteacher(data)} />
-        <Spin tip="Loading..." spinning={this.props.pending}>
-          <Tabs style={{minHeight: 300}} tabPosition="bottom">
-            {pages.map((page, index) => {
-              return (
-                <TabPane tab={index + 1} key={index}>
-                  <Container className="d-flex justify-content-center mt-3">
-                    {page.map(teacher => {
-                      return (
-                        <TeacherInfoCard
-                          key={teacher.email}
-                          loading={this.props.pending}
-                          imageUrl={teacher.imageUrl}
-                          name={teacher.name}
-                          city={teacher.experience.location.city}
-                          subjects={teacher.experience.skill}
-                          userId={teacher._id}
-                          hourWork={teacher.status.timeCommit}
-                          hourPay={teacher.status.hourRate}
+      <div>
+        {!this.props.token &&
+          <Container className="d-flex justify-content-center">
+            <Carousel className="my-3 d-flex justify-content-center banner">
+              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+                <img className="banner" src={Banner1} alt="Banner not found" />
+              </Carousel.Item>
+              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+                <img className="banner" src={Banner2} alt="Banner not found" />
+              </Carousel.Item>
+              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+                <img className="banner" src={Banner3} alt="Banner not found" />
+              </Carousel.Item>
+            </Carousel>
+          </Container>
+        }
+        <Container className="teacher-list">
+          <Filter updateFilter={data => this.filterteacher(data)} />
+          <Spin tip="Loading..." spinning={this.props.pending}>
+            <Tabs style={{ minHeight: 300, textAlign: 'center' }} tabPosition="bottom">
+              {pages.map((page, index) => {
+                return (
+                  <TabPane tab={index + 1} key={index}>
+                    <Container className="d-flex justify-content-center mt-3">
+                      {page.map(teacher => {
+                        return (
+                          <TeacherInfoCard
+                            key={teacher.email}
+                            loading={this.props.pending}
+                            imageUrl={teacher.imageUrl}
+                            name={teacher.name}
+                            city={teacher.experience.location.city}
+                            subjects={teacher.experience.skill}
+                            userId={teacher._id}
+                            hourWork={teacher.status.timeCommit}
+                            hourPay={teacher.status.hourRate}
                           // subjectSearch={data => this.addSubjectFilter(data)}
-                        />
-                      );
-                    })}
-                  </Container>
-                </TabPane>
-              );
-            })}
-          </Tabs>
-        </Spin>
-      </Container>
+                          />
+                        );
+                      })}
+                    </Container>
+                  </TabPane>
+                );
+              })}
+            </Tabs>
+          </Spin>
+        </Container>
+      </div>
     );
   }
 }
@@ -210,7 +230,8 @@ class homepage extends Component {
 const mapStateToProps = state => ({
   error: state.teachingReducer.error,
   pending: state.teachingReducer.pending,
-  teachers: state.teachingReducer.teachers
+  teachers: state.teachingReducer.teachers,
+  token: state.authReducer.token,
 });
 
 const mapDispatchToProps = dispatch =>
