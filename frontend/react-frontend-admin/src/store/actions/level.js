@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const createLevelStart = () => ({
   type: actionTypes.CREATE_LEVEL_START
@@ -27,7 +30,7 @@ export const createLevel = title => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = 'http://localhost:4200/level/add-level';
+  const url = `${API_URL}/level/add-level`;
   axios
     .post(url, levelData, {
       headers
@@ -77,7 +80,7 @@ export const updateLevel = (_id, title) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/level/update-level`;
+  const url = `${API_URL}/level/update-level`;
   axios
     .put(url, updated, {
       headers
@@ -122,7 +125,7 @@ export const getListLevel = searchString => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   const resultSearch = searchString ? `?searchString=${searchString}` : '';
-  const url = `http://localhost:4200/level/get-list${resultSearch}`;
+  const url = `${API_URL}}/level/get-list${resultSearch}`;
   axios
     .get(url, {
       headers
@@ -164,7 +167,7 @@ export const deleteLevel = _id => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/level/delete-level`;
+  const url = `${API_URL}/level/delete-level`;
   axios
     .delete(url, {
       headers,

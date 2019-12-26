@@ -25,9 +25,9 @@ exports.getListGroupChat = async (req, res, next) => {
       message: 'something wrong'
     });
   } catch (error) {
-    console.log('error');
     res.json({
-      message: 'something wrong'
+      message: 'something wrong',
+      error
     });
   }
 };
@@ -156,10 +156,8 @@ exports.saveNewMessage = async (idGroup, idUser, message) => {
             }
           };
           await group.save();
-        } else console.log('cannot save message');
+        }
       });
-    } else {
-      console.log('cannot save message');
     }
   } catch (error) {
     console.log('cannot save message');

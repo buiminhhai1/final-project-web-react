@@ -7,7 +7,9 @@ const {
 
 exports.getListComplain = async (req, res, next) => {
   try {
-    const complains = await ComplainModel.find({});
+    const complains = await ComplainModel.find({}).sort({
+      status: 'asc'
+    });
     return res.json({
       complains,
       message: 'Get List Complain success'
@@ -57,10 +59,8 @@ exports.updateComplain = async (req, res, next) => {
       let complete = false;
       if (status === 1) {
         complete = await TransactionController.completeContract(updated.contract._id);
-        console.log('complete' + complete);
       } else {
         complete = await TransactionController.failedContract(updated.contract._id);
-        console.log('complete' + complete);
       }
       if (complete) {
         sendEmail(msgComplainer);

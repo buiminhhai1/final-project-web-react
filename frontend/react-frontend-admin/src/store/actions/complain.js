@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const getListComplainStart = () => ({
   type: actionTypes.GET_LIST_COMPLAIN_START
@@ -17,7 +20,7 @@ export const getListComplainFail = error => ({
 
 export const getListComplain = () => dispatch => {
   dispatch(getListComplainStart());
-  const url = 'http://localhost:4200/complain/getListComplain';
+  const url = `${API_URL}/complain/getListComplain`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -61,7 +64,7 @@ export const updateStatusComplain = (_id, status, content) => dispatch => {
     status,
     content
   };
-  const url = 'http://localhost:4200/complain/updateStatusComplain';
+  const url = `${API_URL}/complain/updateStatusComplain`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',

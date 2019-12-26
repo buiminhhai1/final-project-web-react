@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const getListUserStart = () => ({
   type: actionTypes.GET_LIST_USER_START
@@ -17,7 +20,7 @@ export const getListUserFail = error => ({
 
 export const getListUser = type => dispatch => {
   dispatch(getListUserStart());
-  const url = `http://localhost:4200/users/get-list-user?type=${type}`;
+  const url = `${API_URL}/users/get-list-user?type=${type}`;
   axios
     .get(url)
     .then(res => {
@@ -54,7 +57,7 @@ export const updateUser = (_id, block, content) => dispatch => {
     block,
     content
   };
-  const url = 'http://localhost:4200/users/blocking-user';
+  const url = `${API_URL}/users/blocking-user`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -97,7 +100,7 @@ export const getDetailUser = userId => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `http://localhost:4200/users/detail/${userId}`;
+  const url = `${API_URL}/users/detail/${userId}`;
   axios
     .get(url, {
       headers
@@ -143,7 +146,7 @@ export const getChatList = (idUser1, idUser2) => dispatch => {
     idUser1,
     idUser2
   };
-  const url = 'http://localhost:4200/chat/messages';
+  const url = `${API_URL}/chat/messages`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -164,5 +167,36 @@ export const getChatList = (idUser1, idUser2) => dispatch => {
     })
     .catch(err => {
       dispatch(getChatListFail(err));
+    });
+};
+
+export const getTopUserStart = () => ({
+  type: actionTypes.GET_TOP_USER_START
+});
+
+export const getTopUserSuccess = users => ({
+  type: actionTypes.GET_TOP_USER_SUCCESS,
+  users
+});
+
+export const getTopUserFail = error => ({
+  type: actionTypes.GET_TOP_USER_FAIL,
+  error
+});
+
+export const getTopUser = numDate => dispatch => {
+  dispatch(getTopUserStart());
+  const url = `${API_URL}/users/getTopUser/${numDate}`;
+  axios
+    .get(url)
+    .then(res => {
+      if (res.data.result) {
+        dispatch(getTopUserSuccess(res.data.result));
+      } else {
+        dispatch(getTopUserFail('get top has failed'));
+      }
+    })
+    .catch(err => {
+      dispatch(getTopUserFail(err));
     });
 };

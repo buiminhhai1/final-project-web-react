@@ -1,5 +1,8 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import {
+  API_URL
+} from './apiUrl';
 
 export const selectedTab = tabNum => ({
   type: actionTypes.SELECTED_TAB,
@@ -54,7 +57,7 @@ export const login = (email, password) => dispatch => {
     email,
     password
   };
-  const url = 'http://localhost:4200/admin/login';
+  const url = `${API_URL}/admin/login'`;
 
   axios
     .post(url, authData)
@@ -88,7 +91,7 @@ export const login = (email, password) => dispatch => {
 
 export const signInOauth = Oauth => dispatch => {
   dispatch(loginStart());
-  let url = 'http://localhost:4200/admin/login/facebookOauth';
+  let url = `${API_URL}/admin/login/facebookOauth`;
   const data = {
     id: Oauth.idFacebook,
     name: Oauth.name,
@@ -97,7 +100,7 @@ export const signInOauth = Oauth => dispatch => {
     accessToken: Oauth.accessToken
   };
   if (!Oauth.idFacebook) {
-    url = 'http://localhost:4200/admin/login/googleOauth';
+    url = `${API_URL}/admin/login/googleOauth`;
     data.id = Oauth.idGoole;
   }
   axios
@@ -149,7 +152,7 @@ export const register = (email, password, name) => dispatch => {
     password,
     name
   };
-  const url = 'http://localhost:4200/admin/register';
+  const url = `${API_URL}admin/register`;
   axios
     .post(url, authData)
     .then(response => {
