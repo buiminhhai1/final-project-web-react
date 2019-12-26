@@ -1,5 +1,8 @@
-const GroupChatModel = require('../model/groupChatModel').GroupChatModel;
-const MessageModel = require('../model/groupChatModel').MessageModel;
+const {
+  GroupChatModel,
+  MessageModel
+} = require('../model/groupChatModel');
+
 const UserModdel = require('../../users/model/userModel');
 
 exports.getListGroupChat = async (req, res, next) => {
@@ -16,13 +19,9 @@ exports.getListGroupChat = async (req, res, next) => {
       }]
     });
     if (!!results) {
-      // results.forEach(e=>{
-      // if(!!e.lastMessage){
-      //     // e['name'] = UserModdel.findOne
-      // }
-      // })
       return res.json(results);
-    } else return res.json({
+    }
+    return res.json({
       message: 'something wrong'
     });
   } catch (error) {
@@ -119,7 +118,8 @@ exports.newMessage = async (req, res, next) => {
           };
           await group.save();
           res.json(result);
-        } else json({
+        }
+        return res.json({
           message: 'Something wrong'
         });
       });

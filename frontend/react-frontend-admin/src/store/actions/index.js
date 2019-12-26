@@ -51,7 +51,8 @@ export {
   getListUser,
   updateUser,
   getDetailUser,
-  refreshMessageUUser
+  refreshMessageUUser,
+  getChatList
 }
 from './user';
 
@@ -59,3 +60,10 @@ export {
   getListContract
 }
 from './contract'
+
+export {
+  getListComplain,
+  updateStatusComplain,
+  refreshMessageUComplain
+}
+from './complain';

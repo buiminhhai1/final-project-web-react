@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   PageHeader,
   Tag,
@@ -12,6 +13,7 @@ import {
   Table
 } from 'antd';
 import { Redirect } from 'react-router-dom';
+import * as actions from '../../store/actions/index';
 
 const { Paragraph, Title } = Typography;
 
@@ -124,11 +126,9 @@ class DetailUser extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   console.log('test nav link params');
-  //   console.log(this.props.location.userDetail);
-  //   console.log(this.props);
-  // }
+  componentDidMount() {
+    this.props.onRefresherDetailUser();
+  }
 
   render() {
     const {
@@ -325,4 +325,7 @@ class DetailUser extends Component {
   }
 }
 
-export default DetailUser;
+const mapDispatchtoProps = dispatch => ({
+  onRefresherDetailUser: () => dispatch(actions.refreshMessageUUser())
+});
+export default connect(null, mapDispatchtoProps)(DetailUser);

@@ -4,13 +4,12 @@ const passport = require('passport');
 const router = express.Router();
 const chatController = require('../controller/chatController');
 
-
-// router.post('/groups',chatController.getListGroupChat);
 router.post('/groups', passport.authenticate('jwt', {
     session: false
-}),chatController.newGroupChat);
+}), chatController.newGroupChat);
 
-router.post('/messages',chatController.getListMessages);
-// router.post('/messages', chatController.newMessage);
+router.post('/messages', passport.authenticate('jwt', {
+    session: false
+}), chatController.getListMessages);
 
 module.exports = router;
