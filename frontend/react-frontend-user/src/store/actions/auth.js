@@ -208,6 +208,7 @@ export function signInGoogle(accessToken) {
         localStorage.setItem('userName', res.data.user.name);
         localStorage.setItem('email', res.data.user.email);
         localStorage.setItem('imageUrl', res.data.user.imageUrl);
+        localStorage.setItem('isTeacher', res.data.user.isTeacher);
         localStorage.setItem('method', 'google');
         localStorage.setItem('userId', res.data.user.userId);
         localStorage.setItem('verify', res.data.user.verify);
@@ -239,6 +240,7 @@ export function signInFacebook(accessToken) {
         localStorage.setItem('userName', res.data.user.name);
         localStorage.setItem('email', res.data.user.email);
         localStorage.setItem('imageUrl', res.data.user.imageUrl);
+        localStorage.setItem('isTeacher', res.data.user.isTeacher);
         localStorage.setItem('method', 'facebook');
         localStorage.setItem('userId', res.data.user.userId);
         localStorage.setItem('verify', res.data.user.verify);
@@ -267,7 +269,7 @@ export function reLogin() {
           name: localStorage.getItem('userName'),
           email: localStorage.getItem('email'),
           imageUrl: localStorage.getItem('imageUrl'),
-          isTeacher: localStorage.getItem('isTeacher'),
+          isTeacher: localStorage.getItem('isTeacher') === 'true',
           userId: localStorage.getItem('userId'),
           verify: localStorage.getItem('verify'),
           method: localStorage.getItem('method')
