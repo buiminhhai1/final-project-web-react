@@ -20,7 +20,7 @@ export const getListUserFail = error => ({
 
 export const getListUser = type => dispatch => {
   dispatch(getListUserStart());
-  const url = `${API_URL}/users/get-list-user?type=${type}`;
+  const url = `http://localhost:4200/users/get-list-user?type=${type}`;
   axios
     .get(url)
     .then(res => {
@@ -57,7 +57,7 @@ export const updateUser = (_id, block, content) => dispatch => {
     block,
     content
   };
-  const url = `${API_URL}/users/blocking-user`;
+  const url = `http://localhost:4200/users/blocking-user`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export const getDetailUser = userId => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `${API_URL}/users/detail/${userId}`;
+  const url = `http://localhost:4200/users/detail/${userId}`;
   axios
     .get(url, {
       headers
@@ -146,7 +146,7 @@ export const getChatList = (idUser1, idUser2) => dispatch => {
     idUser1,
     idUser2
   };
-  const url = `${API_URL}/chat/messages`;
+  const url = `http://localhost:4200/chat/messages`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ export const getTopUserFail = error => ({
 
 export const getTopUser = numDate => dispatch => {
   dispatch(getTopUserStart());
-  const url = `${API_URL}/users/getTopUser/${numDate}`;
+  const url = `http://localhost:4200/users/getTopUser/${numDate}`;
   axios
     .get(url)
     .then(res => {

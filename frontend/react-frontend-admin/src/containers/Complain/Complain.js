@@ -276,6 +276,7 @@ class Complain extends Component {
       this.props.onRefreshMessage();
     } else if (this.props.message) {
       this.render.actionMessage = message.success(this.props.message);
+      this.props.onRefreshMessage();
     }
   }
 

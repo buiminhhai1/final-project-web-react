@@ -14,13 +14,6 @@ import Banner3 from "../../assets/Images/christmas_banner_1.png";
 
 const { TabPane } = Tabs;
 
-// searchValueInObject()
-
-// checkValueInArray = (value, array) => {
-//   for(let i = 0; i < array.length; i++){
-//     if(value === array)
-//   }
-// };
 
 class homepage extends Component {
   constructor(props) {
@@ -179,13 +172,13 @@ class homepage extends Component {
         {!this.props.token &&
           <Container className="d-flex justify-content-center">
             <Carousel className="my-3 d-flex justify-content-center banner">
-              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner1} alt="Banner not found" />
               </Carousel.Item>
-              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner2} alt="Banner not found" />
               </Carousel.Item>
-              <Carousel.Item onClick={() => window.location.replace('http://localhost:3000/signUp')}>
+              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner3} alt="Banner not found" />
               </Carousel.Item>
             </Carousel>

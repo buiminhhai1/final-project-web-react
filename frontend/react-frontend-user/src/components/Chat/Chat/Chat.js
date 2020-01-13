@@ -16,6 +16,11 @@ import {
   MessageList,
   MessageGroup
 } from '@livechat/ui-kit';
+
+//reads in configuration from a .env file
+require('dotenv').config();
+const apiUrl = process.env.REACT_APP_API_URL;
+
 let socket;
 
 const themes = {
@@ -54,7 +59,7 @@ const Chat = props => {
   const [groupList, setGroupList] = useState([]);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const ENDPOINT = 'http://localhost:4000/';
+  const ENDPOINT = apiUrl;
 
   useEffect(() => {
     socket = io(ENDPOINT);
