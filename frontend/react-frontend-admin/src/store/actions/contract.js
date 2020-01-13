@@ -20,7 +20,7 @@ export const getListContractFail = (error) => ({
 
 export const getListContract = () => dispatch => {
   dispatch(getListContractStart());
-  const url = `${API_URL}/contract/get-list-contract`;
+  const url = `http://localhost:4200/contract/get-list-contract`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const getStatiticsFail = (error) => ({
 
 export const getStatitics = () => dispatch => {
   dispatch(getStatiticsStart());
-  const url = `${API_URL}/contract/get-statitics-by-day`;
+  const url = `http://localhost:4200/contract/get-statitics-by-day`;
   const authToken = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',

@@ -30,7 +30,7 @@ export const createSkill = title => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `${API_URL}/skill/add-skill`;
+  const url = `http://localhost:4200/skill/add-skill`;
   axios
     .post(url, skillData, {
       headers
@@ -80,7 +80,7 @@ export const updateSkill = (_id, title) => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `${API_URL}/skill/update-skill/${_id}`;
+  const url = `http://localhost:4200/skill/update-skill/${_id}`;
   axios
     .put(url, updated, {
       headers
@@ -125,7 +125,7 @@ export const getListSkill = searchString => dispatch => {
     Authorization: 'Bearer ' + authToken
   };
   const resultSearch = searchString ? `?searchString=${searchString}` : '';
-  const url = `${API_URL}/skill/get-list${resultSearch}`;
+  const url = `http://localhost:4200/skill/get-list${resultSearch}`;
   axios
     .get(url, {
       headers
@@ -164,7 +164,7 @@ export const deleteSkill = _id => dispatch => {
     'Content-Type': 'application/json',
     Authorization: 'Bearer ' + authToken
   };
-  const url = `${API_URL}/skill/delete-skill/${_id}`;
+  const url = `http://localhost:4200/skill/delete-skill/${_id}`;
   axios
     .delete(url, {
       headers

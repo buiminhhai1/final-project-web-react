@@ -43,7 +43,6 @@ exports.register = async (req, res) => {
           imageUrl: 'https://icon-library.net/images/bot-icon/bot-icon-18.jpg',
           method: 'local',
           isTeacher: false,
-          verify: true,
         });
         const result = await newUser.save();
         if (!!result) {

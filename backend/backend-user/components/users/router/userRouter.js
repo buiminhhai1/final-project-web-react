@@ -18,9 +18,7 @@ router.post('/user-profile', passport.authenticate('jwt', {
 router.post('/teacher-profile', passport.authenticate('jwt', {
     session: false
 }), userController.updateTeacher);
-router.post('/image-upload',passport.authenticate('jwt', {
-    session: false
-}), userController.uploadImage);
+router.post('/image-upload', userController.uploadImage);
 
 router.get('/verify', userController.verifyUser);
 router.post('/changePassword', passport.authenticate('jwt', {
