@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Form,
-  Container,
-  InputGroup,
-  FormControl
-} from 'react-bootstrap';
+// import { Button, Form, Container, InputGroup, FormControl } from 'react-bootstrap';
 import { Radio, Spin, Divider, TreeSelect, message } from 'antd';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -214,7 +208,7 @@ class TeacherProfile extends Component {
         {errorMessage}
         <Spin tip="Loading..." spinning={this.props.pending}>
           <div className="shadow bg-white rounded px-3">
-            <Container className="text-center pt-3">
+            <div className="container text-center pt-3">
               <h1>
                 Apply to join <b>Tutor Recommendation</b>
               </h1>
@@ -222,11 +216,11 @@ class TeacherProfile extends Component {
                 Admission is competitve, as there are limited spaces for tutors
                 on <b>Tutor Recommendation</b>
               </p>
-            </Container>
+            </div>
             <Divider></Divider>
-            <Container className="pb-3">
+            <div className="container pb-3">
               <h4>Tell us about your services</h4>
-              <Form.Group>
+              <div className="form-group">
                 <b>What is your major(Subject)?</b>
                 <Select
                   isMulti
@@ -236,8 +230,8 @@ class TeacherProfile extends Component {
                   onChange={this.handleSubjectChange}
                   options={subjects}
                 />
-              </Form.Group>
-              <Form.Group>
+              </div>
+              <div className="form-group">
                 <b>Which level do you want to teach?</b>
                 <Select
                   isMulti
@@ -247,8 +241,8 @@ class TeacherProfile extends Component {
                   onChange={this.handleChangeEducationLevel}
                   options={educationLevel}
                 />
-              </Form.Group>
-              <Form.Group>
+              </div>
+              <div className="form-group">
                 <b>Which level do you think you are?</b>
                 <br />
                 <Radio.Group
@@ -273,8 +267,8 @@ class TeacherProfile extends Component {
                     );
                   })}
                 </Radio.Group>
-              </Form.Group>
-              <Form.Group>
+              </div>
+              <div className="form-group">
                 <b>Where do you want to teach?</b>
                 <br />
                 <TreeSelect
@@ -310,54 +304,54 @@ class TeacherProfile extends Component {
                     );
                   })}
                 </TreeSelect>
-              </Form.Group>
-              <Form.Group>
+              </div>
+              <div className="form-group">
                 <b>How much do you want to be paid?</b>
                 <br />
-                <InputGroup className="mt-1 description">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>$</InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <FormControl
+                <div className="input-group mt-1 description">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">$</span>
+                  </div>
+                  <div className="form-control"
                     type="number"
                     value={this.state.hourPay}
                     onChange={event => this.handleHourPay(event)}
                   />
-                  <InputGroup.Append>
-                    <InputGroup.Text>per hour</InputGroup.Text>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Form.Group>
-              <Form.Group>
+                  <div className="input-group-append">
+                    <span className="input-group-text">per hour</span>
+                  </div>
+                </div>
+              </div>
+              <div className="form-group">
                 <b>How long can you work?</b>
                 <br />
-                <InputGroup className="mt-1 description">
-                  <FormControl
+                <div className="input-group mt-1 description">
+                  <div className="form-control"
                     type="number"
                     value={this.state.hourWork}
                     onChange={event => this.handleHourWork(event)}
                   />
-                  <InputGroup.Append>
-                    <InputGroup.Text id="basic-addon2">
+                  <div className="input-group-append">
+                    <span className="input-group-text" id="basic-addon2">
                       per week
-                    </InputGroup.Text>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Form.Group>
-              <Form.Group>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="form-group">
                 <b>Describe about yourself</b>
-                <Form.Control
-                  className="mt-1 description"
+                <div
+                  className="form-control mt-1 description"
                   as="textarea"
                   rows="7"
                   value={this.state.description}
                   onChange={event => this.handleDescription(event)}
                 />
-              </Form.Group>
-              <Button onClick={() => this.handleSubmit()} variant="primary">
+              </div>
+              <button className="btn btn-primary" onClick={() => this.handleSubmit()} >
                 Update teaching profile
-              </Button>
-            </Container>
+              </button>
+            </div>
           </div>
         </Spin>
       </form>

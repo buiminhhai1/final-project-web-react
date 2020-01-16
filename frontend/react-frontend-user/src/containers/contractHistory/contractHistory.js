@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Spin, message, Table, Divider, Icon, Modal } from 'antd';
-import { Container } from 'react-bootstrap';
+// import { Container } from 'react-bootstrap';
 
 import {
   sendRating, sendComplain, withdrawMoney, getContracts, getMoney, updateContract, endContract
@@ -278,7 +278,7 @@ class contractHistory extends Component {
         {successMessage}
         {errorMessage}
         <Spin tip="Loading..." spinning={this.props.pending}>
-          <Container className="shadow p-3 bg-white">
+          <div className="container shadow p-3 bg-white">
             <div className="d-flex align-items-end flex-column mb-3">
               <h4>
                 <b>$</b>{this.props.money}
@@ -292,7 +292,7 @@ class contractHistory extends Component {
               </button>
             </div>
             <Table className="mt-3" columns={columns} dataSource={data} />
-          </Container>
+          </div>
           <RatingModal
             visible={this.state.ratingVisible}
             // visible={true}

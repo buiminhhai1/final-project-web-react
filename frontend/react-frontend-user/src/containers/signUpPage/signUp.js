@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, FormControl, FormLabel, Button } from 'react-bootstrap';
+// import { FormGroup, FormControl, label, Button } from 'react-bootstrap';
 import { message } from 'antd';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -48,47 +48,47 @@ function SignUp(props) {
     <div className="Signup">
       <form onSubmit={handleSubmit}>
         {errorMeassage}
-        <FormGroup controlId="email">
-          <FormLabel>Email</FormLabel>
-          <FormControl
+        <div className="form-group" controlId="email">
+          <label>Email</label>
+          <input className="form-control"
             autoFocus
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup controlId="name">
-          <FormLabel>Name</FormLabel>
-          <FormControl
+        </div>
+        <div className="form-group" controlId="name">
+          <label>Name</label>
+          <input className="form-control"
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup controlId="password">
-          <FormLabel>Password</FormLabel>
-          <FormControl
+        </div>
+        <div className="form-group" controlId="password">
+          <label>Password</label>
+          <input className="form-control"
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup controlId="confirmPassword">
-          <FormLabel>Confirm Password</FormLabel>
-          <FormControl
+        </div>
+        <div className="form-group" controlId="confirmPassword">
+          <label>Confirm Password</label>
+          <input className="form-control"
             type="password"
             onChange={e => setComfirmPassword(e.target.value)}
             value={confirmPassword}
           />
-        </FormGroup>
-        <Button
+        </div>
+        <button
+          className="btn btn-primary btn-block"
           block
           disabled={!validateForm() || props.pending}
           type="submit"
-          variant="primary"
         >
           {props.pending ? 'Loading' : 'REGISTER'}
-        </Button>
+        </button>
       </form>
     </div>
   );

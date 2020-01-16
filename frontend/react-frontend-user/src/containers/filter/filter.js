@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Container, Row, Col } from 'react-bootstrap';
+// import { Container, Row, Col } from 'react-bootstrap';
 import { Collapse, Icon, TreeSelect, message, Spin, Input, Select } from 'antd';
 
 import {
@@ -159,9 +159,9 @@ class filter extends Component {
         <Panel header="" key="1">
           <Spin tip="Loading..." spinning={this.props.pending}>
             <div className="shadow bg-white p-3">
-              <Container className="pb-3">
-                <Row className="mb-3">
-                  <Col md>
+              <div className="container pb-3">
+                <div className="row mb-3">
+                  <div className="col-md">
                     <b>Subjects</b>
                     <br />
                     <Select
@@ -177,8 +177,8 @@ class filter extends Component {
                         </Select.Option>
                       ))}
                     </Select>
-                  </Col>
-                  <Col md>
+                  </div>
+                  <div className="col-md">
                     <b>Education level</b>
                     <Select
                       mode="multiple"
@@ -196,8 +196,8 @@ class filter extends Component {
                         </Select.Option>
                       ))}
                     </Select>
-                  </Col>
-                  <Col md>
+                  </div>
+                  <div className="col-md">
                     <b>Lesson's level</b>
                     <Select
                       mode="multiple"
@@ -212,10 +212,10 @@ class filter extends Component {
                         </Select.Option>
                       ))}
                     </Select>
-                  </Col>
-                </Row>
-                <Row className="mt-3">
-                  <Col md>
+                  </div>
+                </div>
+                <div className="row mt-3">
+                  <div className="col-md">
                     <b>Locations</b>
                     <br />
                     <TreeSelect
@@ -253,8 +253,8 @@ class filter extends Component {
                         );
                       })}
                     </TreeSelect>
-                  </Col>
-                  <Col md>
+                  </div>
+                  <div className="col-md">
                     <b>Budget (Maximum per hour)</b>
                     <br />
                     <InputGroup compact className="mt-1 description">
@@ -275,8 +275,8 @@ class filter extends Component {
                         onChange={e => this.handleHourPay(e)}
                       />
                     </InputGroup>
-                  </Col>
-                  <Col md>
+                  </div>
+                  <div className="col-md">
                     <b>Teaching time (Minimum per week) </b>
                     <br />
                     <InputGroup compact className="mt-1 description">
@@ -297,9 +297,9 @@ class filter extends Component {
                         disabled
                       />
                     </InputGroup>
-                  </Col>
-                </Row>
-              </Container>
+                  </div>
+                </div>
+              </div>
             </div>
           </Spin>
         </Panel>

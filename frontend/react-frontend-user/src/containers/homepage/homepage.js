@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tabs, Spin } from 'antd';
-import { Container, Carousel } from 'react-bootstrap';
+// import { Container, Carousel } from 'react-bootstrap';
 
 import TeacherInfoCard from '../../components/TeacherInfoCard/TeacherInfoCard';
 import Filter from '../filter/filter';
@@ -170,28 +170,28 @@ class homepage extends Component {
     return (
       <div>
         {!this.props.token &&
-          <Container className="d-flex justify-content-center">
-            <Carousel className="my-3 d-flex justify-content-center banner">
-              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
+          <div className="container carousel slide d-flex justify-content-center" dataride="carousel">
+            <div className="carousel-inner my-3 d-flex justify-content-center banner shadow">
+              <div className="carousel-item-active" onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner1} alt="Banner not found" />
-              </Carousel.Item>
-              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
+              </div>
+              <div className="carousel-item" onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner2} alt="Banner not found" />
-              </Carousel.Item>
-              <Carousel.Item onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
+              </div>
+              <div className="carousel-item" onClick={() => window.location.replace(`${window.location.href}/signUp`)}>
                 <img className="banner" src={Banner3} alt="Banner not found" />
-              </Carousel.Item>
-            </Carousel>
-          </Container>
+              </div>
+            </div>
+          </div>
         }
-        <Container className="teacher-list">
+        <div className="container teacher-list">
           <Filter updateFilter={data => this.filterteacher(data)} />
           <Spin tip="Loading..." spinning={this.props.pending}>
             <Tabs style={{ minHeight: 300, textAlign: 'center' }} tabPosition="bottom">
               {pages.map((page, index) => {
                 return (
                   <TabPane tab={index + 1} key={index}>
-                    <Container className="d-flex justify-content-center mt-3">
+                    <div className="container d-flex justify-content-center mt-3">
                       {page.map(teacher => {
                         return (
                           <TeacherInfoCard
@@ -208,13 +208,13 @@ class homepage extends Component {
                           />
                         );
                       })}
-                    </Container>
+                    </div>
                   </TabPane>
                 );
               })}
             </Tabs>
           </Spin>
-        </Container>
+        </div>
       </div>
     );
   }
