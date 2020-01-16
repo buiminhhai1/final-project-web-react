@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Spin, Avatar, Badge, Rate, Tag, message, Divider } from 'antd';
-import { Container, Row, Col } from 'react-bootstrap';
+// import { Container, Row, Col } from 'react-bootstrap';
 
 import {
   getTeacher,
@@ -88,7 +88,7 @@ class userProfile extends Component {
         {successMessage}
         {errorMessage}
         <Spin tip="Loading..." spinning={this.props.pending}>
-          <Container className="shadow p-3 bg-white my-2 rounded">
+          <div className="container shadow p-3 bg-white my-2 rounded">
             <div className="d-flex justify-content-between mb-3">
               <div className="d-flex">
                 <Badge
@@ -136,8 +136,8 @@ class userProfile extends Component {
                   teacher.experience.introduction.description}
               </p>
             </div>
-            <Row>
-              <Col sm>
+            <div className="row">
+              <div className="col-sm">
                 {teacher.status && (
                   <h5
                     className="d-flex align-items-center"
@@ -148,34 +148,34 @@ class userProfile extends Component {
                   </h5>
                 )}
                 <p>Hourly rate</p>
-              </Col>
-              <Col sm>
+              </div>
+              <div className="col-sm">
                 {teacher.status && (
                   <h5 style={{ color: '#000' }}>
                     {teacher.status.timeCommit} <b style={{ fontSize: 15 }}>hrs</b>
                   </h5>
                 )}
                 <p>Per week</p>
-              </Col>
-              <Col sm>
+              </div>
+              <div className="col-sm">
                 {teacher.contracts && (
                   <h5 style={{ color: '#000' }}>
                     {teacher.contracts.length} <b></b>
                   </h5>
                 )}
                 <p>Contracts</p>
-              </Col>
-              <Col sm>
+              </div>
+              <div className="col-sm">
                 {teacher.contracts && (
                   <h5 style={{ color: '#000' }}>
                     {successRate} <b>%</b>
                   </h5>
                 )}
                 <p>Success rate</p>
-              </Col>
-            </Row>
-          </Container>
-          <Container className="shadow mt-3 p-3 bg-white">
+              </div>
+            </div>
+          </div>
+          <div className="container shadow mt-3 p-3 bg-white">
             <div className="mb-3">
               <h5>
                 <i className="fas fa-book-reader fa-lg mr-2"></i>
@@ -188,8 +188,8 @@ class userProfile extends Component {
                   </Tag>
                 ))}
             </div>
-          </Container>
-          <Container className="shadow mt-3 p-3 bg-white">
+          </div>
+          <div className="container shadow mt-3 p-3 bg-white">
             <div className="mb-3">
               <h5>
                 <i className="fas fa-tasks fa-lg mr-2"></i>
@@ -210,7 +210,7 @@ class userProfile extends Component {
                   return true;
                 })}
             </div>
-          </Container>
+          </div>
           {this.props.user && this.props.user.userId !== this.state.teacherId &&
             !this.props.user.isTeacher && (
               <FloatButtons

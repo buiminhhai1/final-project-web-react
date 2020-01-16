@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+// import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import { NavLink, Redirect } from 'react-router-dom';
@@ -63,32 +63,32 @@ function Login(props) {
   return (
     <div className="Login">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email">
-          <FormLabel>Email</FormLabel>
-          <FormControl
+        <div className="form-group" controlId="email">
+          <label>Email</label>
+          <input className="form-control"
             autoFocus
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup controlId="password">
-          <FormLabel>Password</FormLabel>
-          <FormControl
+        </div>
+        <div className="form-group" controlId="password">
+          <label>Password</label>
+          <input className="form-control"
             value={password}
             onChange={e => setPassword(e.target.value)}
             type="password"
             autoComplete="true"
           />
-        </FormGroup>
-        <Button
+        </div>
+        <button
+          className="btn btn-warning btn-block"
           block
           disabled={!validateForm() || isPending}
           type="submit"
-          variant="warning"
         >
           {isPending ? 'Loading…' : 'LOGIN'}
-        </Button>
+        </button>
         <GoogleLogin
           clientId={googleClientId}
           render={renderProps => (
@@ -112,7 +112,7 @@ function Login(props) {
           cssClass="btn facebook-btn btn-primary btn-block my-2"
         />
         <NavLink className="signUpLink" to="/signUp" exact>
-          Don't have account? 
+          Don't have account?
           <b className="mx-1">Sign up</b>
           now
         </NavLink>

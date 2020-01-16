@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+// import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -43,30 +43,32 @@ function ResetPassword(props) {
       <form onSubmit={handleSubmit}>
         {successMessage}
         {errorMessage}
-        <FormGroup controlId="password">
-          <FormLabel>Password</FormLabel>
-          <FormControl
+        <div className="form-group" controlId="password">
+          <label>Password</label>
+          <input
+            className="form-control"
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-        </FormGroup>
-        <FormGroup controlId="confirmPassword">
-          <FormLabel>Confirm Password</FormLabel>
-          <FormControl
+        </div>
+        <div className="form-group" controlId="confirmPassword">
+          <label>Confirm Password</label>
+          <input
+            className="form-control"
             type="password"
             onChange={e => setComfirmPassword(e.target.value)}
             value={confirmPassword}
           />
-        </FormGroup>
-        <Button
+        </div>
+        <button
+          className="btn btn-warning"
           block
           disabled={!validateForm() || props.pending}
           type="submit"
-          variant="warning"
         >
           {props.pending ? 'Loading…' : 'SEND'}
-        </Button>
+        </button>
       </form>
     </div>
   );

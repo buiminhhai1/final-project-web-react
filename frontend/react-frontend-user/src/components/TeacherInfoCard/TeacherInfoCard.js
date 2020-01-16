@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Avatar, Tag, Divider, Badge } from 'antd';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 import './TeacherInfoCard.css';
@@ -62,9 +62,9 @@ export default function TeacherInfoCard(props) {
               </div>
               <div className="d-flex justify-content-center">
                 <NavLink to={`/user-profile?userId=${props.userId}`} exact>
-                  <Button variant="outline-primary" style={{ fontSize: 15 }}>
+                  <button className="btn btn-outline-primary" style={{ fontSize: 15 }}>
                     <b>View profile</b>
-                  </Button>
+                  </button>
                 </NavLink>
               </div>
             </div>

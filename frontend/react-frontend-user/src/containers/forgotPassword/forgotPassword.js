@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+// import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,23 +35,23 @@ function ForgotPassword(props) {
       <form onSubmit={handleSubmit}>
         {successMessage}
         {errorMessage}
-        <FormGroup controlId="email">
-          <FormLabel>Email</FormLabel>
-          <FormControl
+        <div className="form-group" controlId="email">
+          <label>Email</label>
+          <input className="form-control"
             autoFocus
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-        </FormGroup>
-        <Button
+        </div>
+        <button
+          className="btn-warning"
           block
           disabled={!validateForm() || props.pending}
           type="submit"
-          variant="warning"
         >
           {props.pending ? 'Loading…' : 'SEND'}
-        </Button>
+        </button>
       </form>
     </div>
   );
