@@ -52,7 +52,7 @@ exports.statiticsByDay = async (req, res, next) => {
     })
   }
   catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.json({
       error: err,
       message: 'Cannot statitics'

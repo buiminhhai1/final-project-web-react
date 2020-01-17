@@ -160,7 +160,7 @@ exports.saveNewMessage = async (idGroup, idUser, message) => {
       });
     }
   } catch (error) {
-    console.log('cannot save message');
+    // console.log('cannot save message');
   }
 };
 

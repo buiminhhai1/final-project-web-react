@@ -63,7 +63,7 @@ export function updateImageUrl(data) {
         } else dispatch(updateImageUrlFail({ error: 'Cannot upload avatar' }));
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         dispatch(updateImageUrlFail(err));
       });
   };
@@ -121,7 +121,7 @@ export function updateTeacherProfile(token, data) {
         } else dispatch(updateUserProfileFail('Cannot update!'));
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         dispatch(updateTeacherProfileFail({ error: 'Cannot update! ' }));
       });
   };

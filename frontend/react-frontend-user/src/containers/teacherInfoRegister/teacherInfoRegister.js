@@ -129,7 +129,7 @@ class TeacherProfile extends Component {
   };
 
   handleSubjectChange = selectedOption => {
-    console.log(this.state.selectedSubject);
+    // console.log(this.state.selectedSubject);
 
     this.setState({ selectedSubject: selectedOption });
   };

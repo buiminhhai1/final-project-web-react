@@ -26,7 +26,7 @@ class Google extends Component {
     });
   };
 
-  componentClicked = () => console.log('clicked');
+  componentClicked = () => // console.log('clicked');
 
   render() {
     let ggContent;

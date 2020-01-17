@@ -11,7 +11,7 @@ exports.checkout = (req, res) => {
   const { contractId, successUrl, failedUrl } = req.query;
   paypal.webProfile.create(create_web_profile_json(), async function (error, web_profile) {
     if (error) {
-      console.log('cannot get contract ' + contractId);
+      // console.log('cannot get contract ' + contractId);
       res.redirect(failedUrl);
     } else {
       try {
@@ -19,7 +19,7 @@ exports.checkout = (req, res) => {
           method: "PAYMENT", 'detail.payment.contractId': contractId
         });
         if (existTransaction) {
-          console.log('exist');
+          // console.log('exist');
           res.redirect(failedUrl);
         } else {
           const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
@@ -47,7 +47,7 @@ exports.checkout = (req, res) => {
 
       }
       catch (error) {
-        console.log('cannot get contract ' + contractId);
+        // console.log('cannot get contract ' + contractId);
         res.redirect(failedUrl);
       }
     }
@@ -62,7 +62,7 @@ exports.successCheckout = async (req, res) => {
     paypal.payment.execute(paymentId, execute_payment_json(PayerID, amount),
       async function (error) {
         if (error) {
-          console.log(error.message);
+          // console.log(error.message);
           res.redirect(failedUrl);
         } else {
           try {
@@ -72,7 +72,7 @@ exports.successCheckout = async (req, res) => {
               ]
             });
             if (existPayment) {
-              console.log('Something wrong');
+              // console.log('Something wrong');
               res.redirect(failedUrl);
             } else {
               const contract = await ContractModel.findOne({ _id: contractId, status: 0 });
@@ -105,14 +105,14 @@ exports.successCheckout = async (req, res) => {
         }
       });
   } catch (error) {
-    console.log('cant check out for contractId ' + contractId);
+    // console.log('cant check out for contractId ' + contractId);
     res.redirect(failedUrl);
   }
 }
 
 exports.cancelCheckout = (req, res) => {
   const { failedUrl } = req.query;
-  console.log('cancel checkout');
+  // console.log('cancel checkout');
   res.redirect(failedUrl);
 };
 
@@ -270,7 +270,7 @@ exports.failedContract = async (req, res) => {
     } else
       res.json({ result: false, message: 'something wrong' });
   } catch (error) {
-    console.log('catch');
+    // console.log('catch');
     res.json({ result: false, message: 'something wrong' });
   }
 }
@@ -295,15 +295,15 @@ const updateContract = async (_id, status) => {
         contract.save();
         return true;
       } else {
-        console.log('cant update contract status');
+        // console.log('cant update contract status');
         return false;
       }
     } else {
-      console.log('cant update contract status');
+      // console.log('cant update contract status');
       return false;
     }
   } catch (err) {
-    console.log('cant update contract status');
+    // console.log('cant update contract status');
     return false;
   }
 };
