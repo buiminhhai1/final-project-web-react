@@ -2,25 +2,26 @@ const passport = require('passport');
 const express = require('express');
 
 const router = express.Router();
-const levelController = require('../controller/levelController');
+const levelQuery = require('../controller/query/levelsQuery');
+const levelCommand = require('../controller/command/levelsCommand');
 
-router.get('/get-list-enable-level', levelController.getListLevel);
+router.get('/get-list-enable-level', levelQuery.getListLevel);
 
 router.get('/get-list', passport.authenticate('jwt', {
   session: false
-}), levelController.getListLevel);
+}), levelQuery.getListLevel);
 
 router.post('/add-level', passport.authenticate('jwt', {
   session: false
-}), levelController.addLevel);
+}), levelCommand.addLevel);
 
 router.put('/update-level', passport.authenticate('jwt', {
   session: false
-}), levelController.updateLevel);
+}), levelCommand.updateLevel);
 
 router.delete('/delete-level', passport.authenticate('jwt', {
   session: false
-}), levelController.deleteLevel);
+}), levelCommand.deleteLevel);
 
 
 module.exports = router;

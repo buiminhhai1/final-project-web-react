@@ -1,8 +1,8 @@
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-const SkillModel = require('../model/skillModel');
-const constant = require('../../utils/const/constant');
+const SkillModel = require('../../model/skillModel');
+const constant = require('../../../utils/const/constant');
 
 exports.getListSkillEnabled = async (req, res, next) => {
 

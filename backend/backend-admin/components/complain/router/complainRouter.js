@@ -3,7 +3,7 @@ const passport = require('passport');
 
 const router = express.Router();
 const complainCommand = require('../controller/command/complainCommand');
-const complainQuery = require('../controller/query/complainQuery')
+const complainQuery = require('../controller/query/complainQuery');
 
 router.get('/getListComplain', passport.authenticate('jwt', {
   session: false

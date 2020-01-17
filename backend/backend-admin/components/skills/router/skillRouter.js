@@ -6,7 +6,7 @@ const router = express.Router();
 const skillCommand = require('../controller/command/skillCommand');
 const skillQuery = require('../controller/query/skillQuery');
 
-router.get('/get-list-enable-skill', skillController.getListSkill);
+router.get('/get-list-enable-skill', skillQuery.getListSkill);
 
 router.get('/get-list', passport.authenticate('jwt', {
   session: false

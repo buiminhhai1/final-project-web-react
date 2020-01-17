@@ -2,7 +2,6 @@ const passport = require('passport');
 const express = require('express');
 
 const router = express.Router();
-const levelEducationController = require('../controller/levelEducationController');
 const levelEducationQuery = require('../controller/query/levelEducationQuery');
 const levelEducationCommand = require('../controller/command/levelEducationCommand');
 
