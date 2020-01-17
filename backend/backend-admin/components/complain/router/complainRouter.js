@@ -2,15 +2,16 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-const complainController = require('../controller/complainController');
+const complainCommand = require('../controller/command/complainCommand');
+const complainQuery = require('../controller/query/complainQuery')
 
 router.get('/getListComplain', passport.authenticate('jwt', {
   session: false
-}), complainController.getListComplain);
+}), complainQuery.getListComplain);
 
 
 router.put('/updateStatusComplain', passport.authenticate('jwt', {
   session: false
-}), complainController.updateComplain);
+}), complainCommand.updateComplain);
 
 module.exports = router;

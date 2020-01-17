@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-const AdminModel = require('../model/adminModel');
-const constant = require('../../utils/const/constant');
+const AdminModel = require('../../model/adminModel');
+const constant = require('../../../utils/const/constant');
 
 exports.login = (req, res, next) => {
   passport.authenticate('local', {
@@ -211,8 +211,4 @@ exports.googleLogin = async (req, res, next) => {
       err
     });
   }
-};
-
-exports.getDetailUser = (req, res, next) => {
-  res.json(req.user);
 };

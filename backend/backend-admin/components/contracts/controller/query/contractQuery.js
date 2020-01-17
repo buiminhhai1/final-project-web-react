@@ -1,5 +1,4 @@
-// const mongoose = require('mongoose');
-const ContractModel = require('../model/contractModel');
+const ContractModel = require('../../model/contractModel');
 
 exports.getListContract = async (req, res, next) => {
   try {
@@ -50,8 +49,7 @@ exports.statiticsByDay = async (req, res, next) => {
     return res.json({
       statitics: result,
     })
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
     return res.json({
       error: err,

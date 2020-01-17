@@ -3,24 +3,26 @@ const express = require('express');
 
 const router = express.Router();
 const levelEducationController = require('../controller/levelEducationController');
+const levelEducationQuery = require('../controller/query/levelEducationQuery');
+const levelEducationCommand = require('../controller/command/levelEducationCommand');
 
-router.get('/get-list-enable-level-education', levelEducationController.getListLevelEducation);
+router.get('/get-list-enable-level-education', levelEducationQuery.getListLevelEducation);
 
 router.get('/get-list-level-education', passport.authenticate('jwt', {
   session: false
-}), levelEducationController.getListLevelEducation);
+}), levelEducationQuery.getListLevelEducation);
 
 router.post('/add-level-education', passport.authenticate('jwt', {
   session: false
-}), levelEducationController.addLevelEducation);
+}), levelEducationCommand.addLevelEducation);
 
 router.put('/update-level-education', passport.authenticate('jwt', {
   session: false
-}), levelEducationController.updateLevelEducation);
+}), levelEducationCommand.updateLevelEducation);
 
 router.delete('/delete-level-education', passport.authenticate('jwt', {
   session: false
-}), levelEducationController.deleteLevelEducation);
+}), levelEducationCommand.deleteLevelEducation);
 
 
 module.exports = router;
