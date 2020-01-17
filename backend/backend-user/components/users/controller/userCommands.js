@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
 
 const UserModel = require("../model/userModel");
 const constant = require("../../utils/const/constant");
@@ -68,29 +67,6 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = (req, res, next) => {
-  passport.authenticate(
-    "local",
-    {
-      session: false
-    },
-    async (err, user, message) => {
-      if (err || !user) {
-        return res.json({
-          message
-        });
-      }
-      const { token, newUser } = getTokenAndUser(user);
-
-      return res.json({
-        user: newUser,
-        token,
-        expiresIn: 1500 * 60
-      });
-    }
-  )(req, res, next);
-};
-
 exports.googleLogin = (req, res, next) => {
   const accessToken = req.body.accessToken;
   oauth2Client.setCredentials({
@@ -102,13 +78,12 @@ exports.googleLogin = (req, res, next) => {
     version: "v2"
   });
 
-  oauth2.userinfo.get(async function(err, response) {
+  oauth2.userinfo.get(async function (err, response) {
     if (err) {
       return res.json({
         message: "The access token is not correct"
       });
     } else {
-      // If success
       const user = await registerForGoogleAccount(response.data);
       if (user) {
         const { token, newUser } = getTokenAndUser(user);
@@ -123,16 +98,6 @@ exports.googleLogin = (req, res, next) => {
 };
 
 registerForGoogleAccount = async user => {
-  /*user: {
-      id: string,
-      email: string,
-      verified_email: boolean,
-      name: string,
-      given_name: string,
-      family_name: string,
-      picture: url_string,
-      locale: string
-  }*/
   const findUser = await UserModel.findOne({
     "google.id": user.id
   });
@@ -179,38 +144,6 @@ getTokenAndUser = user => {
     token,
     newUser
   };
-};
-
-exports.getUser = async (req, res, next) => {
-  const { userId } = req.query;
-
-  try {
-    const user = await UserModel.findById(userId);
-    if (!!user) {
-      const teacher = {
-        name: user.name,
-        email: user.email,
-        imageUrl: user.imageUrl,
-        location: user.location,
-        experience: user.experience,
-        status: user.status,
-        contracts: user.contracts,
-        totalScore: user.totalScore
-      };
-      res.json({
-        teacher
-      });
-    } else {
-      return res.json({
-        message: "something wrong"
-      });
-    }
-  } catch (error) {
-    // console.log(error);
-    res.json({
-      message: "something wrong"
-    });
-  }
 };
 
 exports.updateUser = async (req, res, next) => {
@@ -276,28 +209,6 @@ exports.updateTeacher = async (req, res, next) => {
     res.status(400).json({
       message: "Something wrong happened"
     });
-};
-
-exports.facebookLogin = (req, res, next) => {
-  passport.authenticate(
-    "facebook",
-    {
-      session: false
-    },
-    (err, user, message) => {
-      if (err || !user) {
-        return res.json({
-          message
-        });
-      }
-      const { token, newUser } = getTokenAndUser(user);
-      return res.json({
-        user: newUser,
-        token,
-        expiresIn: 1500 * 60
-      });
-    }
-  )(req, res, next);
 };
 
 exports.uploadImage = (req, res, next) => {

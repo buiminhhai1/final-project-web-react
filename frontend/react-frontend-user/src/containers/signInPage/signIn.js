@@ -42,12 +42,12 @@ function Login(props) {
   }
 
   const responseFacebook = async response => {
-    await console.log(response);
+    await // console.log(response);
     await props.signInFacebook(response.accessToken);
   };
 
   const responseGoogle = async response => {
-    await console.log(response);
+    await // console.log(response);
     await props.signInGoogle(response.accessToken);
   };
 

@@ -54,7 +54,7 @@ class contractHistory extends Component {
   }
 
   handleRating(data) {
-    console.log(data);
+    // console.log(data);
     const token = 'Bearer ' + this.props.token;
     let sendData = {
       _id: this.state.currentContractId,
@@ -71,7 +71,7 @@ class contractHistory extends Component {
     let result = false;
     this.props.contracts.map(contract => {
       if (contract._id === this.state.currentContractId) {
-        console.log(contract);
+        // console.log(contract);
         const token = 'Bearer ' + this.props.token;
 
         const userComplain = {
@@ -117,7 +117,7 @@ class contractHistory extends Component {
   }
 
   handleWithdraw(data) {
-    console.log(data);
+    // console.log(data);
     const token = 'Bearer ' + this.props.token;
     this.props.withdrawMoney(token, { idUser: this.props.user.userId, email: data });
   }

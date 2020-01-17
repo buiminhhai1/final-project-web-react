@@ -2,32 +2,33 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-const userController = require('../controller/userController');
+const userCommands = require('../controller/userCommands');
+const userQueries = require('../controller/userQueries');
 
-router.post('/login', userController.login);
-router.post('/register', userController.register);
+router.post('/login', userQueries.login);
+router.post('/register', userCommands.register);
 
-router.post('/login/googleOauth', userController.googleLogin);
-router.post('/login/facebookOauth', userController.facebookLogin);
+router.post('/login/googleOauth', userCommands.googleLogin);
+router.post('/login/facebookOauth', userQueries.facebookLogin);
 
-
-router.get('/detail', userController.getUser);
+router.get('/detail', userQueries.getUser);
 router.post('/user-profile', passport.authenticate('jwt', {
     session: false
-}), userController.updateUser);
+}), userCommands.updateUser);
 router.post('/teacher-profile', passport.authenticate('jwt', {
     session: false
-}), userController.updateTeacher);
-router.post('/image-upload', userController.uploadImage);
+}), userCommands.updateTeacher);
+router.post('/image-upload', userCommands.uploadImage);
 
-router.get('/verify', userController.verifyUser);
+router.get('/verify', userCommands.verifyUser);
 router.post('/changePassword', passport.authenticate('jwt', {
     session: false
-}), userController.changePassword);
-router.post('/resetPassword',passport.authenticate('jwt', {
+}), userCommands.changePassword);
+router.post('/resetPassword', passport.authenticate('jwt', {
     session: false
-}), userController.resetPassword);
-router.post('/sendEmailResetPassword',passport.authenticate('jwt', {
+}), userCommands.resetPassword);
+router.post('/sendEmailResetPassword', passport.authenticate('jwt', {
     session: false
-}), userController.sendEmailResetPassword);
+}), userCommands.sendEmailResetPassword);
+
 module.exports = router;

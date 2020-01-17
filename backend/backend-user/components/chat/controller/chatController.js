@@ -26,7 +26,7 @@ exports.getListGroupChat = async (req, res, next) => {
       message: 'something wrong'
     });
   } catch (error) {
-    console.log('error');
+    // console.log('error');
     res.json({
       message: 'something wrong'
     });
@@ -43,13 +43,13 @@ exports.newGroupChat = async (req, res, next) => {
   try {
     const results = await GroupChatModel.findOne({
       $or: [{
-          'groupInfo.idUser1': idUser1,
-          'groupInfo.idUser2': idUser2
-        },
-        {
-          'groupInfo.idUser1': idUser2,
-          'groupInfo.idUser2': idUser1
-        }
+        'groupInfo.idUser1': idUser1,
+        'groupInfo.idUser2': idUser2
+      },
+      {
+        'groupInfo.idUser1': idUser2,
+        'groupInfo.idUser2': idUser1
+      }
       ]
     });
 
@@ -159,10 +159,10 @@ exports.saveNewMessage = async (idGroup, idUser, message) => {
         } else console.log('cannot save message');
       });
     } else {
-      console.log('cannot save message');
+      // console.log('cannot save message');
     }
   } catch (error) {
-    console.log('cannot save message');
+    // console.log('cannot save message');
   }
 };
 
@@ -174,13 +174,13 @@ exports.getListMessages = async (req, res, next) => {
   try {
     const group = await GroupChatModel.findOne({
       $or: [{
-          'groupInfo.idUser1': idUser1,
-          'groupInfo.idUser2': idUser2
-        },
-        {
-          'groupInfo.idUser1': idUser2,
-          'groupInfo.idUser2': idUser1
-        }
+        'groupInfo.idUser1': idUser1,
+        'groupInfo.idUser2': idUser2
+      },
+      {
+        'groupInfo.idUser1': idUser2,
+        'groupInfo.idUser2': idUser1
+      }
       ]
     });
     const results = await MessageModel.find({

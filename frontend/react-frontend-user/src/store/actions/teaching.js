@@ -38,7 +38,7 @@ export function getSubjects() {
         dispatch(getSubjectsSuccess(subjects));
       })
       .catch(err => {
-        //console.log(err);
+        //// console.log(err);
         dispatch(getSubjectsFail(err));
       });
   };
@@ -76,7 +76,7 @@ export function getEducationLevel() {
         dispatch(getEducationLevelSuccess(level));
       })
       .catch(err => {
-        //console.log(err);
+        //// console.log(err);
         dispatch(getEducationLevelFail(err));
       });
   };
@@ -114,7 +114,7 @@ export function getLevel() {
         dispatch(getLevelSuccess(level));
       })
       .catch(err => {
-        //console.log(err);
+        //// console.log(err);
         dispatch(getLevelFail(err));
       });
   };
@@ -149,12 +149,12 @@ export function getTeachers() {
       .get(url)
       .then(res => {
         let teachers = res.data.users;
-        //console.log(teachers);
+        //// console.log(teachers);
 
         dispatch(getTeachersSuccess(teachers));
       })
       .catch(err => {
-        //console.log(err);
+        //// console.log(err);
         dispatch(getTeachersFail(err));
       });
   };
@@ -193,7 +193,7 @@ export function getTeacher(userId) {
       })
       .then(res => {
         let teacher = res.data.teacher;
-        //console.log(teacher);
+        //// console.log(teacher);
 
         if (teacher) {
           dispatch(getTeacherSuccess(teacher));
@@ -239,7 +239,7 @@ export function getLocations() {
         } else dispatch(getLocationsFail(res.data.message));
       })
       .catch(err => {
-        //console.log(err);
+        //// console.log(err);
         dispatch(getLocationsFail(err));
       });
   };
@@ -278,7 +278,7 @@ export function sendFirstMessage(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data);
+        //// console.log(res.data);
         if (res.data.result) {
           dispatch(sendFirstMessageSuccess());
         } else {
@@ -314,7 +314,7 @@ export function createContract(token, data) {
   return dispatch => {
     dispatch(createContractPending());
     const contractUrl = apiUrl + '/contract/createContract';
-    //console.log(data);
+    //// console.log(data);
 
     axios({
       method: 'post',
@@ -325,7 +325,7 @@ export function createContract(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data);
+        //// console.log(res.data);
         if (res.data.result) {
           dispatch(createContractSuccess());
         } else {
@@ -371,7 +371,7 @@ export function getContracts(token) {
       }
     })
       .then(res => {
-        //console.log(res.data.contracts);
+        //// console.log(res.data.contracts);
         if (res.data.contracts) {
           dispatch(getContractsSuccess(res.data.contracts));
         } else {
@@ -398,7 +398,7 @@ export function updateContract(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data.contract);
+        //// console.log(res.data.contract);
         if (res.data.contract) {
           dispatch(getContracts(token));
         } else {
@@ -425,7 +425,7 @@ export function endContract(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data.result);
+        //// console.log(res.data.result);
         if (res.data.result) {
           dispatch(getContracts(token));
         } else {
@@ -471,7 +471,7 @@ export function getMoney(token, userId) {
       }
     })
       .then(res => {
-        //console.log(res.data.money);
+        //// console.log(res.data.money);
         if (res.data.result) {
           dispatch(getMoneySuccess(res.data.balance));
         } else {
@@ -507,7 +507,7 @@ export function sendRating(token, data) {
   return dispatch => {
     dispatch(sendRatingPending());
     const ratingUrl = apiUrl + '/contract/rating';
-    //console.log(data);
+    //// console.log(data);
 
     axios({
       method: 'put',
@@ -518,7 +518,7 @@ export function sendRating(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data);
+        //// console.log(res.data);
         if (res.data.contract) {
           dispatch(sendRatingSuccess());
         } else {
@@ -554,7 +554,7 @@ export function sendComplain(token, data) {
   return dispatch => {
     dispatch(sendComplainPending());
     const complainUrl = apiUrl + '/complain/createComplain';
-    console.log(data);
+    // console.log(data);
 
     axios({
       method: 'post',
@@ -565,7 +565,7 @@ export function sendComplain(token, data) {
       data
     })
       .then(res => {
-        console.log(res.data.complain);
+        // console.log(res.data.complain);
         if (res.data.complain) {
           dispatch(sendComplainSuccess());
         } else {
@@ -601,7 +601,7 @@ export function withdrawMoney(token, data) {
   return dispatch => {
     dispatch(withdrawMoneyPending());
     const withdrawUrl = apiUrl + '/transaction/withdraw';
-    //console.log(data);
+    //// console.log(data);
 
     axios({
       method: 'post',
@@ -612,7 +612,7 @@ export function withdrawMoney(token, data) {
       data
     })
       .then(res => {
-        //console.log(res.data);
+        //// console.log(res.data);
         if (res.data.result) {
           dispatch(withdrawMoneySuccess());
           dispatch(getContracts(token));

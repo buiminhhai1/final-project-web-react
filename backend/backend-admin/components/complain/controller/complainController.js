@@ -71,7 +71,7 @@ exports.updateComplain = async (req, res, next) => {
         });
       }
     }
-    console.log('update failed');
+    // console.log('update failed');
     return res.json({
       error: 'Update complain has failed!',
       message: 'Update complain has fail'

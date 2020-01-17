@@ -15,6 +15,6 @@ exports.sendEmail = async (message) => {
     try {
         const a = await transporter.sendMail(message);
     } catch (err) {
-        console.log(err);
+        // console.log(err);
     }
 };

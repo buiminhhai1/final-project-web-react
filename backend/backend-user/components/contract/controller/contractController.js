@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ContractModel = require('../model/contractModel');
 const UserModel = require('../../users/model/userModel');
-const SubUserModel = require('../model/subUserModel');
+// const SubUserModel = require('../model/subUserModel');
 
 exports.getContracts = async (req, res, next) => {
   if(!!req.user){

@@ -18,46 +18,45 @@ exports.init = (server) => {
             { 'groupInfo.idUser1': idUser },
             { 'groupInfo.idUser2': idUser }]
         });
-        Promise.all(results.map(async e=>{
+        Promise.all(results.map(async e => {
           let toUser = e.groupInfo.idUser1;
-          if(toUser==idUser) toUser=e.groupInfo.idUser2;
-          const user = await UserModdel.findOne({_id: toUser});
-          if(user){
-            e = {'group':e,'user':user};
+          if (toUser == idUser) toUser = e.groupInfo.idUser2;
+          const user = await UserModdel.findOne({ _id: toUser });
+          if (user) {
+            e = { 'group': e, 'user': user };
             return (e);
-          }else{
-            e = {'group':e,'user':undefined};
+          } else {
+            e = { 'group': e, 'user': undefined };
             return (e);
           }
-        })).then(data=>{
-          data = data.filter(item => item.user !=undefined);
+        })).then(data => {
+          data = data.filter(item => item.user != undefined);
           io.to(socket.id).emit('groupData', data);
         })
-        
+
       } catch (error) {
-        console.log('Cannot get Group data');
+        // console.log('Cannot get Group data');
       }
     });
     socket.on('sendMessage', function ({ idGroup, toIdUser, message }, callback) {
       const toUser = users.getUserById(toIdUser);
       const user = users.getUserBySocketId(socket.id);
-      if(toUser)
-        io.to(toUser.idSocket).emit('message', { user: user.idUser,time:Date.now(), message, group:idGroup });
-      chatController.saveNewMessage(idGroup,user.idUser,message);
+      if (toUser)
+        io.to(toUser.idSocket).emit('message', { user: user.idUser, time: Date.now(), message, group: idGroup });
+      chatController.saveNewMessage(idGroup, user.idUser, message);
       callback();
     });
 
-    socket.on('joinToGroup', async({ idGroup }) => {
-      
-      try {
-        const results = await MessageModel.find({ idGroup});
-        if (!!results) {
-          io.to(socket.id).emit('messagesData',results);
-        } else 
-        console.log('messages error');
+    socket.on('joinToGroup', async ({ idGroup }) => {
 
+      try {
+        const results = await MessageModel.find({ idGroup });
+        if (!!results) {
+          io.to(socket.id).emit('messagesData', results);
+        } else
+          console.log('messages error');
       } catch (error) {
-        console.log('messages error');
+        // console.log('messages error');
       }
     })
 
