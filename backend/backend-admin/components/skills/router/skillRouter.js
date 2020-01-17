@@ -2,24 +2,26 @@ const passport = require('passport');
 const express = require('express');
 
 const router = express.Router();
-const skillController = require('../controller/skillControler');
+
+const skillCommand = require('../controller/command/skillCommand');
+const skillQuery = require('../controller/query/skillQuery');
 
 router.get('/get-list-enable-skill', skillController.getListSkill);
 
 router.get('/get-list', passport.authenticate('jwt', {
   session: false
-}), skillController.getListSkill);
+}), skillQuery.getListSkill);
 
 router.post('/add-skill', passport.authenticate('jwt', {
   session: false
-}), skillController.addSkill);
+}), skillCommand.addSkill);
 
 router.put('/update-skill/:id', passport.authenticate('jwt', {
   session: false
-}), skillController.updateSkill);
+}), skillCommand.updateSkill);
 
 router.delete('/delete-skill/:id', passport.authenticate('jwt', {
   session: false
-}), skillController.deleteSkill);
+}), skillCommand.deleteSkill);
 
 module.exports = router;
