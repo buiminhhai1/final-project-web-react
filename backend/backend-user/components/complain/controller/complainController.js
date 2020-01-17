@@ -36,7 +36,6 @@ exports.createComplain = async (req, res, next) => {
   }
 };
 
-
 exports.updateComplain = async (req, res, next) => {
   const {
     _id,

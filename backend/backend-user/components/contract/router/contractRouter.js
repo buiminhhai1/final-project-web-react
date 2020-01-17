@@ -2,22 +2,24 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-const contractController = require('../controller/contractController');
+// const contractCommands = require('../controller/contractCommands');
+const contractCommands = require('../controller/contractCommands');
+const contractQueries = require('../controller/contractQueries');
 
 router.get('/getContracts', passport.authenticate('jwt', {
   session: false
-}), contractController.getContracts);
+}), contractQueries.getContracts);
 
 router.post('/createContract', passport.authenticate('jwt', {
   session: false
-}), contractController.createContract);
+}), contractCommands.createContract);
 
 router.put('/update-contract', passport.authenticate('jwt', {
   session: false
-}), contractController.updateContract);
+}), contractCommands.updateContract);
 
 router.put('/rating', passport.authenticate('jwt', {
   session: false
-}), contractController.rateContract);
+}), contractCommands.rateContract);
 
 module.exports = router;
