@@ -1,0 +1,4 @@
+.Logo img {
+  height: 40px; /*the image does take this height at a maximum   */
+  border-radius: 5px;
+}

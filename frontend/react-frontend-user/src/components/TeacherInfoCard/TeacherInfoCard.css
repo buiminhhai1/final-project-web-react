@@ -1,0 +1,24 @@
+.ant-tag {
+    margin-bottom: 8px;
+}
+
+.ant-badge-dot {
+    width: 10px;
+    height: 10px;
+}
+
+.subjectTags {
+    text-align: start;
+}
+
+.subjectTags::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+}
+
+.subjectTags::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #20232A;
+}

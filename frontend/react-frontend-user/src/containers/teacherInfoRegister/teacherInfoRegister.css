@@ -1,0 +1,58 @@
+form.tutorInfoForm {
+    padding: 20px 300px;
+    padding-bottom: 50px;
+    background-image: url("../../assets/Images/bg-01.webp");
+    background-size: auto 100%;
+}
+
+.subjectSelect {
+    max-width: 600px;
+}
+
+.levelSelect {
+    max-width: 600px;
+}
+
+.description {
+    max-width: 600px;
+}
+
+.teachingLocation {
+    max-width: 600px;
+}
+
+@media only screen and (max-width: 1100px) {
+    form.tutorInfoForm {
+        padding: 20px 200px;
+    }
+    h1 {
+        font-size: xx-large;
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    .teachingLevel {
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 860px) {
+    form.tutorInfoForm {
+        padding: 20px 150px;
+    }
+    h1 {
+        font-size: x-large;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    form.tutorInfoForm {
+        padding: 20px 100px;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    form.tutorInfoForm {
+        padding: 20px 50px;
+    }
+}
