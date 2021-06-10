@@ -1,0 +1,45 @@
+sudo: required
+
+language: node_js
+node_js:
+  - 12
+
+branches:
+  only:
+  - master
+  - /./
+
+services:
+  - docker
+
+before_install:
+  - docker build -t $DOCKER_ID/backend-admin-api ./backend/backend-admin/
+  - docker build -t $DOCKER_ID/backend-user-api ./backend/backend-user/
+  - docker build -t $DOCKER_ID/frontend-admin ./frontend/react-frontend-admin/
+  - docker build -t $DOCKER_ID/frontend-user ./frontend/react-frontend-user/
+
+after_success:
+  - docker build -t $DOCKER_ID/backend-admin-api ./backend/backend-admin/
+  - docker build -t $DOCKER_ID/backend-user-api ./backend/backend-user/
+  - docker build -t $DOCKER_ID/frontend-admin ./frontend/react-frontend-admin/
+  - docker build -t $DOCKER_ID/backend-admin-api ./frontend/react-frontend-user/
+  - echo docker logout
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push $DOCKER_ID/backend-admin-api
+  - docker push $DOCKER_ID/backend-user-api
+  - docker push $DOCKER_ID/frontend-admin
+  - docker push $DOCKER_ID/frontend-user
+
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "ap-southeast-1"
+#   app: "multi-docker"
+#   env: MultiDocker-env
+#   bucket_name: "elasticbeanstalk-ap-southeast-1-647466573283"
+#   bucket_path: "docker-multi"
+#   on:
+#     branch: master
+#   access_key_id: "$AWS_ACCESS_KEY"
+#   secret_access_key: "$AWS_SCRET_ACCESS_KEY"
+#   edge: true

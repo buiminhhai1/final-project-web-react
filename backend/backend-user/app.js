@@ -46,9 +46,9 @@ db.once('open', () => {
 });
 
 cloudinary.config({
-  cloud_name: 'dc4rxxjyt',
-  api_key: '182393896791142',
-  api_secret: 'g95hnkYtxrJWTGY0FfSDs0yms5w'
+  cloud_name: process.env.CLOUD_NAME || 'dc4rxxjyt',
+  api_key: process.env.CLOUD_API_KEY || '182393896791142',
+  api_secret: process.env.CLOUD_API_SECRET || 'g95hnkYtxrJWTGY0FfSDs0yms5w'
 });
 
 // view engine setup
@@ -64,14 +64,14 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/chat', passport.authenticate('jwt', {
+app.use('/apiuser', indexRouter);
+app.use('/apiuser/chat', passport.authenticate('jwt', {
   session: false
 }), chatRouter);
-app.use('/users', usersRouter);
-app.use('/transaction', transactionRouter);
-app.use('/contract', contractRouter);
-app.use('/complain', complainRouter);
+app.use('/apiuser/users', usersRouter);
+app.use('/apiuser/transaction', transactionRouter);
+app.use('/apiuser/contract', contractRouter);
+app.use('/apiuser/complain', complainRouter);
 
 
 // catch 404 and forward to error handler

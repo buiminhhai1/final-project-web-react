@@ -58,18 +58,18 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/admin', adminRouter);
-app.use('/level', levelRouter);
-app.use('/level-education', levelEducationRouter);
-app.use('/location', locationRouter);
-app.use('/skill', skillRouter);
-app.use('/users', userRouter);
-app.use('/contract', contractRouter);
-app.use('/complain', complainRouter);
-app.use('/chat', chatRouter);
+app.use('/apiadmin', indexRouter);
+app.use('/apiadmin/admin', adminRouter);
+app.use('/apiadmin/level', levelRouter);
+app.use('/apiadmin/level-education', levelEducationRouter);
+app.use('/apiadmin/location', locationRouter);
+app.use('/apiadmin/skill', skillRouter);
+app.use('/apiadmin/users', userRouter);
+app.use('/apiadmin/contract', contractRouter);
+app.use('/apiadmin/complain', complainRouter);
+app.use('/apiadmin/chat', chatRouter);
 
-app.get('/me', passport.authenticate('jwt'), (req, res, next) => {
+app.get('/apiadmin/me', passport.authenticate('jwt'), (req, res, next) => {
   res.send({
     info: req.user.user
   });
